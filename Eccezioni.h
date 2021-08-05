@@ -4,7 +4,7 @@
 #include <exception>
 #include <cassert>
 
-
+//TODO completa con eccezioni mancanti
 
 class file_non_aperto: public std::exception {
 private:

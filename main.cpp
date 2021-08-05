@@ -31,7 +31,7 @@ vector<string> converti_argv(int f_argc, char* f_argv[]);
 int main(int argc, char *argv[]) {
 
     //controlli argc su ogni switch?
-    if (argc < 3) {
+    if (argc < 3) { //TODO controlla questo numero
         cout << "Errore numero argomenti\n";
         //TODO: eccezione
         return -1;

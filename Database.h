@@ -425,6 +425,8 @@ private:
 
 public:
     //  funzioni per aggiungere dati
+    void aggiungi();
+
     void aggiungi_studenti();
 
     void aggiungi_professori();

@@ -107,6 +107,10 @@ void fstampa_bool(bool b, const string &vero, const string &falso, ofstream &fou
     }
 }
 
+void Database::aggiungi(){
+
+}
+
 void Database::aggiungi_studenti() {
     ifstream fin;
     fin.open(_file_argomento);

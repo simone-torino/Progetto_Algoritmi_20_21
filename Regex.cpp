@@ -1,6 +1,8 @@
 
 #include "Database.h"
 
+//TODO rivedi metodi statici
+
 bool Database::Regex::search_and_read(const std::regex &expression, const string &row, vector<string> &out) {
 
     if (regex_search(row, _match, expression)) {
