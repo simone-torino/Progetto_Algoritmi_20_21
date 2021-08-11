@@ -14,6 +14,7 @@
 #include <regex>
 #include <stack>
 #include <map>
+#include <functional>
 #include "Eccezioni.h"
 
 
@@ -425,7 +426,7 @@ private:
 
 public:
     //  funzioni per aggiungere dati
-    void aggiungi();
+    void aggiungi(void (Database::*nuova_classe_db)(const string &, const string &));
 
     void aggiungi_studenti();
 
@@ -438,6 +439,8 @@ public:
     void aggiungi_corsi_di_studio();
 
     //Per i dati da file con matricole da generare
+    void (Database::*ptr_studente_db) (const string &, const string &) {&Database::nuovo_studente};
+//    function<void(const string &, const string &)> ptr = &nuovo_studente;
     void nuovo_studente(const string &row, const string &ultima_matricola_id);
 
     void nuovo_professore(const string &row, const string &ultima_matricola_id);

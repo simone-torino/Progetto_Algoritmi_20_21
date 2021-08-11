@@ -107,8 +107,32 @@ void fstampa_bool(bool b, const string &vero, const string &falso, ofstream &fou
     }
 }
 
-void Database::aggiungi(){
+void Database::aggiungi(void (Database::*nuova_classe_db)(const string &, const string &)){
 
+//    void(*fptr)(){aggiungi_aule};
+//    auto ptr = this->aggiungi_aule;
+
+    ifstream fin;
+    fin.open(_file_argomento);
+    controlli_file(fin, _file_argomento);
+    string row;
+    int ultima_matricola_id = leggi_matricola_maggiore(_file_db_studenti);
+    short unsigned int n = 1;
+
+    while (!fin.eof()) {
+        getline(fin, row, '\n');
+        ultima_matricola_id++;
+        //      [Aggiunta] serve la _matricola da assegnare
+        if (!row.empty()) {
+            (this->*nuova_classe_db)(row, to_string(ultima_matricola_id));
+            //TODO: è ora di debuggare yess
+            //TODO: allo stesso modo per funzioni aggiorna?
+        } else {
+            cout << "[Warning] Riga " << n << " vuota nel file " << _file_argomento << '\n';
+        }
+        n++;
+    }
+    fin.close();
 }
 
 void Database::aggiungi_studenti() {
