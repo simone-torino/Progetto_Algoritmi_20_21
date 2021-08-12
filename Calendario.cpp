@@ -547,13 +547,13 @@ void Calendario::GiornoSessione::Esame::fstampa_esame(ofstream &fout) const {
 
     if (_numero_versioni > 1) {
         for (int i = 1; i <= _numero_versioni; i++) {
-            this->_id_esame.fstampa_id(fout);
+            this->_id_esame.fstampa(fout);
             fout << '[' << i << ']';
             fout << '(' << _id_cds << ')';
             fout << ';';
         }
     } else {
-        _id_esame.fstampa_id(fout);
+        _id_esame.fstampa(fout);
         fout << '(' << _id_cds << ')';
     }
 

@@ -18,6 +18,7 @@
 #include "Eccezioni.h"
 
 
+
 using namespace std;
 
 //Aggiungi = leggi da file e salva in memoria
@@ -88,6 +89,9 @@ public:
 
     Database() = default;
 
+    template <typename T>
+    void tfstampa(vector<T> t, const string &file_db, bool append);
+
 public:
     struct BracketSearch {
         bool IsOpenBracket(char InCharacter);
@@ -157,7 +161,7 @@ public:
     protected:
         string _id_corso;
     public:
-        void fstampa_id(ofstream &fout) const;
+        void fstampa(ofstream &fout) const;
 
         void setIdCorso(const string &id_corso);
 
@@ -199,7 +203,7 @@ public:
 
         ~Professore();
 
-        void fstampa_professore(ofstream &fout);
+        void fstampa(ofstream &fout);
     };
 
 private:
@@ -328,7 +332,7 @@ private:
 
         vector<string> cut_versioni(const string &row, const vector<int> &indicigraffe, int n_versioni);
 
-        void fstampa_corso(ofstream &fout) const;
+        void fstampa(ofstream &fout) const;
         Database::BracketSearch _bs;
 
         Database::Regex _regcorso;
@@ -346,7 +350,7 @@ private:
         void fstampa_semestri(ofstream &fout) const;
 
     public:
-        void fstampa_cds(ofstream &fout) const;
+        void fstampa(ofstream &fout) const;
 
         void setIdCds(const string &id_cds);
 
@@ -381,7 +385,7 @@ private:
 
         short unsigned int getCapEsame() const;
 
-        void fstampa_aula(ofstream &fout);
+        void fstampa(ofstream &fout);
 
     protected:
         string _id_aula;
@@ -417,7 +421,7 @@ private:
 
     void matricola_aula_incremento(string &matricola);
 
-    string leggi_id_cds_maggiore(const string &file_db);
+//    string leggi_id_cds_maggiore(const string &file_db);
 
     string matricola_corso_incremento(string &matricola);
 
@@ -439,17 +443,22 @@ public:
     void aggiungi_corsi_di_studio();
 
     //Per i dati da file con matricole da generare
-    void (Database::*ptr_studente_db) (const string &, const string &) {&Database::nuovo_studente};
+
 //    function<void(const string &, const string &)> ptr = &nuovo_studente;
     void nuovo_studente(const string &row, const string &ultima_matricola_id);
+    void (Database::*ptr_studente_db) (const string &, const string &) {&Database::nuovo_studente};
 
     void nuovo_professore(const string &row, const string &ultima_matricola_id);
+    void (Database::*ptr_professore_db) (const string &, const string &) {&Database::nuovo_professore};
 
     void nuova_aula(const string &row, const string &ultima_matricola_id);
+    void (Database::*ptr_aula_db) (const string &, const string &) {&Database::nuova_aula};
 
     void nuovo_corso(const string &row, const string &ultima_matricola_id);
+    void (Database::*ptr_corso_db) (const string &, const string &) {&Database::nuovo_corso};
 
     void nuovo_corso_di_studio(const string &row, const string &ultima_matricola);
+    void (Database::*ptr_cds_db) (const string &, const string &) {&Database::nuovo_corso_di_studio};
 
     //Per i dati ri-letti dal _dbcal o da file di aggiornamento
     void nuovo_studente(const string &row, bool source_db);
@@ -478,13 +487,15 @@ public:
 //    con append fstampa_giornosessione può stampare sia in append che in out, sovrascrivendo tutto, utile per aggiornamento
     void fstampa(options::opzione o, bool append);
 
+    void sub_fstampa(const string &file_db, bool append);
+
 //    template<class T>
 //    void ftstampa(vector<T> t);
     class Studente : public Persona {
     public:
         Studente();
 
-        void fstampa_studente(ofstream &fout);
+        void fstampa(ofstream &fout);
 
         void debug();
 

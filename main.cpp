@@ -71,18 +71,18 @@ int main(int argc, char *argv[]) {
                     case (options::studenti): {
                         cout << "Hai scelto: " << "aggiunta studenti\n";
                         //TODO: cosa cambia nel tipo di ritorno tra nuovo studente e i nuovo annidati della classe corso?
-//                        void (Database::*ptr_studente_db) (const string &, const string &) {&Database::nuovo_studente};
 
-                        db.aggiungi_studenti();
+//                        db.aggiungi_studenti();
                         db.aggiungi(db.ptr_studente_db);
-                        //TODO: qui ho bisogno solo della versione nuova classe che si occupa delle aggiunte, come la indico univocamente?
                         db.fstampa(o_var, true);
+
                         break;
                     }
                     case (options::professori): {
                         cout << "Hai scelto: " << "aggiunta professori\n";
 
-                        db.aggiungi_professori();
+//                        db.aggiungi_professori();
+                        db.aggiungi(db.ptr_professore_db);
                         db.fstampa(o_var, true);
                         break;
                     }

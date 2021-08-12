@@ -1,5 +1,6 @@
 
 #include "Database.h"
+#include "Database.hpp"
 
 //METODI CORSI E CDS
 
@@ -46,14 +47,14 @@ void Database::Corso::Anno_Accademico::fstampa_anno_accademico(ofstream &fout) c
     fout << ']' << ';';
     _esame->fstampa_esame(fout);
     for(int i = 0; i<_id_corsi_raggruppati.size(); i++){
-        _id_corsi_raggruppati[i]->fstampa_id(fout);
+        _id_corsi_raggruppati[i]->fstampa(fout);
         if (i < _id_corsi_raggruppati.size() - 1) {
             fout << ',';
         }
     }
 }
 
-void Database::Corso::fstampa_corso(ofstream &fout) const {
+void Database::Corso::fstampa(ofstream &fout) const {
     LOG(_id_corso);
     fout << 'c' << ';' << _id_corso << ';' << _titolo << ';' << _cfu << ';' << _ore_lezione << ';' << _ore_esercitazione
          << ';' << _ore_laboratorio << ';' << '\n';
@@ -64,7 +65,7 @@ void Database::Corso::fstampa_corso(ofstream &fout) const {
 }
 
 //[{d123456,[{d123456,50,0,0},{d543216,10,20}]},...];{90,30,30,SO,A};{AXC502,ASD345}
-void Database::Corso_di_studio::fstampa_cds(ofstream &fout) const {
+void Database::Corso_di_studio::fstampa(ofstream &fout) const {
     fout << _id_cds << ';';
 //    fstampa_laurea(fout);
     fstampa_bool(_laurea, "BS", "MS", fout);
@@ -72,7 +73,7 @@ void Database::Corso_di_studio::fstampa_cds(ofstream &fout) const {
     fstampa_semestri(fout);
     fout << ']' << ';' << '[';
     for (unsigned int i = 0; i < _corsi_spenti.size(); i++) {
-        _corsi_spenti[i].fstampa_id(fout);
+        _corsi_spenti[i].fstampa(fout);
         //se non sto stampando l'ultimo campo, metto una virgola
         if (i != _corsi_spenti.size() - 1) {
             fout << ',';
@@ -85,7 +86,7 @@ void Database::Corso_di_studio::fstampa_semestri(ofstream &fout) const {
     fout << '{';
     for (unsigned int i = 0; i < _corsi_per_semestre.size(); i++) {
         for (int j = 0; j < _corsi_per_semestre[i].size(); j++) {
-            _corsi_per_semestre[i][j].fstampa_id(fout);
+            _corsi_per_semestre[i][j].fstampa(fout);
             //se non sto stampando l'ultimo campo, metto una virgola
             if (i < _corsi_per_semestre[i].size() - 1) {
                 fout << ',';
@@ -95,7 +96,7 @@ void Database::Corso_di_studio::fstampa_semestri(ofstream &fout) const {
     fout << '}';
 }
 
-void Database::Corso_id::fstampa_id(ofstream &fout) const {
+void Database::Corso_id::fstampa(ofstream &fout) const {
     fout << _id_corso;
 }
 
@@ -108,9 +109,6 @@ void fstampa_bool(bool b, const string &vero, const string &falso, ofstream &fou
 }
 
 void Database::aggiungi(void (Database::*nuova_classe_db)(const string &, const string &)){
-
-//    void(*fptr)(){aggiungi_aule};
-//    auto ptr = this->aggiungi_aule;
 
     ifstream fin;
     fin.open(_file_argomento);
@@ -125,7 +123,6 @@ void Database::aggiungi(void (Database::*nuova_classe_db)(const string &, const 
         //      [Aggiunta] serve la _matricola da assegnare
         if (!row.empty()) {
             (this->*nuova_classe_db)(row, to_string(ultima_matricola_id));
-            //TODO: è ora di debuggare yess
             //TODO: allo stesso modo per funzioni aggiorna?
         } else {
             cout << "[Warning] Riga " << n << " vuota nel file " << _file_argomento << '\n';
@@ -269,7 +266,7 @@ void Database::aggiungi_corsi_di_studio() {
     string row;
     string ultima_matricola_id;
     try {
-        ultima_matricola_id = leggi_id_cds_maggiore(_file_db_cds);
+        ultima_matricola_id = leggi_id_maggiore(_file_db_cds);
     } catch (errore_matricola &e) {
         cout << "errore trovato" << e.what()<< endl;
         exit(4);
@@ -340,64 +337,69 @@ void Database::fstampa(options::opzione o, bool append) {
     switch (o) {
         case (options::studenti): {
             cout << "Stampa studenti in corso...\n";
-            if (append)
-                fout.open(_file_db_studenti, ios::app);
-            else
-                fout.open(_file_db_studenti, ios::out);
-            controlli_file(fout, _file_db_studenti);
-            for (auto i : _studenti_db) {
-                i->fstampa_studente(fout);
-            }
+            tfstampa(_studenti_db,_file_db_studenti, append);
+//            if (append)
+//                fout.open(_file_db_studenti, ios::app);
+//            else
+//                fout.open(_file_db_studenti, ios::out);
+//            controlli_file(fout, _file_db_studenti);
+//            for (auto i : _studenti_db) {
+//                i->fstampa(fout);
+//            }
             break;
         }
 
         case options::professori: {
             cout << "Stampa professori in corso...\n";
-            if (append)
-                fout.open(_file_db_professori, ios::app);
-            else
-                fout.open(_file_db_professori, ios::out);
-            controlli_file(fout, _file_db_professori);
-            for (auto i : _professori_db) {
-                i->fstampa_professore(fout);
-            }
+            tfstampa(_professori_db, _file_db_professori, append);
+//            if (append)
+//                fout.open(_file_db_professori, ios::app);
+//            else
+//                fout.open(_file_db_professori, ios::out);
+//            controlli_file(fout, _file_db_professori);
+//            for (auto i : _professori_db) {
+//                i->fstampa(fout);
+//            }
             break;
         }
         case options::aule: {
             cout << "Stampa aule in corso...\n";
-            if (append)
-                fout.open(_file_db_aule, ios::app);
-            else
-                fout.open(_file_db_aule, ios::out);
-            controlli_file(fout, _file_db_aule);
-            for (auto i: _aule_db) {
-                i->fstampa_aula(fout);
-            }
+            tfstampa(_aule_db, _file_db_aule, append);
+//            if (append)
+//                fout.open(_file_db_aule, ios::app);
+//            else
+//                fout.open(_file_db_aule, ios::out);
+//            controlli_file(fout, _file_db_aule);
+//            for (auto i: _aule_db) {
+//                i->fstampa(fout);
+//            }
 
             break;
         }
         case options::corsi: {
             cout << "Stampa corsi in corso...\n";
-            if (append)
-                fout.open(_file_db_corsi, ios::app);
-            else
-                fout.open(_file_db_corsi, ios::out);
-            controlli_file(fout, _file_db_corsi);
-            for (auto i : _corsi_db) {
-                i->fstampa_corso(fout);
-            }
+            tfstampa(_corsi_db, _file_db_corsi, append);
+//            if (append)
+//                fout.open(_file_db_corsi, ios::app);
+//            else
+//                fout.open(_file_db_corsi, ios::out);
+//            controlli_file(fout, _file_db_corsi);
+//            for (auto i : _corsi_db) {
+//                i->fstampa(fout);
+//            }
             break;
         }
         case options::cds: {
             cout << "Stampa corsi di studio in corso...\n";
-            if (append)
-                fout.open(_file_db_cds, ios::app);
-            else
-                fout.open(_file_db_cds, ios::out);
-            controlli_file(fout, _file_db_cds);
-            for (auto i: _cds_db) {
-                i->fstampa_cds(fout);
-            }
+            tfstampa(_cds_db, _file_db_cds, append);
+//            if (append)
+//                fout.open(_file_db_cds, ios::app);
+//            else
+//                fout.open(_file_db_cds, ios::out);
+//            controlli_file(fout, _file_db_cds);
+//            for (auto i: _cds_db) {
+//                i->fstampa(fout);
+//            }
             break;
         }
         default:
@@ -482,7 +484,7 @@ void Database::Aula::setCapEsame(unsigned short int capienza_esame) {
     _capienza_esame = capienza_esame;
 }
 
-void Database::Aula::fstampa_aula(ofstream &fout) {
+void Database::Aula::fstampa(ofstream &fout) {
     fout << _id_aula << ';';
     fout << _tipo << ';';
     fout << _denominazione << ';';
@@ -903,16 +905,20 @@ void Database::aggiungi_corsi() {
 }
 
 string Database::leggi_id_maggiore(const string &file_db) {
-
+    //gestisce id aule e id corso e id cds
     ifstream fin;
     fin.open(file_db);
     controlli_file(fin, file_db);
     string first;
 
-    if (file_db == _file_db_aule) {
+    if(file_db == _file_db_studenti){
+        first = "100000";
+    } else if (file_db == _file_db_aule) {
         first = "1AA1";
-    } else {
+    } else if(file_db == _file_db_corsi) {
         first = "ABC123";
+    } else if(file_db == _file_db_cds){
+        first = "A123";
     }
     string rowdb, temp;
 
@@ -920,11 +926,13 @@ string Database::leggi_id_maggiore(const string &file_db) {
         getline(fin, rowdb, '\n');
         istringstream row_stream;
         row_stream.str(rowdb);
-        if (file_db == _file_db_aule) {
+        if ((file_db == _file_db_aule) || (file_db == _file_db_cds)) {
             getline(row_stream, temp, ';'); //legge la riga fino al ;
-        } else {
+        } else if(file_db == _file_db_corsi){
             getline(row_stream, temp, ';'); //Legge c;
             getline(row_stream, temp, ';'); //Legge id_corso;
+        } else{
+            //errore di qualche tipo
         }
 
         if (!temp.empty()) {
@@ -1035,42 +1043,42 @@ string Database::matricola_cds_incremento(string &matricola) {
     return matricola;
 }
 
-
-string Database::leggi_id_cds_maggiore(const string &file_db) {
-
-    ifstream fin;
-    fin.open(file_db);
-    controlli_file(fin, file_db);
-    string first;
-
-    if (file_db == _file_db_cds) {
-        first = "ABC123";
-    } else {
-        cerr << "file aperto non idoneo alle richieste" << endl;
-    }
-    string rowdb, temp;
-
-    while (!fin.eof()) {
-        getline(fin, rowdb, '\n');
-        istringstream row_stream;
-        row_stream.str(rowdb);
-        getline(row_stream, temp, ';'); //legge la riga fino al ;
-
-        try {
-            if (!temp.empty()) {
-
-                if (temp > first) {
-                    first = temp;
-                }
-            } else {
-                return first;
-            }
-        } catch (invalid_argument &e) {
-            cout << "Errore stoi\n" << e.what() << endl;
-        }
-    }
-    return first;
-}
+//funzione inutile
+//string Database::leggi_id_cds_maggiore(const string &file_db) {
+//
+//    ifstream fin;
+//    fin.open(file_db);
+//    controlli_file(fin, file_db);
+//    string first;
+//
+//    if (file_db == _file_db_cds) {
+//        first = "ABC123";
+//    } else {
+//        cerr << "file aperto non idoneo alle richieste" << endl;
+//    }
+//    string rowdb, temp;
+//
+//    while (!fin.eof()) {
+//        getline(fin, rowdb, '\n');
+//        istringstream row_stream;
+//        row_stream.str(rowdb);
+//        getline(row_stream, temp, ';'); //legge la riga fino al ;
+//
+//        try {
+//            if (!temp.empty()) {
+//
+//                if (temp > first) {
+//                    first = temp;
+//                }
+//            } else {
+//                return first;
+//            }
+//        } catch (invalid_argument &e) {
+//            cout << "Errore stoi\n" << e.what() << endl;
+//        }
+//    }
+//    return first;
+//}
 
 void Database::leggi_prof_db() {
     ifstream fin_db;
@@ -1116,7 +1124,7 @@ vector<Database::Professore *> Database::getVProfessori() {
 }
 
 
-void Database::Studente::fstampa_studente(ofstream &fout) {
+void Database::Studente::fstampa(ofstream &fout) {
     fout << _matricola << _sep << _nome << _sep << _cognome << _sep << _email << '\n';
 }
 
@@ -1140,7 +1148,7 @@ Database::Professore::Professore() {
     _sep = ';';
 }
 
-void Database::Professore::fstampa_professore(ofstream &fout) {
+void Database::Professore::fstampa(ofstream &fout) {
     fout << _matricola << _sep << _nome << _sep << _cognome << _sep << _email << '\n';
 }
 
