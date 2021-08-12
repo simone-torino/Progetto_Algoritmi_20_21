@@ -89,8 +89,7 @@ public:
 
     Database() = default;
 
-    template <typename T>
-    void tfstampa(vector<T> t, const string &file_db, bool append);
+
 
 public:
     struct BracketSearch {
@@ -203,10 +202,16 @@ public:
 
         ~Professore();
 
-        void fstampa(ofstream &fout);
+        void fstampa(ofstream &fout) const;
     };
 
 private:
+    template <typename T>
+    void tfstampa(vector<T> t, const string &file_db, bool append);
+
+    template <typename T>
+    void t_aggiungi(void (Database::*nuova_classe_db)(const string &, const string &), const string &file_db);
+
     class Corso : public Corso_id {
         string _titolo; //nome del corso, può essere duplicato
         short unsigned int _cfu{};
@@ -385,7 +390,7 @@ private:
 
         short unsigned int getCapEsame() const;
 
-        void fstampa(ofstream &fout);
+        void fstampa(ofstream &fout) const;
 
     protected:
         string _id_aula;
@@ -485,9 +490,8 @@ public:
     void inserimento_corsi();
 
 //    con append fstampa_giornosessione può stampare sia in append che in out, sovrascrivendo tutto, utile per aggiornamento
-    void fstampa(options::opzione o, bool append);
+    void fstampa(options::opzione o, bool append) ;
 
-    void sub_fstampa(const string &file_db, bool append);
 
 //    template<class T>
 //    void ftstampa(vector<T> t);
@@ -495,9 +499,13 @@ public:
     public:
         Studente();
 
-        void fstampa(ofstream &fout);
+        Regex _regstud;
 
-        void debug();
+        Studente(const string &row, const string &ultima_matricola_id);
+
+        void fstampa(ofstream &fout) const;
+
+        void debug() const;
 
         ~Studente() = default;
     };
@@ -513,6 +521,8 @@ void controlli_file(ifstream &fin, const string &nome_file);
 void controlli_file(ofstream &fout, const string &nome_file);
 
 int strToInt(std::string const &s);
+
+void incremento_id(string &id);
 
 
 #endif //PROG1_DATABASE_H

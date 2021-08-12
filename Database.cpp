@@ -46,7 +46,7 @@ void Database::Corso::Anno_Accademico::fstampa_anno_accademico(ofstream &fout) c
     //parentesi strane: chiudo Prof_n, chiudo _matricola titolare, chiudo campo professori
     fout << ']' << ';';
     _esame->fstampa_esame(fout);
-    for(int i = 0; i<_id_corsi_raggruppati.size(); i++){
+    for (int i = 0; i < _id_corsi_raggruppati.size(); i++) {
         _id_corsi_raggruppati[i]->fstampa(fout);
         if (i < _id_corsi_raggruppati.size() - 1) {
             fout << ',';
@@ -108,8 +108,8 @@ void fstampa_bool(bool b, const string &vero, const string &falso, ofstream &fou
     }
 }
 
-void Database::aggiungi(void (Database::*nuova_classe_db)(const string &, const string &)){
-
+void Database::aggiungi(void (Database::*nuova_classe_db)(const string &, const string &)) {
+//TODO: questa funzione puo essere un template
     ifstream fin;
     fin.open(_file_argomento);
     controlli_file(fin, _file_argomento);
@@ -231,7 +231,7 @@ void Database::nuovo_corso_di_studio(const string &row, const string &ultima_mat
         cout << "errore trovato" << e.what() << endl;
         exit(3);
     }
-    lista_corsi_temp = {cds_temp[1].begin(),cds_temp[cds_temp.size()].end()};
+    lista_corsi_temp = {cds_temp[1].begin(), cds_temp[cds_temp.size()].end()};
 
     try {
         cds->setIdCds(ultima_matricola);
@@ -251,7 +251,7 @@ void Database::nuovo_corso_di_studio(const string &row, const string &ultima_mat
 void Database::aggiungi_corsi_di_studio() {
     ifstream fin;
     fin.open(_file_argomento);
-    try{
+    try {
         controlli_file(fin, _file_argomento);
     } catch (file_non_chiuso &e) {
         cout << "errore trovato:" << e.what() << endl;
@@ -268,7 +268,7 @@ void Database::aggiungi_corsi_di_studio() {
     try {
         ultima_matricola_id = leggi_id_maggiore(_file_db_cds);
     } catch (errore_matricola &e) {
-        cout << "errore trovato" << e.what()<< endl;
+        cout << "errore trovato" << e.what() << endl;
         exit(4);
     } catch (errore_incongruenza_file &e) {
         cout << "errore trovato" << e.what() << endl;
@@ -334,72 +334,31 @@ int Database::leggi_matricola_maggiore(const string &file_db) {
 void Database::fstampa(options::opzione o, bool append) {
     ofstream fout;
 
+    //questa funzione serve a mantenere i dati membri privati, per non accederci dal main
     switch (o) {
         case (options::studenti): {
             cout << "Stampa studenti in corso...\n";
-            tfstampa(_studenti_db,_file_db_studenti, append);
-//            if (append)
-//                fout.open(_file_db_studenti, ios::app);
-//            else
-//                fout.open(_file_db_studenti, ios::out);
-//            controlli_file(fout, _file_db_studenti);
-//            for (auto i : _studenti_db) {
-//                i->fstampa(fout);
-//            }
+            tfstampa(_studenti_db, _file_db_studenti, append);
             break;
         }
-
         case options::professori: {
             cout << "Stampa professori in corso...\n";
             tfstampa(_professori_db, _file_db_professori, append);
-//            if (append)
-//                fout.open(_file_db_professori, ios::app);
-//            else
-//                fout.open(_file_db_professori, ios::out);
-//            controlli_file(fout, _file_db_professori);
-//            for (auto i : _professori_db) {
-//                i->fstampa(fout);
-//            }
             break;
         }
         case options::aule: {
             cout << "Stampa aule in corso...\n";
             tfstampa(_aule_db, _file_db_aule, append);
-//            if (append)
-//                fout.open(_file_db_aule, ios::app);
-//            else
-//                fout.open(_file_db_aule, ios::out);
-//            controlli_file(fout, _file_db_aule);
-//            for (auto i: _aule_db) {
-//                i->fstampa(fout);
-//            }
-
             break;
         }
         case options::corsi: {
             cout << "Stampa corsi in corso...\n";
             tfstampa(_corsi_db, _file_db_corsi, append);
-//            if (append)
-//                fout.open(_file_db_corsi, ios::app);
-//            else
-//                fout.open(_file_db_corsi, ios::out);
-//            controlli_file(fout, _file_db_corsi);
-//            for (auto i : _corsi_db) {
-//                i->fstampa(fout);
-//            }
             break;
         }
         case options::cds: {
             cout << "Stampa corsi di studio in corso...\n";
             tfstampa(_cds_db, _file_db_cds, append);
-//            if (append)
-//                fout.open(_file_db_cds, ios::app);
-//            else
-//                fout.open(_file_db_cds, ios::out);
-//            controlli_file(fout, _file_db_cds);
-//            for (auto i: _cds_db) {
-//                i->fstampa(fout);
-//            }
             break;
         }
         default:
@@ -459,19 +418,19 @@ void Database::aggiungi_aule() {
 
 
 void Database::Aula::setId(const string &id_aula) {
-    if(!id_aula.empty()){
+    if (!id_aula.empty()) {
         _id_aula = id_aula;
     }
 }
 
 void Database::Aula::setTipo(char tipo) {
-    if(tipo != '\0'){
+    if (tipo != '\0') {
         _tipo = tipo;
     }
 }
 
 void Database::Aula::setDenominazione(const string &denominazione) {
-    if(!denominazione.empty()){
+    if (!denominazione.empty()) {
         _denominazione = denominazione;
     }
 }
@@ -484,7 +443,7 @@ void Database::Aula::setCapEsame(unsigned short int capienza_esame) {
     _capienza_esame = capienza_esame;
 }
 
-void Database::Aula::fstampa(ofstream &fout) {
+void Database::Aula::fstampa(ofstream &fout) const {
     fout << _id_aula << ';';
     fout << _tipo << ';';
     fout << _denominazione << ';';
@@ -573,14 +532,15 @@ void Database::aggiorna_studenti() {
         n++;
     }
 
-bool matricola_trovata = false;
+    bool matricola_trovata = false;
 
     for (auto i: _studenti_agg) {
         for (auto j: _studenti_agg) {
             //salto controlli su se stesso
             if (i != j) {
                 if (i->getMatricola() == j->getMatricola()) {
-                    cout << "[Warning] _matricola " << i->getMatricola() << " duplicata nel file " << _file_argomento << endl;
+                    cout << "[Warning] _matricola " << i->getMatricola() << " duplicata nel file " << _file_argomento
+                         << endl;
                 }
             }
         }
@@ -605,7 +565,7 @@ bool matricola_trovata = false;
             }
         }
     }
-    if(!matricola_trovata){
+    if (!matricola_trovata) {
         cout << "[Warning] Nessuna matricola da aggiornare è stata trovata e nessun campo e' stato aggiornato\n";
     }
 }
@@ -671,14 +631,15 @@ void Database::aggiorna_professori() {
         n++;
     }
 
-bool matricola_trovata = false;
+    bool matricola_trovata = false;
 
     for (auto i: _professori_agg) {
         for (auto j: _professori_agg) {
             //salto controlli su se stesso
             if (i != j) {
                 if (i->getMatricola() == j->getMatricola()) {
-                    cout << "[Warning] matricola " << i->getMatricola() << " duplicata nel file " << _file_argomento << endl;
+                    cout << "[Warning] matricola " << i->getMatricola() << " duplicata nel file " << _file_argomento
+                         << endl;
                 }
             }
         }
@@ -703,7 +664,7 @@ bool matricola_trovata = false;
             }
         }
     }
-    if(!matricola_trovata){
+    if (!matricola_trovata) {
         cout << "[Warning] Nessuna matricola da aggiornare è stata trovata e nessun campo e' stato aggiornato\n";
     }
 }
@@ -759,10 +720,10 @@ void Database::aggiorna_aule() {
     ifstream fin_db, fin_update;
     fin_db.open(_file_db_aule);
     fin_update.open(_file_argomento);
-    try{
+    try {
         controlli_file(fin_db, _file_db_aule);
         controlli_file(fin_update, _file_argomento);
-    }catch(std::runtime_error &e){
+    } catch (std::runtime_error &e) {
         cout << e.what() << endl;
         exit(3);
     }
@@ -792,7 +753,7 @@ void Database::aggiorna_aule() {
         n++;
     }
 
-bool matricola_trovata = false;
+    bool matricola_trovata = false;
 
     for (auto i: _aule_agg) {
         for (auto j: _aule_agg) {
@@ -825,15 +786,45 @@ bool matricola_trovata = false;
                     k->setCapEsame(i->getCapEsame());
                     cout << "Aggiornato capienza esame: " << k->getCapEsame() << endl;
                 }
-                matricola_trovata =true;
+                matricola_trovata = true;
             }
         }
     }
 
-    if(!matricola_trovata){
+    if (!matricola_trovata) {
         cout << "[Warning] Nessuna matricola da aggiornare è stata trovata e nessun campo e' stato aggiornato\n";
     }
 }
+
+void incremento_id(string &id){
+    for(unsigned int i= id.size()-1; i>0; i--){
+        //controllo se il carattere è un numero o una lettera
+        if(isdigit(id[i])){
+            if(id[i] < '9'){
+                id[i]++;
+                break;
+            }
+        }
+        if(isalpha(id[i])){
+            if(id[i] < 'Z'){
+                id[i]++;
+                break;
+            }
+        }
+        //se arriva al valore massimo resetto i caratteri precedenti
+        if(id[i] == 'Z' || id[i] == '9'){
+            for(unsigned int k = id.size()-1; k>=i; k--){
+                if(isdigit(id[k])){
+                    id[k] = '0';
+                }
+                if(isalpha(id[k])){
+                    id[k] = 'A';
+                }
+            }
+        }
+    }
+}
+
 
 string Database::matricola_corso_incremento(string &matricola) {
     // ASCII:
@@ -841,6 +832,7 @@ string Database::matricola_corso_incremento(string &matricola) {
 // 48 == '0'
 // 65 == 'A'
 // 90 == 'Z'
+
 
     if (matricola[5] < 57) {
         matricola[5]++;
@@ -911,27 +903,27 @@ string Database::leggi_id_maggiore(const string &file_db) {
     controlli_file(fin, file_db);
     string first;
 
-    if(file_db == _file_db_studenti){
+    if ((file_db == _file_db_studenti) || (file_db == _file_db_professori)) {
         first = "100000";
     } else if (file_db == _file_db_aule) {
         first = "1AA1";
-    } else if(file_db == _file_db_corsi) {
+    } else if (file_db == _file_db_corsi) {
         first = "ABC123";
-    } else if(file_db == _file_db_cds){
+    } else if (file_db == _file_db_cds) {
         first = "A123";
     }
     string rowdb, temp;
 
     while (!fin.eof()) {
-        getline(fin, rowdb, '\n');
+        getline(fin, rowdb,  '\n');
         istringstream row_stream;
         row_stream.str(rowdb);
-        if ((file_db == _file_db_aule) || (file_db == _file_db_cds)) {
+        if ((file_db == _file_db_aule) || (file_db == _file_db_cds) || (file_db == _file_db_studenti) || (file_db == _file_db_professori)) {
             getline(row_stream, temp, ';'); //legge la riga fino al ;
-        } else if(file_db == _file_db_corsi){
+        } else if (file_db == _file_db_corsi) {
             getline(row_stream, temp, ';'); //Legge c;
             getline(row_stream, temp, ';'); //Legge id_corso;
-        } else{
+        } else {
             //errore di qualche tipo
         }
 
@@ -1124,7 +1116,7 @@ vector<Database::Professore *> Database::getVProfessori() {
 }
 
 
-void Database::Studente::fstampa(ofstream &fout) {
+void Database::Studente::fstampa(ofstream &fout) const {
     fout << _matricola << _sep << _nome << _sep << _cognome << _sep << _email << '\n';
 }
 
@@ -1136,9 +1128,27 @@ Database::Studente::Studente() {
     _sep = ';';
 }
 
-void Database::Studente::debug() {
+void Database::Studente::debug() const {
     cout << "Dati in memoria: " << _matricola << ' ' << _nome << ' ' << _cognome << ' ' << _email << endl << endl;
 }
+
+//Database::Studente::Studente(const string &row, const string &ultima_matricola_id) {
+//    Studente *s{new(nothrow) Studente};
+//    vector<string> studente_temp;
+//
+//    //   [Aggiunta] Legge da file in (lista) quindi la _matricola va assegnata
+//    if (!_regstud.search_and_read(_regstud.target_expression(lettura::studenti_in), row, studente_temp)) {
+//        cerr << "Errore formattazione file input\n";
+//        exit(3);
+//    }
+//
+//    s->setMatricola(ultima_matricola_id);
+//    s->setNome(studente_temp[1]);
+//    s->setCognome(studente_temp[2]);
+//    s->setEmail(studente_temp[3]);
+//
+//    _studenti_db.push_back(s);
+//}
 
 Database::Professore::Professore() {
     _matricola = "d";
@@ -1148,7 +1158,7 @@ Database::Professore::Professore() {
     _sep = ';';
 }
 
-void Database::Professore::fstampa(ofstream &fout) {
+void Database::Professore::fstampa(ofstream &fout) const {
     fout << _matricola << _sep << _nome << _sep << _cognome << _sep << _email << '\n';
 }
 
@@ -1401,23 +1411,24 @@ int strToInt(std::string const &s) {
 }
 
 void Database::Corso_di_studio::setIdCds(const string &id_cds) {
-    if(!id_cds.empty())
+    if (!id_cds.empty())
         _id_cds = id_cds;
-    if(_id_cds.size()!=4)
+    if (_id_cds.size() != 4)
         throw errore_matricola();
-    for(int i=1;i<3+1;i++){
-        if(!isdigit(_id_cds[i]))
+    for (int i = 1; i < 3 + 1; i++) {
+        if (!isdigit(_id_cds[i]))
             throw errore_matricola();
     }
 }
 
 void Database::Corso_di_studio::setCorsiDiUnSemestre(vector<Corso_id> corsi_in_un_semestre) {
-    for(int i=0;i<corsi_in_un_semestre.size();i++){
+    for (int i = 0; i < corsi_in_un_semestre.size(); i++) {
         _corsi_in_un_semestre[i] = corsi_in_un_semestre[i];
     }
 }
-void Database::Corso_di_studio::setCorsiPerSemestre(const vector<vector<Corso_id>>& corsi_per_semestre) {
-    for(auto & i : corsi_per_semestre){
+
+void Database::Corso_di_studio::setCorsiPerSemestre(const vector<vector<Corso_id>> &corsi_per_semestre) {
+    for (auto &i : corsi_per_semestre) {
         setCorsiDiUnSemestre(i);
     }
 }
