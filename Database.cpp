@@ -47,7 +47,7 @@ void Database::Corso::Anno_Accademico::fstampa_anno_accademico(ofstream &fout) c
     fout << ']' << ';';
     _esame->fstampa_esame(fout);
     for (int i = 0; i < _id_corsi_raggruppati.size(); i++) {
-        _id_corsi_raggruppati[i]->fstampa(fout);
+        _id_corsi_raggruppati[i]->fstampa_id(fout);
         if (i < _id_corsi_raggruppati.size() - 1) {
             fout << ',';
         }
@@ -73,7 +73,7 @@ void Database::Corso_di_studio::fstampa(ofstream &fout) const {
     fstampa_semestri(fout);
     fout << ']' << ';' << '[';
     for (unsigned int i = 0; i < _corsi_spenti.size(); i++) {
-        _corsi_spenti[i].fstampa(fout);
+        _corsi_spenti[i].fstampa_id(fout);
         //se non sto stampando l'ultimo campo, metto una virgola
         if (i != _corsi_spenti.size() - 1) {
             fout << ',';
@@ -86,7 +86,7 @@ void Database::Corso_di_studio::fstampa_semestri(ofstream &fout) const {
     fout << '{';
     for (unsigned int i = 0; i < _corsi_per_semestre.size(); i++) {
         for (int j = 0; j < _corsi_per_semestre[i].size(); j++) {
-            _corsi_per_semestre[i][j].fstampa(fout);
+            _corsi_per_semestre[i][j].fstampa_id(fout);
             //se non sto stampando l'ultimo campo, metto una virgola
             if (i < _corsi_per_semestre[i].size() - 1) {
                 fout << ',';
@@ -96,7 +96,7 @@ void Database::Corso_di_studio::fstampa_semestri(ofstream &fout) const {
     fout << '}';
 }
 
-void Database::Corso_id::fstampa(ofstream &fout) const {
+void Database::Corso_id::fstampa_id(ofstream &fout) const {
     fout << _id_corso;
 }
 
@@ -156,7 +156,10 @@ void Database::aggiungi_studenti() {
 
 //Questa funzione legge da file in, quindi ha bisogno della _matricola generata
 void Database::nuovo_studente(const string &row, const string &ultima_matricola_id) {
-    Studente *s{new(nothrow) Studente};
+    auto *s = new Studente(row, ultima_matricola_id);
+//    Studente *s{new(nothrow) Studente};
+
+//TODO: questo nel costruttore?
     vector<string> studente_temp;
 
 //   [Aggiunta] Legge da file in (lista) quindi la _matricola va assegnata
@@ -170,6 +173,7 @@ void Database::nuovo_studente(const string &row, const string &ultima_matricola_
     s->setCognome(studente_temp[2]);
     s->setEmail(studente_temp[3]);
 
+    //TODO: questo nel template??
     _studenti_db.push_back(s);
 }
 
@@ -331,7 +335,42 @@ int Database::leggi_matricola_maggiore(const string &file_db) {
     return first;
 }
 
-void Database::fstampa(options::opzione o, bool append) {
+void Database::target_aggiungi(options::opzione o) {
+    switch (o) {
+        case (options::studenti): {
+            cout << "Aggiunta studenti in corso...\n";
+            t_aggiungi<Database::Studente>(_studenti_db, _file_db_studenti);
+            _studenti_db.back()->debug();
+            break;
+        }
+        case options::professori: {
+            cout << "Aggiunta professori in corso...\n";
+//            t_aggiungi<Database::Professore>(_professori_db, _file_db_professori);
+            break;
+        }
+        case options::aule: {
+            cout << "Aggiunta aule in corso...\n";
+
+            break;
+        }
+        case options::corsi: {
+            cout << "Aggiunta corsi in corso...\n";
+
+            break;
+        }
+        case options::cds: {
+            cout << "Aggiunta corsi di studio in corso...\n";
+
+            break;
+        }
+        default:
+            cout << "Errore inserimento parametri per aggiunta\n";
+            exit(12);
+    }
+
+}
+
+void Database::target_fstampa(options::opzione o, bool append) {
     ofstream fout;
 
     //questa funzione serve a mantenere i dati membri privati, per non accederci dal main
@@ -796,28 +835,28 @@ void Database::aggiorna_aule() {
     }
 }
 
-void incremento_id(string &id){
-    for(unsigned int i= id.size()-1; i>0; i--){
+void incremento_id(string &id) {
+    for (unsigned int i = id.size() - 1; i > 0; i--) {
         //controllo se il carattere è un numero o una lettera
-        if(isdigit(id[i])){
-            if(id[i] < '9'){
+        if (isdigit(id[i])) {
+            if (id[i] < '9') {
                 id[i]++;
                 break;
             }
         }
-        if(isalpha(id[i])){
-            if(id[i] < 'Z'){
+        if (isalpha(id[i])) {
+            if (id[i] < 'Z') {
                 id[i]++;
                 break;
             }
         }
         //se arriva al valore massimo resetto i caratteri precedenti
-        if(id[i] == 'Z' || id[i] == '9'){
-            for(unsigned int k = id.size()-1; k>=i; k--){
-                if(isdigit(id[k])){
+        if (id[i] == 'Z' || id[i] == '9') {
+            for (unsigned int k = id.size() - 1; k >= i; k--) {
+                if (isdigit(id[k])) {
                     id[k] = '0';
                 }
-                if(isalpha(id[k])){
+                if (isalpha(id[k])) {
                     id[k] = 'A';
                 }
             }
@@ -900,7 +939,6 @@ string Database::leggi_id_maggiore(const string &file_db) {
     //gestisce id aule e id corso e id cds
     ifstream fin;
     fin.open(file_db);
-    controlli_file(fin, file_db);
     string first;
 
     if ((file_db == _file_db_studenti) || (file_db == _file_db_professori)) {
@@ -912,13 +950,22 @@ string Database::leggi_id_maggiore(const string &file_db) {
     } else if (file_db == _file_db_cds) {
         first = "A123";
     }
+
+    try {
+        controlli_file(fin, file_db);
+    } catch (runtime_error &e) {
+        cout << e.what() << endl;
+        return first;
+    }
+
     string rowdb, temp;
 
     while (!fin.eof()) {
-        getline(fin, rowdb,  '\n');
+        getline(fin, rowdb, '\n');
         istringstream row_stream;
         row_stream.str(rowdb);
-        if ((file_db == _file_db_aule) || (file_db == _file_db_cds) || (file_db == _file_db_studenti) || (file_db == _file_db_professori)) {
+        if ((file_db == _file_db_aule) || (file_db == _file_db_cds) || (file_db == _file_db_studenti) ||
+            (file_db == _file_db_professori)) {
             getline(row_stream, temp, ';'); //legge la riga fino al ;
         } else if (file_db == _file_db_corsi) {
             getline(row_stream, temp, ';'); //Legge c;
@@ -1132,23 +1179,30 @@ void Database::Studente::debug() const {
     cout << "Dati in memoria: " << _matricola << ' ' << _nome << ' ' << _cognome << ' ' << _email << endl << endl;
 }
 
-//Database::Studente::Studente(const string &row, const string &ultima_matricola_id) {
+Database::Studente::Studente(const string &row, const string &ultima_matricola_id) {
 //    Studente *s{new(nothrow) Studente};
-//    vector<string> studente_temp;
-//
-//    //   [Aggiunta] Legge da file in (lista) quindi la _matricola va assegnata
-//    if (!_regstud.search_and_read(_regstud.target_expression(lettura::studenti_in), row, studente_temp)) {
-//        cerr << "Errore formattazione file input\n";
-//        exit(3);
-//    }
-//
-//    s->setMatricola(ultima_matricola_id);
-//    s->setNome(studente_temp[1]);
-//    s->setCognome(studente_temp[2]);
-//    s->setEmail(studente_temp[3]);
-//
-//    _studenti_db.push_back(s);
-//}
+    _sep = ';';
+
+    vector<string> studente_temp;
+
+    //   [Aggiunta] Legge da file in (lista) quindi la _matricola va assegnata
+    if (!_regstud.search_and_read(_regstud.target_expression(lettura::studenti_in), row, studente_temp)) {
+        cerr << "Errore formattazione file input\n";
+        exit(3);
+    }
+
+    _matricola = "s" + ultima_matricola_id;
+    _nome = studente_temp[1];
+    _cognome = studente_temp[2];
+    _email = studente_temp[3];
+
+//    setMatricola(ultima_matricola_id);
+//    setNome(studente_temp[1]);
+//    setCognome(studente_temp[2]);
+//    setEmail(studente_temp[3]);
+
+//    _studenti_db.push_back(this);
+}
 
 Database::Professore::Professore() {
     _matricola = "d";

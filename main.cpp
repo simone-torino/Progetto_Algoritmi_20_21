@@ -26,7 +26,7 @@
 
 using std::cout;
 
-vector<string> converti_argv(int f_argc, char* f_argv[]);
+vector<string> converti_argv(int f_argc, char *f_argv[]);
 
 int main(int argc, char *argv[]) {
 
@@ -73,8 +73,11 @@ int main(int argc, char *argv[]) {
                         //TODO: cosa cambia nel tipo di ritorno tra nuovo studente e i nuovo annidati della classe corso?
 
 //                        db.aggiungi_studenti();
-                        db.aggiungi(db.ptr_studente_db);
-                        db.fstampa(o_var, true);
+//                        db.aggiungi(db.ptr_studente_db);
+
+//                        db.t_aggiungi("db_studenti.txt");
+                        db.target_aggiungi(o_var);
+                        db.target_fstampa(o_var, true);
 
                         break;
                     }
@@ -82,15 +85,15 @@ int main(int argc, char *argv[]) {
                         cout << "Hai scelto: " << "aggiunta professori\n";
 
 //                        db.aggiungi_professori();
-                        db.aggiungi(db.ptr_professore_db);
-                        db.fstampa(o_var, true);
+//                        db.aggiungi(db.ptr_professore_db);
+                        db.target_fstampa(o_var, true);
                         break;
                     }
                     case (options::aule): {
                         cout << "Hai scelto: " << "aggiunta aule\n";
 
                         db.aggiungi_aule();
-                        db.fstampa(o_var, true);
+                        db.target_fstampa(o_var, true);
 
                         break;
                     }
@@ -98,19 +101,20 @@ int main(int argc, char *argv[]) {
                         cout << "Hai scelto: " << "aggiunta corsi\n";
 
                         db.aggiungi_corsi();
-                        db.fstampa(o_var, true);
+                        db.target_fstampa(o_var, true);
 
                         break;
                     case (options::cds):
                         cout << "Hai scelto: " << "aggiunta cds\n";
 
                         db.aggiungi_corsi_di_studio();
-                        db.fstampa(o_var, true);
+                        db.target_fstampa(o_var, true);
 
                         break;
                     default:
                         cout << "Errore inserimento parametri procedura aggiunta\n";
-                        throw err_parametri_linea_di_comando();                }
+                        throw err_parametri_linea_di_comando();
+                }
                 break;
             case (options::aggiornamento):
                 switch (o_var) {
@@ -118,27 +122,28 @@ int main(int argc, char *argv[]) {
                         cout << "Hai scelto: " << "aggiornamento studenti\n";
 
                         db.aggiorna_studenti();
-                        db.fstampa(o_var, false);
+                        db.target_fstampa(o_var, false);
 
                         break;
                     case (options::professori):
                         cout << "Hai scelto: " << "aggiornamento professori\n";
 
                         db.aggiorna_professori();
-                        db.fstampa(o_var, false);
+                        db.target_fstampa(o_var, false);
 
                         break;
                     case (options::aule):
                         cout << "Hai scelto: " << "aggiornamento aule\n";
 
                         db.aggiorna_aule();
-                        db.fstampa(o_var, false);
+                        db.target_fstampa(o_var, false);
 
                         break;
                     default:
                         //TODO: eccezione
                         cout << "Errore inserimento parametri procedura aggiornamento\n";
-                        throw err_parametri_linea_di_comando();                }
+                        throw err_parametri_linea_di_comando();
+                }
                 break;
             case (options::inserimento):
                 cout << "Hai scelto: " << "inserimento corsi\n";
@@ -163,7 +168,8 @@ int main(int argc, char *argv[]) {
                         break;
                     default:
                         LOG("Errore argomento impostazione esami\n");
-                        throw err_parametri_linea_di_comando();                }
+                        throw err_parametri_linea_di_comando();
+                }
                 break;
             case (options::gen_esami):
                 cout << "Hai scelto: " << "generazione _date esami\n";
@@ -176,37 +182,37 @@ int main(int argc, char *argv[]) {
                 throw err_parametri_linea_di_comando();
         }
     } catch (err_parametri_linea_di_comando &e) {
-    cout << "errore trovato" << e.what() << endl;
-    exit(6);
-} catch (file_non_aperto &e) {
-    cout << "errore trovato" << e.what() << endl;
-    exit(-1);
-} catch (file_non_chiuso &e) {
-    cout << "errore trovato" << e.what() << endl;
-    exit(-1);
-} catch (file_failed &e) {
-    cout << "errore trovato" << e.what() << endl;
-    exit(-1);
-} catch (errore_matricola &e) {
-    cout << "errore trovato" << e.what() << endl;
-    exit(4);
-} catch (errore_riga_vuota &e) {
-    cout << "errore trovato" << e.what() << endl;
-    exit(7);
-} catch (errore_non_univoco &e) {
-    cout << "errore trovato" << e.what() << endl;
-    exit(8);
-} catch (errore_incongruenza_file &e) {
-    cout << "errore trovato" << e.what() << endl;
-    exit(9);
-}
-return 0;
+        cout << "errore trovato" << e.what() << endl;
+        exit(6);
+    } catch (file_non_aperto &e) {
+        cout << "errore trovato" << e.what() << endl;
+        exit(-1);
+    } catch (file_non_chiuso &e) {
+        cout << "errore trovato" << e.what() << endl;
+        exit(-1);
+    } catch (file_failed &e) {
+        cout << "errore trovato" << e.what() << endl;
+        exit(-1);
+    } catch (errore_matricola &e) {
+        cout << "errore trovato" << e.what() << endl;
+        exit(4);
+    } catch (errore_riga_vuota &e) {
+        cout << "errore trovato" << e.what() << endl;
+        exit(7);
+    } catch (errore_non_univoco &e) {
+        cout << "errore trovato" << e.what() << endl;
+        exit(8);
+    } catch (errore_incongruenza_file &e) {
+        cout << "errore trovato" << e.what() << endl;
+        exit(9);
+    }
+    return 0;
 }
 
 
-vector<string> converti_argv(int f_argc, char* f_argv[]){
+vector<string> converti_argv(int f_argc, char *f_argv[]) {
     vector<string> v_temp;
-    for(int i = 0; i<f_argc; i++){
+    for (int i = 0; i < f_argc; i++) {
         const string s_temp(f_argv[i]);
         v_temp.push_back(s_temp);
     }

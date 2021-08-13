@@ -547,13 +547,13 @@ void Calendario::GiornoSessione::Esame::fstampa_esame(ofstream &fout) const {
 
     if (_numero_versioni > 1) {
         for (int i = 1; i <= _numero_versioni; i++) {
-            this->_id_esame.fstampa(fout);
+            this->_id_esame.fstampa_id(fout);
             fout << '[' << i << ']';
             fout << '(' << _id_cds << ')';
             fout << ';';
         }
     } else {
-        _id_esame.fstampa(fout);
+        _id_esame.fstampa_id(fout);
         fout << '(' << _id_cds << ')';
     }
 
@@ -566,7 +566,7 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
     set_date_sessioni(leggi_db_date_sessioni(argomenti_es), true);
     display_date_sessioni();
     _dbcal.leggi_corso_db();
-    _dbcal.fstampa(options::corsi, true);
+    _dbcal.target_fstampa(options::corsi, true);
 
 
 

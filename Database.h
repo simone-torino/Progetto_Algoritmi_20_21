@@ -18,7 +18,6 @@
 #include "Eccezioni.h"
 
 
-
 using namespace std;
 
 //Aggiungi = leggi da file e salva in memoria
@@ -89,19 +88,6 @@ public:
 
     Database() = default;
 
-
-
-public:
-    struct BracketSearch {
-        bool IsOpenBracket(char InCharacter);
-
-        bool IsClosedBracket(char InCharacter);
-
-        bool balancedBrackets(const string &str);
-
-        vector<int> posBrackets(const string &str);
-    };
-
 public:
     class Regex {
 
@@ -117,19 +103,19 @@ public:
         const string _id_aula = "([0-9][A-Z][A-Z][0-9]);"; //4AD4;
 
         string corso_db_base;
-        string _id_corso ;
-        string _anno_acc ;
-        string _esame_campi ;
+        string _id_corso;
+        string _anno_acc;
+        string _esame_campi;
         string _esame_graffe;
 
-        string _id_corso_n ;
+        string _id_corso_n;
 
         //corso di studi : C120;BS;[{AXC345,BVX123},{CBV123,ASD564}]
-        string _cds ;
-        string _laurea ;
-        string _id_cds ;
-        string _id_corso_del_semestre_n ;
-        string _id_corso_del_semestre ;
+        string _cds;
+        string _laurea;
+        string _id_cds;
+        string _id_corso_del_semestre_n;
+        string _id_corso_del_semestre;
 
         //LETTURA CORSI IN
         string _corso_in_base;
@@ -153,17 +139,14 @@ public:
 
     };
 
-    class Studente;
+    struct BracketSearch {
+        bool IsOpenBracket(char InCharacter);
 
-    class Corso_id {
+        bool IsClosedBracket(char InCharacter);
 
-    protected:
-        string _id_corso;
-    public:
-        void fstampa(ofstream &fout) const;
+        bool balancedBrackets(const string &str);
 
-        void setIdCorso(const string &id_corso);
-
+        vector<int> posBrackets(const string &str);
     };
 
     class Persona {
@@ -184,7 +167,6 @@ public:
 
         void setEmail(const string &email);
 
-
         char _sep;
 
     protected:
@@ -193,6 +175,21 @@ public:
         string _cognome;
         string _email;
 
+    };
+
+    class Studente : public Persona {
+    public:
+        Studente();
+
+        Regex _regstud;
+
+        Studente(const string &row, const string &ultima_matricola_id);
+
+        void fstampa(ofstream &fout) const;
+
+        void debug() const;
+
+        ~Studente() = default;
     };
 
     class Professore : public Persona {
@@ -205,12 +202,52 @@ public:
         void fstampa(ofstream &fout) const;
     };
 
-private:
-    template <typename T>
-    void tfstampa(vector<T> t, const string &file_db, bool append);
+    class Aula {
+        ~Aula();
 
-    template <typename T>
-    void t_aggiungi(void (Database::*nuova_classe_db)(const string &, const string &), const string &file_db);
+    public:
+        void setId(const string &id_aula);
+
+        void setTipo(char tipo);
+
+        void setDenominazione(const string &denominazione);
+
+        void setCapienza(short unsigned int capienza);
+
+        void setCapEsame(short unsigned int capienza_esame);
+
+        string getId() const;
+
+        char getTipo() const;
+
+        string getDenominazione();
+
+        short unsigned int getCapienza() const;
+
+        short unsigned int getCapEsame() const;
+
+        void fstampa(ofstream &fout) const;
+
+    protected:
+        string _id_aula;
+        char _tipo;
+        string _denominazione;//Aula o lab
+        short unsigned int _capienza;
+        short unsigned int _capienza_esame;
+
+    };
+
+    class Corso_id {
+
+    protected:
+        string _id_corso;
+    public:
+        void fstampa_id(ofstream &fout) const;
+
+        void setIdCorso(const string &id_corso);
+
+    };
+
 
     class Corso : public Corso_id {
         string _titolo; //nome del corso, può essere duplicato
@@ -218,7 +255,7 @@ private:
         short unsigned int _ore_lezione{};
         short unsigned int _ore_esercitazione{};
         short unsigned int _ore_laboratorio{};
-        vector<Corso_id* > _lista_corsi_aggiuntivi;
+        vector<Corso_id *> _lista_corsi_aggiuntivi;
 
         struct Anno_Accademico {
             string _anno_accademico;
@@ -274,17 +311,17 @@ private:
 
                 void setMatricolaTitolare(const string &matricola_titolare);
 
-                void setProf_n(Profn* pn);
+                void setProf_n(Profn *pn);
 
-                Profn* nuovo_profn(string &prof_n);
+                Profn *nuovo_profn(string &prof_n);
 
                 void fstampa_versione(ofstream &fout) const;
 
             };
 
             vector<Prof_per_versione *> _versioni;
-            Esame* _esame;
-            vector<Corso_id*> _id_corsi_raggruppati;
+            Esame *_esame;
+            vector<Corso_id *> _id_corsi_raggruppati;
 
             Database::Regex _reg_anno;
 
@@ -296,11 +333,11 @@ private:
 
             void setEsame(Esame *e);
 
-            Esame* nuovo_esame(const string &s_esame);
+            Esame *nuovo_esame(const string &s_esame);
 
             void setProfversione(Prof_per_versione *pv);
 
-            Prof_per_versione* nuovo_Profversione(string &versione);
+            Prof_per_versione *nuovo_Profversione(string &versione);
 
             vector<string> estraimultipli(const regex &reg, string &daleggere, const string &delim);
 
@@ -338,6 +375,7 @@ private:
         vector<string> cut_versioni(const string &row, const vector<int> &indicigraffe, int n_versioni);
 
         void fstampa(ofstream &fout) const;
+
         Database::BracketSearch _bs;
 
         Database::Regex _regcorso;
@@ -363,46 +401,10 @@ private:
 
         void setCorsiDiUnSemestre(vector<Corso_id> corsi_in_un_semestre);
 
-        void setCorsiPerSemestre(const vector<vector<Corso_id>>& corsi_per_semestre);
-    };
-
-    class Aula {
-        ~Aula();
-
-    public:
-        void setId(const string &id_aula);
-
-        void setTipo(char tipo);
-
-        void setDenominazione(const string &denominazione);
-
-        void setCapienza(short unsigned int capienza);
-
-        void setCapEsame(short unsigned int capienza_esame);
-
-        string getId() const;
-
-        char getTipo() const;
-
-        string getDenominazione();
-
-        short unsigned int getCapienza() const;
-
-        short unsigned int getCapEsame() const;
-
-        void fstampa(ofstream &fout) const;
-
-    protected:
-        string _id_aula;
-        char _tipo;
-        string _denominazione;//Aula o lab
-        short unsigned int _capienza;
-        short unsigned int _capienza_esame;
-
+        void setCorsiPerSemestre(const vector<vector<Corso_id>> &corsi_per_semestre);
     };
 
 private:
-
     Regex _regdb;
 
     //DATI DA SCRIVERE SU FILE DATABASE
@@ -418,6 +420,12 @@ private:
     vector<Aula *> _aule_agg;
     vector<Corso *> _corsi_agg;
     vector<Corso_di_studio *> _cds_agg;
+
+    template<typename T>
+    void t_aggiungi(vector<T *> &_classedati_db, const string &file_db);
+
+    template<typename T>
+    void tfstampa(vector<T> _classedati_db, const string &file_db, bool append);
 
 
     int leggi_matricola_maggiore(const string &file_db);
@@ -437,6 +445,8 @@ public:
     //  funzioni per aggiungere dati
     void aggiungi(void (Database::*nuova_classe_db)(const string &, const string &));
 
+    void target_aggiungi(options::opzione o);
+
     void aggiungi_studenti();
 
     void aggiungi_professori();
@@ -451,19 +461,19 @@ public:
 
 //    function<void(const string &, const string &)> ptr = &nuovo_studente;
     void nuovo_studente(const string &row, const string &ultima_matricola_id);
-    void (Database::*ptr_studente_db) (const string &, const string &) {&Database::nuovo_studente};
+//    void (Database::*ptr_studente_db) (const string &, const string &) {&Database::nuovo_studente};
 
     void nuovo_professore(const string &row, const string &ultima_matricola_id);
-    void (Database::*ptr_professore_db) (const string &, const string &) {&Database::nuovo_professore};
+//    void (Database::*ptr_professore_db) (const string &, const string &) {&Database::nuovo_professore};
 
     void nuova_aula(const string &row, const string &ultima_matricola_id);
-    void (Database::*ptr_aula_db) (const string &, const string &) {&Database::nuova_aula};
+//    void (Database::*ptr_aula_db) (const string &, const string &) {&Database::nuova_aula};
 
     void nuovo_corso(const string &row, const string &ultima_matricola_id);
-    void (Database::*ptr_corso_db) (const string &, const string &) {&Database::nuovo_corso};
+//    void (Database::*ptr_corso_db) (const string &, const string &) {&Database::nuovo_corso};
 
     void nuovo_corso_di_studio(const string &row, const string &ultima_matricola);
-    void (Database::*ptr_cds_db) (const string &, const string &) {&Database::nuovo_corso_di_studio};
+//    void (Database::*ptr_cds_db) (const string &, const string &) {&Database::nuovo_corso_di_studio};
 
     //Per i dati ri-letti dal _dbcal o da file di aggiornamento
     void nuovo_studente(const string &row, bool source_db);
@@ -490,25 +500,12 @@ public:
     void inserimento_corsi();
 
 //    con append fstampa_giornosessione può stampare sia in append che in out, sovrascrivendo tutto, utile per aggiornamento
-    void fstampa(options::opzione o, bool append) ;
+    void target_fstampa(options::opzione o, bool append);
 
 
 //    template<class T>
 //    void ftstampa(vector<T> t);
-    class Studente : public Persona {
-    public:
-        Studente();
 
-        Regex _regstud;
-
-        Studente(const string &row, const string &ultima_matricola_id);
-
-        void fstampa(ofstream &fout) const;
-
-        void debug() const;
-
-        ~Studente() = default;
-    };
 
 };
 
