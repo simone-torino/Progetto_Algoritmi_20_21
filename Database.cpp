@@ -46,6 +46,7 @@ void Database::Corso::Anno_Accademico::fstampa_anno_accademico(ofstream &fout) c
     //parentesi strane: chiudo Prof_n, chiudo _matricola titolare, chiudo campo professori
     fout << ']' << ';';
     _esame->fstampa_esame(fout);
+    fout << ';';
     for (int i = 0; i < _id_corsi_raggruppati.size(); i++) {
         _id_corsi_raggruppati[i]->fstampa_id(fout);
         if (i < _id_corsi_raggruppati.size() - 1) {
@@ -55,9 +56,9 @@ void Database::Corso::Anno_Accademico::fstampa_anno_accademico(ofstream &fout) c
 }
 
 void Database::Corso::fstampa(ofstream &fout) const {
-    LOG(_id_corso);
+//    LOG(_id_corso);
     fout << 'c' << ';' << _id_corso << ';' << _titolo << ';' << _cfu << ';' << _ore_lezione << ';' << _ore_esercitazione
-         << ';' << _ore_laboratorio << ';' << '\n';
+         << ';' << _ore_laboratorio << '\n';
     for (const auto &i : _anni_accademici) {
         i->fstampa_anno_accademico(fout);
         fout << '\n'; //vado a capo anche se ho un solo anno
@@ -231,7 +232,7 @@ void Database::nuovo_corso_di_studio(const string &row, const string &ultima_mat
     int i = 0;
     try {
         _regdb.search_and_read(_regdb.target_expression(lettura::cds_in), row, cds_temp);
-    } catch (err_formattazione_errara &e) {
+    } catch (err_formattazione_errata &e) {
         cout << "errore trovato" << e.what() << endl;
         exit(3);
     }
@@ -339,28 +340,28 @@ void Database::target_aggiungi(options::opzione o) {
     switch (o) {
         case (options::studenti): {
             cout << "Aggiunta studenti in corso...\n";
+            //funziona anche senza specificare il tipo
             t_aggiungi<Database::Studente>(_studenti_db, _file_db_studenti);
-            _studenti_db.back()->debug();
             break;
         }
         case options::professori: {
             cout << "Aggiunta professori in corso...\n";
-//            t_aggiungi<Database::Professore>(_professori_db, _file_db_professori);
+            t_aggiungi<Database::Professore>(_professori_db, _file_db_professori);
             break;
         }
         case options::aule: {
             cout << "Aggiunta aule in corso...\n";
-
+            t_aggiungi<Database::Aula>(_aule_db, _file_db_aule);
             break;
         }
         case options::corsi: {
             cout << "Aggiunta corsi in corso...\n";
-
+            t_aggiungi<Database::Corso>(_corsi_db, _file_db_corsi);
             break;
         }
         case options::cds: {
             cout << "Aggiunta corsi di studio in corso...\n";
-
+            t_aggiungi(_cds_db, _file_db_cds);
             break;
         }
         default:
@@ -513,6 +514,28 @@ char Database::Aula::getTipo() const {
 Database::Aula::~Aula() {
     LOG("Aula eliminata");
     delete this;
+}
+
+Database::Aula::Aula(const string &row, const string &ultimo_id) {
+    vector<string> aula_temp;
+
+    //   [Aggiunta] Legge da file in (lista) quindi la _matricola va assegnata
+    if (!_regaula.search_and_read(_regaula.target_expression(lettura::aule_in), row, aula_temp)) {
+        cerr << "Errore formattazione aula\n";
+        exit(15);
+    }
+
+    _id_aula = ultimo_id;
+    _tipo = aula_temp[1][0];
+    _denominazione = aula_temp[2];
+    _capienza = stoi(aula_temp[3]);
+    _capienza_esame = stoi(aula_temp[4]); //TODO: è giusto 4?
+
+
+}
+
+Database::Aula::Aula() {
+
 }
 
 void Database::matricola_aula_incremento(string &matricola) {
@@ -971,10 +994,11 @@ string Database::leggi_id_maggiore(const string &file_db) {
             getline(row_stream, temp, ';'); //Legge c;
             getline(row_stream, temp, ';'); //Legge id_corso;
         } else {
-            //errore di qualche tipo
+        //TODO: eccezioni
         }
 
         if (!temp.empty()) {
+            temp = temp.substr(1, temp.length());
             if (temp > first) {//aggiorna _matricola maggiore
                 first = temp;
             }
@@ -1011,7 +1035,7 @@ void Database::nuovo_corso(const string &row, const string &ultima_matricola_id)
     corso_temp_int.reserve(5);
     transform(corso_temp.begin() + 4, corso_temp.end(), corso_temp_int.begin(), strToInt);
 
-    c->setIdCorso(ultima_matricola_id);
+//    c->setIdCorso(ultima_matricola_id);
     c->setTitolo(corso_temp[3]);
     c->setCFU(corso_temp_int[0]);
     c->setOreLez(corso_temp_int[1]);
@@ -1041,7 +1065,7 @@ void Database::nuovo_corso(const string &row, bool source_db) {
     corso_temp_int.reserve(4);
     transform(corso_temp.begin() + 3, corso_temp.end(), corso_temp_int.begin(), strToInt);
 
-    c->setIdCorso(corso_temp[1]);
+//    c->setIdCorso(corso_temp[1]);
     c->setTitolo(corso_temp[2]);
     c->setCFU(corso_temp_int[0]);
     c->setOreLez(corso_temp_int[1]);
@@ -1168,7 +1192,7 @@ void Database::Studente::fstampa(ofstream &fout) const {
 }
 
 Database::Studente::Studente() {
-    _matricola = "s";
+//    _matricola = "s";
     _nome = "";
     _cognome = "";
     _email = "";
@@ -1179,24 +1203,23 @@ void Database::Studente::debug() const {
     cout << "Dati in memoria: " << _matricola << ' ' << _nome << ' ' << _cognome << ' ' << _email << endl << endl;
 }
 
-Database::Studente::Studente(const string &row, const string &ultima_matricola_id) {
+Database::Studente::Studente(const string &row, const string &ultima_matricola) {
 //    Studente *s{new(nothrow) Studente};
-    _sep = ';';
 
     vector<string> studente_temp;
 
     //   [Aggiunta] Legge da file in (lista) quindi la _matricola va assegnata
     if (!_regstud.search_and_read(_regstud.target_expression(lettura::studenti_in), row, studente_temp)) {
-        cerr << "Errore formattazione file input\n";
+        cerr << "Errore formattazione file input studenti\n";
         exit(3);
     }
 
-    _matricola = "s" + ultima_matricola_id;
+    _matricola = "s" + ultima_matricola;
     _nome = studente_temp[1];
     _cognome = studente_temp[2];
     _email = studente_temp[3];
 
-//    setMatricola(ultima_matricola_id);
+//    setMatricola(ultima_matricola);
 //    setNome(studente_temp[1]);
 //    setCognome(studente_temp[2]);
 //    setEmail(studente_temp[3]);
@@ -1219,6 +1242,22 @@ void Database::Professore::fstampa(ofstream &fout) const {
 Database::Professore::~Professore() {
     LOG("Professore eliminato");
     delete this;
+}
+
+Database::Professore::Professore(const string &row, const string &ultima_matricola) {
+    vector<string> prof_temp;
+
+    //   [Aggiunta] Legge da file in (lista) quindi la _matricola va assegnata
+    if (!_regprof.search_and_read(_regprof.target_expression(lettura::professori_in), row, prof_temp)) {
+        cerr << "Errore formattazione file input prof\n";
+        exit(3);
+    }
+
+    _matricola = "d" + ultima_matricola;
+    _nome = prof_temp[1];
+    _cognome = prof_temp[2];
+    _email = prof_temp[3];
+
 }
 
 void Database::Persona::setMatricola(const string &matricola) {
@@ -1257,6 +1296,11 @@ void Database::Persona::setCognome(const string &cognome) {
 void Database::Persona::setEmail(const string &email) {
     if (!email.empty())
         _email = email;
+}
+
+Database::Persona::Persona() {
+    _sep = ';';
+    _matricola.reserve(6); //TODO: serve? reserve vs resize?
 }
 
 string Database::Corso::getTitolo() {
@@ -1391,6 +1435,8 @@ void Database::Corso::Anno_Accademico::setEsame(Database::Corso::Anno_Accademico
     _esame = e;
 }
 
+//TODO: anche qui dovresti chiamare il costruttore di anno accademico, situazione diversa da prima (dichiara e pushback) fai dichiara e setta per ogni tipo nested
+//
 Database::Corso::Anno_Accademico *
 Database::Corso::nuovo_anno_accademico(const string &anno, int n_versioni, const string &row) {
     Anno_Accademico *a_temp{new(nothrow) Anno_Accademico};
@@ -1447,6 +1493,43 @@ void Database::Corso::setAnnoAccademico(Corso::Anno_Accademico *anno) {
     _anni_accademici.push_back(anno);
 }
 
+Database::Corso::Corso(const string &row, const string &ultimo_id) {
+    //TODO: controlla inserimento corsi duplicati
+    vector<string> corso_temp;
+
+    //LEGGE aaaa-aaaa;titolocorso;6;50;10;20;n_versioni;
+    if (!_regcorso.search_and_read(_regcorso.target_expression(lettura::corsi_in), row, corso_temp)) {
+        cout << "Errore formattazione corso\n";
+        exit(3); //TODO: codice exit
+    }
+
+    if (corso_temp.size() != 9) {
+        cout << "Errore lettura corso in base\n";
+    }
+    vector<int> corso_temp_int;
+    corso_temp_int.reserve(5);
+    transform(corso_temp.begin() + 4, corso_temp.end(), corso_temp_int.begin(), strToInt);
+
+    _id_corso = ultimo_id;
+    _titolo = corso_temp[3];
+    _cfu = corso_temp_int[0];
+    _ore_lezione = corso_temp_int[1];
+    _ore_esercitazione = corso_temp_int[2];
+    _ore_laboratorio = corso_temp_int[3];
+
+    //legge e setta l'anno accademico
+    setAnnoAccademico(nuovo_anno_accademico(corso_temp[1] + '-' + corso_temp[2], corso_temp_int[4], row));
+
+}
+
+Database::Corso::~Corso() {
+
+}
+
+Database::Corso::Corso() {
+
+}
+
 void Database::Corso_id::setIdCorso(const string &id_corso) {
     _id_corso = id_corso;
 }
@@ -1485,4 +1568,37 @@ void Database::Corso_di_studio::setCorsiPerSemestre(const vector<vector<Corso_id
     for (auto &i : corsi_per_semestre) {
         setCorsiDiUnSemestre(i);
     }
+}
+
+Database::Corso_di_studio::Corso_di_studio(const string &row, const string &ultimo_id) {
+    //TODO: nei corsi di studio ci devono essere solo id_corso di corsi presenti in memoria (rileggi corsi_db ogni volta)
+    //TODO: leggi bs/l e trasforma in booleano
+
+    vector<string> cds_temp;
+    vector<vector<Corso_id>> lista_corsi_temp;
+
+    int i = 0;
+    try {
+        _regcds.search_and_read(_regcds.target_expression(lettura::cds_in), row, cds_temp);
+    } catch (err_formattazione_errata &e) {
+        cout << "errore trovato" << e.what() << endl;
+        exit(3);
+    }
+    lista_corsi_temp = {cds_temp[1].begin(), cds_temp[cds_temp.size()].end()};
+
+    try {
+        setIdCds(ultimo_id);
+        setLaurea(stoi(cds_temp[1]));
+        setCorsiPerSemestre(lista_corsi_temp);
+    } catch (errore_matricola &e) {
+        cout << "errore trovato" << e.what() << endl;
+        exit(4);
+    } catch (invalid_argument &e) {
+        cout << "errore trovato" << e.what() << endl;
+        exit(10);
+    }
+}
+
+Database::Corso_di_studio::Corso_di_studio() {
+
 }

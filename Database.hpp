@@ -36,10 +36,11 @@ void Database::t_aggiungi(vector<T *> &_classedati_db, const string &file_db) {
         incremento_id(ultimo_id);
         //      [Aggiunta] serve la _matricola da assegnare
         if (!row.empty()) {
+
             T *t = new T(row, ultimo_id);
 
             _classedati_db.push_back(t);
-//            (this->*nuova_classe_db)(row, ultimo_id);
+
             //TODO: allo stesso modo per funzioni aggiorna?
         } else {
             cout << "[Warning] Riga " << n << " vuota nel file " << _file_argomento << '\n';
@@ -47,8 +48,6 @@ void Database::t_aggiungi(vector<T *> &_classedati_db, const string &file_db) {
         n++;
     }
     fin.close();
-
-
 }
 
 #endif //PROGETTO_ALGORITMI_20_21_DATABASE_HPP

@@ -74,11 +74,8 @@ int main(int argc, char *argv[]) {
 
 //                        db.aggiungi_studenti();
 //                        db.aggiungi(db.ptr_studente_db);
-
-//                        db.t_aggiungi("db_studenti.txt");
                         db.target_aggiungi(o_var);
                         db.target_fstampa(o_var, true);
-
                         break;
                     }
                     case (options::professori): {
@@ -86,13 +83,15 @@ int main(int argc, char *argv[]) {
 
 //                        db.aggiungi_professori();
 //                        db.aggiungi(db.ptr_professore_db);
+                        db.target_aggiungi(o_var);
                         db.target_fstampa(o_var, true);
                         break;
                     }
                     case (options::aule): {
                         cout << "Hai scelto: " << "aggiunta aule\n";
 
-                        db.aggiungi_aule();
+//                        db.aggiungi_aule();
+                        db.target_aggiungi(o_var);
                         db.target_fstampa(o_var, true);
 
                         break;
@@ -100,15 +99,18 @@ int main(int argc, char *argv[]) {
                     case (options::corsi):
                         cout << "Hai scelto: " << "aggiunta corsi\n";
 
-                        db.aggiungi_corsi();
+//                        db.aggiungi_corsi();
+                        db.target_aggiungi(o_var);
                         db.target_fstampa(o_var, true);
 
                         break;
                     case (options::cds):
                         cout << "Hai scelto: " << "aggiunta cds\n";
 
-                        db.aggiungi_corsi_di_studio();
+//                        db.aggiungi_corsi_di_studio();
+                        db.target_aggiungi(o_var);
                         db.target_fstampa(o_var, true);
+
 
                         break;
                     default:

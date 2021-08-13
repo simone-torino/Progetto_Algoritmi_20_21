@@ -65,7 +65,8 @@ namespace lettura {
         prof_singolo = 18,
         profn_campi = 19,
         esame_campi = 20,
-        esame_graffe = 21
+        esame_graffe = 21,
+        id_corsi
 
 
     };
@@ -169,6 +170,8 @@ public:
 
         char _sep;
 
+        Persona();
+
     protected:
         string _matricola;
         string _nome;
@@ -178,12 +181,11 @@ public:
     };
 
     class Studente : public Persona {
+        Regex _regstud;
     public:
         Studente();
 
-        Regex _regstud;
-
-        Studente(const string &row, const string &ultima_matricola_id);
+        Studente(const string &row, const string &ultima_matricola);
 
         void fstampa(ofstream &fout) const;
 
@@ -193,9 +195,11 @@ public:
     };
 
     class Professore : public Persona {
-
+        Regex _regprof;
     public:
         Professore();
+
+        Professore(const string &row, const string &ultima_matricola);
 
         ~Professore();
 
@@ -203,9 +207,12 @@ public:
     };
 
     class Aula {
-        ~Aula();
-
+        Regex _regaula;
     public:
+        Aula();
+
+        Aula(const string &row, const string &ultimo_id);
+
         void setId(const string &id_aula);
 
         void setTipo(char tipo);
@@ -228,6 +235,8 @@ public:
 
         void fstampa(ofstream &fout) const;
 
+        ~Aula();
+
     protected:
         string _id_aula;
         char _tipo;
@@ -248,14 +257,13 @@ public:
 
     };
 
-
     class Corso : public Corso_id {
         string _titolo; //nome del corso, può essere duplicato
         short unsigned int _cfu{};
         short unsigned int _ore_lezione{};
         short unsigned int _ore_esercitazione{};
         short unsigned int _ore_laboratorio{};
-        vector<Corso_id *> _lista_corsi_aggiuntivi;
+//        vector<Corso_id *> _lista_corsi_aggiuntivi;
 
         struct Anno_Accademico {
             string _anno_accademico;
@@ -345,9 +353,15 @@ public:
 
         vector<Anno_Accademico *> _anni_accademici;
 
+        Regex _regcorso; //TODO: non c'è bisogno di specificare
+
         ~Corso();
 
     public:
+        Corso();
+
+        Corso(const string &row, const string &ultimo_id);
+
         void setOreLez(int ore_lez);
 
         void setOreEser(int ore_eser);
@@ -378,9 +392,6 @@ public:
 
         Database::BracketSearch _bs;
 
-        Database::Regex _regcorso;
-
-
     };
 
     class Corso_di_studio {
@@ -390,9 +401,15 @@ public:
         vector<Corso_id> _corsi_spenti;
         vector<Corso_id> _corsi_in_un_semestre;
 
+        Regex _regcds;
+
         void fstampa_semestri(ofstream &fout) const;
 
     public:
+        Corso_di_studio();
+
+        Corso_di_studio(const string &row, const string &ultimo_id);
+
         void fstampa(ofstream &fout) const;
 
         void setIdCds(const string &id_cds);

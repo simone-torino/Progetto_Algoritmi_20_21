@@ -71,9 +71,9 @@ const char * errore_non_univoco::what() const noexcept {
     return messaggio;
 }
 
-err_formattazione_errara::err_formattazione_errara():messaggio("formattazione in input errata") {}
+err_formattazione_errata::err_formattazione_errata(): messaggio("formattazione in input errata") {}
 
-const char * err_formattazione_errara::what() const noexcept {
+const char * err_formattazione_errata::what() const noexcept {
     return messaggio;
 }
 
