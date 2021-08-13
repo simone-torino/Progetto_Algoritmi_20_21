@@ -84,28 +84,38 @@ std::regex Database::Regex::target_expression(lettura::reg_expressions exp) {
 
         case lettura::corsi_in:
             return std::regex(_corso_in_base);
+
         case lettura::id_corsi_in:
             return std::regex(_id_corso);
+
         case lettura::cds_in:
             return std::regex(_id_cds);
+
         case lettura::corsi_db:
             LOG(corso_db_base);
             return std::regex(corso_db_base);
+
         case lettura::prof_singolo:
             return std::regex(_profn_graffe);
+
         case lettura::profn_campi:
             return std::regex(_profn_campi);
 
         case lettura::sessioni:
             return std::regex(_periodo);
+
         case lettura::anno_acc:
             return std::regex(_anno_acc);
+
         case lettura::indisp:
             return std::regex();
+
         case lettura::esame_campi:
             return std::regex(_esame_campi);
+
         case lettura::esame_graffe:
             return std::regex(_esame_graffe);
+
         default:
             cout << "Errore target regexp\n";
     }
@@ -114,7 +124,7 @@ std::regex Database::Regex::target_expression(lettura::reg_expressions exp) {
 
 Database::Regex::Regex() {
     _id_corso = "([A-Z0-9]+)";
-    corso_db_base = "c;" + _id_corso + ';' + _text + ';' + _num + ';' + _num + ';' + _num + ';' + _num + ';' ;
+    corso_db_base = "c;" + _id_corso + ';' + _text + ';' + _num + ';' + _num + ';' + _num + ';' + _num + ';';
 
 
     _anno_acc = "([0-9]{4})-([0-9]{4})";

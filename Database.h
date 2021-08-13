@@ -444,53 +444,13 @@ private:
     template<typename T>
     void tfstampa(vector<T> _classedati_db, const string &file_db, bool append);
 
-
-    int leggi_matricola_maggiore(const string &file_db);
-
     string leggi_id_maggiore(const string &file_db);
 
-    void matricola_aula_incremento(string &matricola);
-
-//    string leggi_id_cds_maggiore(const string &file_db);
-
-    string matricola_corso_incremento(string &matricola);
-
-    string matricola_cds_incremento(string &matricola);
-
-
 public:
-    //  funzioni per aggiungere dati
-    void aggiungi(void (Database::*nuova_classe_db)(const string &, const string &));
-
+    //Per i dati da file con matricole da generare
     void target_aggiungi(options::opzione o);
 
-    void aggiungi_studenti();
-
-    void aggiungi_professori();
-
-    void aggiungi_aule();
-
-    void aggiungi_corsi();
-
-    void aggiungi_corsi_di_studio();
-
-    //Per i dati da file con matricole da generare
-
-//    function<void(const string &, const string &)> ptr = &nuovo_studente;
-    void nuovo_studente(const string &row, const string &ultima_matricola_id);
-//    void (Database::*ptr_studente_db) (const string &, const string &) {&Database::nuovo_studente};
-
-    void nuovo_professore(const string &row, const string &ultima_matricola_id);
-//    void (Database::*ptr_professore_db) (const string &, const string &) {&Database::nuovo_professore};
-
-    void nuova_aula(const string &row, const string &ultima_matricola_id);
-//    void (Database::*ptr_aula_db) (const string &, const string &) {&Database::nuova_aula};
-
-    void nuovo_corso(const string &row, const string &ultima_matricola_id);
-//    void (Database::*ptr_corso_db) (const string &, const string &) {&Database::nuovo_corso};
-
-    void nuovo_corso_di_studio(const string &row, const string &ultima_matricola);
-//    void (Database::*ptr_cds_db) (const string &, const string &) {&Database::nuovo_corso_di_studio};
+    void target_aggiorna(options::opzione o);
 
     //Per i dati ri-letti dal _dbcal o da file di aggiornamento
     void nuovo_studente(const string &row, bool source_db);
@@ -519,16 +479,9 @@ public:
 //    con append fstampa_giornosessione può stampare sia in append che in out, sovrascrivendo tutto, utile per aggiornamento
     void target_fstampa(options::opzione o, bool append);
 
-
-//    template<class T>
-//    void ftstampa(vector<T> t);
-
-
 };
 
-
 void fstampa_bool(bool b, const string &vero, const string &falso, ofstream &fout);
-
 
 void controlli_file(ifstream &fin, const string &nome_file);
 
