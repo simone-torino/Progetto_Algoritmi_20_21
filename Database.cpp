@@ -1519,6 +1519,7 @@ Database::Corso::Corso(const string &row, const string &ultimo_id) {
 
     //legge e setta l'anno accademico
     setAnnoAccademico(nuovo_anno_accademico(corso_temp[1] + '-' + corso_temp[2], corso_temp_int[4], row));
+    //TODO: cosa cambia nel tipo di ritorno tra nuovo studente e i nuovo annidati della classe corso?
 
 }
 

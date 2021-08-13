@@ -70,27 +70,20 @@ int main(int argc, char *argv[]) {
                 switch (o_var) {
                     case (options::studenti): {
                         cout << "Hai scelto: " << "aggiunta studenti\n";
-                        //TODO: cosa cambia nel tipo di ritorno tra nuovo studente e i nuovo annidati della classe corso?
-
-//                        db.aggiungi_studenti();
-//                        db.aggiungi(db.ptr_studente_db);
                         db.target_aggiungi(o_var);
                         db.target_fstampa(o_var, true);
+
                         break;
                     }
                     case (options::professori): {
                         cout << "Hai scelto: " << "aggiunta professori\n";
-
-//                        db.aggiungi_professori();
-//                        db.aggiungi(db.ptr_professore_db);
                         db.target_aggiungi(o_var);
                         db.target_fstampa(o_var, true);
+
                         break;
                     }
                     case (options::aule): {
                         cout << "Hai scelto: " << "aggiunta aule\n";
-
-//                        db.aggiungi_aule();
                         db.target_aggiungi(o_var);
                         db.target_fstampa(o_var, true);
 
@@ -98,19 +91,14 @@ int main(int argc, char *argv[]) {
                     }
                     case (options::corsi):
                         cout << "Hai scelto: " << "aggiunta corsi\n";
-
-//                        db.aggiungi_corsi();
                         db.target_aggiungi(o_var);
                         db.target_fstampa(o_var, true);
 
                         break;
                     case (options::cds):
                         cout << "Hai scelto: " << "aggiunta cds\n";
-
-//                        db.aggiungi_corsi_di_studio();
                         db.target_aggiungi(o_var);
                         db.target_fstampa(o_var, true);
-
 
                         break;
                     default:
@@ -122,7 +110,7 @@ int main(int argc, char *argv[]) {
                 switch (o_var) {
                     case (options::studenti):
                         cout << "Hai scelto: " << "aggiornamento studenti\n";
-
+                        //TODO: template aggiorna
                         db.aggiorna_studenti();
                         db.target_fstampa(o_var, false);
 

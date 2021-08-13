@@ -569,7 +569,7 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
     _dbcal.target_fstampa(options::corsi, true);
 
 
-
+    //da finire
 }
 
 vector<string> Calendario::leggi_db_date_sessioni(const vector<string> &argomenti_es) {
