@@ -20,6 +20,7 @@ using namespace std;
 class Calendario {
     string _file_argomento;
     Database _dbcal;
+
 public:
     explicit Calendario(const string &file_argomento);
     class myDate {

@@ -390,6 +390,7 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
     vector<string> outstring;
 
     //Leggo i prof presenti nel database per confrontare le matricole
+//    _dbcal.leggi<Database::Professore>();
     _dbcal.leggi_prof_db();
     vector<Database::Professore *> professori_temp;
     professori_temp = _dbcal.getVProfessori();
@@ -398,10 +399,12 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
         getline(fin, s_temp);
 
         if (!s_temp.empty()) {
+            //leggo il file indisponibilita
             if (!_regcal.search_and_read(_regcal.target_expression(lettura::indisp), s_temp, outstring)) {
                 cerr << "Errore formattazione file indisponibilita\n";
                 exit(3);
             }
+            //trasformo i numeri letti in interi
             vector<int> gmy; //Data come interi
             try {
                 transform(outstring.begin() + 1, outstring.end(), back_inserter(gmy), strToInt);
@@ -409,6 +412,7 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
                 cout << "Errore string to int: " << e.what() << endl;
             }
 
+            //compongo un oggetto indisponibilita per poi salvarlo
             Indisponibilita ind_temp;
             int j = 1, offset = 3;
             ind_temp._matricola = outstring[j]; //Prendo la stringa dal vettore non convertito

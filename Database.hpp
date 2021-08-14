@@ -63,11 +63,16 @@ void Database::t_aggiungi(vector<T *> &_classedati_db, const string &file_db) {
 
 //Per aggiornamento chiama una volta con file db e una volta con file argomento
 template<typename T>
-void leggi(const string &nome_file, vector<T *> &_classedati_xx) {
+void Database::leggi(const string &nome_file, vector<T *> &_classedati_xx) {
     ifstream fin;
     fin.open(nome_file);
     //TODO: try catch per gestire file db non trovato
-    controlli_file(fin, nome_file);
+    try {
+        controlli_file(fin, nome_file);
+    } catch (std::runtime_error &e) {
+        cout << e.what() << endl;
+        exit(3);
+    }
 
     string row;
     unsigned short n = 1;
@@ -89,6 +94,17 @@ void leggi(const string &nome_file, vector<T *> &_classedati_xx) {
     }
 }
 
+//Ci ho provato
+template<typename T>
+void Database::aggiorna_campo(const T (*get)(), void (*set)(const T&)) {
+    if (!get().empty()) {
+        set(get());
+        cout << "Aggiornato campo: " << get() << endl;
+    }
+}
+
+//Template per controllo matricola duplicata
+
 //Per studenti e professori
 template<typename T>
 void Database::t_aggiorna(vector<T *> &_classedati_db, vector<T *> &_classedati_agg, const string &file_db) {
@@ -105,6 +121,7 @@ void Database::t_aggiorna(vector<T *> &_classedati_db, vector<T *> &_classedati_
                 if (i->getMatricola() == j->getMatricola()) {
                     cout << "[Warning] _matricola " << i->getMatricola() << " duplicata nel file " << _file_argomento
                          << endl;
+                    cout << "L' aggiornamento verrà eseguito utilizzando l'ultima occorrenza" << endl;
                 }
             }
         }
@@ -112,7 +129,7 @@ void Database::t_aggiorna(vector<T *> &_classedati_db, vector<T *> &_classedati_
             //            se trovo la _matricola da aggiornare nel vettore
             if (i->getMatricola() == k->getMatricola()) {
                 //                se il campo dal vettore aggiornamento non è vuoto, aggiorno
-                cout << "Matricola " << i->getMatricola() << " -> ";
+                cout << "Matricola " << i->getMatricola() << " -> " << endl;
                 if (!i->getNome().empty()) {
                     k->setNome(i->getNome());
                     cout << "Aggiornato nome: " << k->getNome() << endl;
@@ -133,5 +150,6 @@ void Database::t_aggiorna(vector<T *> &_classedati_db, vector<T *> &_classedati_
         cout << "[Warning] Nessuna matricola da aggiornare è stata trovata e nessun campo e' stato aggiornato\n";
     }
 }
+
 
 #endif //PROGETTO_ALGORITMI_20_21_DATABASE_HPP

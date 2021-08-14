@@ -203,7 +203,7 @@ public:
 
         Professore(const string &row, const string &ultima_matricola);
 
-        Professore(const string &row);
+        explicit Professore(const string &row);
 
         ~Professore();
 
@@ -448,20 +448,29 @@ private:
     vector<Corso *> _corsi_agg;
     vector<Corso_di_studio *> _cds_agg;
 
+
     //qui il file db serve per la lettura dell'ultimo id
     template<typename T>
     void t_aggiungi(vector<T *> &_classedati_db, const string &file_db);
 
     //qui il file db serve per la rilettura di tutti i dati
-    template <typename T>
+    template<typename T>
     void t_aggiorna(vector<T *> &_classedati_db, vector<T *> &_classedati_agg, const string &file_db);
+
+    template<typename T>
+    void aggiorna_campo(const T (*get)(), void (*set)(const T &));
 
     template<typename T>
     void tfstampa(vector<T> _classedati_db, const string &file_db, bool append);
 
     string leggi_id_maggiore(const string &file_db);
 
+
 public:
+    template<typename T>
+    void leggi(const string &nome_file, vector<T *> &_classedati_xx);
+
+
     //Per i dati da file con matricole da generare
     void target_aggiungi(options::opzione o);
 
@@ -483,10 +492,6 @@ public:
     vector<Professore *> getVProfessori();
 
 //funzioni per aggiornare dati
-    void aggiorna_studenti();
-
-    void aggiorna_professori();
-
     void aggiorna_aule();
 
     void inserimento_corsi();

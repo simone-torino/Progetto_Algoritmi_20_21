@@ -183,7 +183,7 @@ void Database::target_aggiorna(options::opzione o) {
         }
         case options::aule: {
             cout << "Aggiunta aule in corso...\n";
-            //??
+//            t_aggiorna(_aule_db, _aule_agg, _file_db_aule);
             break;
         }
         default:
@@ -332,71 +332,29 @@ Database::Aula::Aula() {
 
 }
 
-void Database::aggiorna_studenti() {
-    fstream fin_db, fin_update;
-    fin_db.open(_file_db_studenti);
-    fin_update.open(_file_argomento);
-    string row_db, row_update;
-    unsigned short int n = 1;
-    while (!fin_db.eof()) {
-        getline(fin_db, row_db);
+Database::Aula::Aula(const string &row) {
+    vector<string> aula_temp;
+    _tipo = 0;
+    _capienza_esame = 0;
+    _capienza = 0;
 
-//      [Aggiornamento] La _matricola viene letta dal file
-        if (!row_db.empty()) {
-            nuovo_studente(row_db, true);
-        } else {
-            cout << "[Warning] Riga " << n << " vuota in _dbcal\n";
-        }
-        n++;
-    }
-    n = 1;
-    while (!fin_update.eof()) {
-        getline(fin_update, row_update);
-//        Qui n dati vengono messi in un vettore diverso da quello di prima, così possono essere confrontati
-        if (!row_update.empty()) {
-            nuovo_studente(row_update, false);
-        } else {
-            cout << "[Warning] Riga " << n << " vuota in  update\n";
-        }
-        n++;
+    //   [Aggiornamento] Legge dal file _dbcal, quindi c'è anche la _matricola, da confrontare più avanti
+    if (!_regaula.search_and_read(_regaula.target_expression(lettura::aule_db), row, aula_temp)) {
+        cerr << "Errore formattazione auledb o aule update\n";
+        exit(15);
     }
 
-    bool matricola_trovata = false;
+//    LOGV(aula_temp);
+    vector<int> aula_temp_int;
+    aula_temp_int.resize(2);
+    transform(aula_temp.begin() + 4, aula_temp.begin() + 6, aula_temp_int.begin(), strToInt);
 
-    for (auto i: _studenti_agg) {
-        for (auto j: _studenti_agg) {
-            //salto controlli su se stesso
-            if (i != j) {
-                if (i->getMatricola() == j->getMatricola()) {
-                    cout << "[Warning] _matricola " << i->getMatricola() << " duplicata nel file " << _file_argomento
-                         << endl;
-                }
-            }
-        }
-        for (auto k: _studenti_db) {
-//            se trovo la _matricola da aggiornare nel vettore
-            if (i->getMatricola() == k->getMatricola()) {
-//                se il campo dal vettore aggiornamento non è vuoto, aggiorno
-                cout << "Matricola " << i->getMatricola() << " -> ";
-                if (!i->getNome().empty()) {
-                    k->setNome(i->getNome());
-                    cout << "Aggiornato nome: " << k->getNome() << endl;
-                }
-                if (!i->getCognome().empty()) {
-                    k->setCognome(i->getCognome());
-                    cout << "Aggiornato cognome: " << k->getCognome() << endl;
-                }
-                if (!i->getEmail().empty()) {
-                    k->setEmail(i->getEmail());
-                    cout << "Aggiornato email: " << k->getEmail() << endl;
-                }
-                matricola_trovata = true;
-            }
-        }
-    }
-    if (!matricola_trovata) {
-        cout << "[Warning] Nessuna matricola da aggiornare è stata trovata e nessun campo e' stato aggiornato\n";
-    }
+    //le stringhe vuote sono gestite dai metodi setter
+    setId(aula_temp[1]);
+    setTipo(aula_temp[2][0]);
+    setDenominazione(aula_temp[3]);
+    setCapienza(aula_temp_int[0]);
+    setCapEsame(aula_temp_int[1]);
 }
 
 void Database::nuovo_professore(const string &row, bool source_db) {
@@ -419,65 +377,6 @@ void Database::nuovo_professore(const string &row, bool source_db) {
         _professori_db.push_back(p);
     } else
         _professori_agg.push_back(p);
-}
-
-void Database::aggiorna_professori() {
-    fstream fin_db, fin_update;
-    fin_update.open(_file_argomento);
-    string row_db, row_update;
-    unsigned short int n = 1;
-
-    //Per aggiornamento, usata anche nel calendario per le indisponibilità
-    leggi_prof_db();
-
-    n = 1;
-    while (!fin_update.eof()) {
-        getline(fin_update, row_update);
-//        Qui n dati vengono messi in un vettore diverso da quello di prima, così possono essere confrontati
-        if (!row_update.empty()) {
-            nuovo_professore(row_update, false);
-        } else {
-            cout << "[Warning] Riga " << n << " vuota in  update\n";
-        }
-        n++;
-    }
-
-    bool matricola_trovata = false;
-
-    for (auto i: _professori_agg) {
-        for (auto j: _professori_agg) {
-            //salto controlli su se stesso
-            if (i != j) {
-                if (i->getMatricola() == j->getMatricola()) {
-                    cout << "[Warning] matricola " << i->getMatricola() << " duplicata nel file " << _file_argomento
-                         << endl;
-                }
-            }
-        }
-        for (auto k: _professori_db) {
-//            se trovo la _matricola da aggiornare nel vettore
-            if (i->getMatricola() == k->getMatricola()) {
-//                se il campo dal vettore aggiornamento non è vuoto, aggiorno
-                cout << "Matricola " << i->getMatricola() << " -> ";
-                if (!i->getNome().empty()) {
-                    k->setNome(i->getNome());
-                    cout << "Aggiornato nome: " << k->getNome() << endl;
-                }
-                if (!i->getCognome().empty()) {
-                    k->setCognome(i->getCognome());
-                    cout << "Aggiornato cognome: " << k->getCognome() << endl;
-                }
-                if (!i->getEmail().empty()) {
-                    k->setEmail(i->getEmail());
-                    cout << "Aggiornato email: " << k->getEmail() << endl;
-                }
-                matricola_trovata = true;
-            }
-        }
-    }
-    if (!matricola_trovata) {
-        cout << "[Warning] Nessuna matricola da aggiornare è stata trovata e nessun campo e' stato aggiornato\n";
-    }
 }
 
 void Database::nuova_aula(const string &row, bool source_db) {
@@ -510,41 +409,45 @@ void Database::nuova_aula(const string &row, bool source_db) {
 }
 
 void Database::aggiorna_aule() {
-    ifstream fin_db, fin_update;
-    fin_db.open(_file_db_aule);
-    fin_update.open(_file_argomento);
-    try {
-        controlli_file(fin_db, _file_db_aule);
-        controlli_file(fin_update, _file_argomento);
-    } catch (std::runtime_error &e) {
-        cout << e.what() << endl;
-        exit(3);
-    }
 
-    string row_db, row_update;
-    unsigned short int n = 1;
-    while (!fin_db.eof()) {
-        getline(fin_db, row_db);
+    leggi<Aula>(_file_db_aule, _aule_db);
+    leggi<Aula>(_file_argomento, _aule_agg);
 
-//      [Aggiornamento] La _matricola viene letta dal file
-        if (!row_db.empty()) {
-            nuova_aula(row_db, true);
-        } else {
-            cout << "[Warning] Riga " << n << " vuota in auladb\n";
-        }
-        n++;
-    }
-    n = 1;
-    while (!fin_update.eof()) {
-        getline(fin_update, row_update);
-//        Qui n dati vengono messi in un vettore diverso da quello di prima, così possono essere confrontati
-        if (!row_update.empty()) {
-            nuova_aula(row_update, false);
-        } else {
-            cout << "[Warning] Riga " << n << " vuota in aula update\n";
-        }
-        n++;
-    }
+//    ifstream fin_db, fin_update;
+//    fin_db.open(_file_db_aule);
+//    fin_update.open(_file_argomento);
+//    try {
+//        controlli_file(fin_db, _file_db_aule);
+//        controlli_file(fin_update, _file_argomento);
+//    } catch (std::runtime_error &e) {
+//        cout << e.what() << endl;
+//        exit(3);
+//    }
+//
+//    string row_db, row_update;
+//    unsigned short int n = 1;
+//    while (!fin_db.eof()) {
+//        getline(fin_db, row_db);
+//
+////      [Aggiornamento] La _matricola viene letta dal file
+//        if (!row_db.empty()) {
+//            nuova_aula(row_db, true);
+//        } else {
+//            cout << "[Warning] Riga " << n << " vuota in auladb\n";
+//        }
+//        n++;
+//    }
+//    n = 1;
+//    while (!fin_update.eof()) {
+//        getline(fin_update, row_update);
+////        Qui n dati vengono messi in un vettore diverso da quello di prima, così possono essere confrontati
+//        if (!row_update.empty()) {
+//            nuova_aula(row_update, false);
+//        } else {
+//            cout << "[Warning] Riga " << n << " vuota in aula update\n";
+//        }
+//        n++;
+//    }
 
     bool matricola_trovata = false;
 
@@ -555,6 +458,7 @@ void Database::aggiorna_aule() {
             if (i != j) {
                 if (i->getId() == j->getId()) {
                     cout << "[Warning]: id aula " << i->getId() << " duplicato nel file " << _file_argomento << endl;
+                    cout << "L' aggiornamento verrà eseguito utilizzando l'ultima occorrenza" << endl;
                 }
             }
         }
@@ -562,7 +466,7 @@ void Database::aggiorna_aule() {
 //            se trovo la _matricola da aggiornare nel vettore
             if (i->getId() == k->getId()) {
 //                se il campo dal vettore aggiornamento non è vuoto, aggiorno
-                cout << "Id Aula " << i->getId() << " -> ";
+                cout << "Id Aula " << i->getId() << " -> " << endl;
                 if (i->getTipo()) {
                     k->setTipo(i->getTipo());
                     cout << "Aggiornato tipo: " << k->getTipo() << endl;
@@ -640,7 +544,7 @@ string Database::leggi_id_maggiore(const string &file_db) {
     } catch (runtime_error &e) {
         cout << e.what() << endl;
 //        return first;
-    } catch(file_non_aperto &e){ //TODO: da rivedere
+    } catch (file_non_aperto &e) { //TODO: da rivedere
         cout << e.what() << endl;
         return first;
     }
@@ -658,7 +562,7 @@ string Database::leggi_id_maggiore(const string &file_db) {
             getline(row_stream, temp, ';'); //Legge c;
             getline(row_stream, temp, ';'); //Legge id_corso;
         } else {
-        //TODO: eccezioni
+            //TODO: eccezioni
         }
 
         if (!temp.empty()) {
@@ -755,8 +659,6 @@ void Database::leggi_corso_db() {
 vector<Database::Professore *> Database::getVProfessori() {
     return _professori_db;
 }
-
-
 
 
 void Database::Studente::fstampa(ofstream &fout) const {
@@ -1061,7 +963,7 @@ Database::Corso::nuovo_anno_accademico(const string &anno, int n_versioni, const
 
     vector<string> out_idcorso;
     //TODO: da cambiare lettura, non so quanti idcorso ci devono essere
-    if(!_regcorso.search_and_read(_regcorso.target_expression(lettura::id_corsi), row, out_idcorso)){
+    if (!_regcorso.search_and_read(_regcorso.target_expression(lettura::id_corsi), row, out_idcorso)) {
         cout << "Errore lettura idcorso graffe nel corso " << _titolo << endl;
         exit(2);
     }
