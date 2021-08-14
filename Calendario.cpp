@@ -556,7 +556,6 @@ void Calendario::GiornoSessione::Esame::fstampa_esame(ofstream &fout) const {
         _id_esame.fstampa_id(fout);
         fout << '(' << _id_cds << ')';
     }
-
 }
 
 void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
@@ -605,7 +604,7 @@ vector<string> Calendario::leggi_db_date_sessioni(const vector<string> &argoment
         n++;
     }
 
-    for(auto i: outstring){
+    for(const auto& i: outstring){
         cout << "outstring leggi db date sessioni: " << i << endl;
     }
 

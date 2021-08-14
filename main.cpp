@@ -111,14 +111,16 @@ int main(int argc, char *argv[]) {
                     case (options::studenti):
                         cout << "Hai scelto: " << "aggiornamento studenti\n";
                         //TODO: template aggiorna
-                        db.aggiorna_studenti();
+//                        db.aggiorna_studenti();
+                        db.target_aggiorna(o_var);
                         db.target_fstampa(o_var, false);
 
                         break;
                     case (options::professori):
                         cout << "Hai scelto: " << "aggiornamento professori\n";
 
-                        db.aggiorna_professori();
+//                        db.aggiorna_professori();
+                        db.target_aggiorna(o_var);
                         db.target_fstampa(o_var, false);
 
                         break;

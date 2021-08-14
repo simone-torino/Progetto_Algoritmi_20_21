@@ -187,6 +187,8 @@ public:
 
         Studente(const string &row, const string &ultima_matricola);
 
+        Studente(const string &row);
+
         void fstampa(ofstream &fout) const;
 
         void debug() const;
@@ -201,6 +203,8 @@ public:
 
         Professore(const string &row, const string &ultima_matricola);
 
+        Professore(const string &row);
+
         ~Professore();
 
         void fstampa(ofstream &fout) const;
@@ -212,6 +216,8 @@ public:
         Aula();
 
         Aula(const string &row, const string &ultimo_id);
+
+        Aula(const string &row);
 
         void setId(const string &id_aula);
 
@@ -362,6 +368,8 @@ public:
 
         Corso(const string &row, const string &ultimo_id);
 
+        Corso(const string &row);
+
         void setOreLez(int ore_lez);
 
         void setOreEser(int ore_eser);
@@ -410,6 +418,8 @@ public:
 
         Corso_di_studio(const string &row, const string &ultimo_id);
 
+        Corso_di_studio(const string &row);
+
         void fstampa(ofstream &fout) const;
 
         void setIdCds(const string &id_cds);
@@ -438,8 +448,13 @@ private:
     vector<Corso *> _corsi_agg;
     vector<Corso_di_studio *> _cds_agg;
 
+    //qui il file db serve per la lettura dell'ultimo id
     template<typename T>
     void t_aggiungi(vector<T *> &_classedati_db, const string &file_db);
+
+    //qui il file db serve per la rilettura di tutti i dati
+    template <typename T>
+    void t_aggiorna(vector<T *> &_classedati_db, vector<T *> &_classedati_agg, const string &file_db);
 
     template<typename T>
     void tfstampa(vector<T> _classedati_db, const string &file_db, bool append);

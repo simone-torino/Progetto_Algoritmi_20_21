@@ -169,6 +169,29 @@ void Database::target_aggiungi(options::opzione o) {
 
 }
 
+void Database::target_aggiorna(options::opzione o) {
+    switch (o) {
+        case (options::studenti): {
+            cout << "Aggiunta studenti in corso...\n";
+            t_aggiorna(_studenti_db, _studenti_agg, _file_db_studenti);
+            break;
+        }
+        case options::professori: {
+            cout << "Aggiunta professori in corso...\n";
+            t_aggiorna(_professori_db, _professori_agg, _file_db_professori);
+            break;
+        }
+        case options::aule: {
+            cout << "Aggiunta aule in corso...\n";
+            //??
+            break;
+        }
+        default:
+            cout << "Errore inserimento parametri per aggiunta\n";
+            exit(12);
+    }
+}
+
 void Database::target_fstampa(options::opzione o, bool append) {
     ofstream fout;
 
@@ -209,10 +232,12 @@ void Database::target_fstampa(options::opzione o, bool append) {
 void controlli_file(ifstream &fin, const string &nome_file) {
     if (!fin.is_open()) {
         cout << "Errore file input " << nome_file << " non aperto\n";
-        throw std::runtime_error("Errore apertura file input, forse non e' stato trovato");
+        throw file_non_aperto(); //TODO: da confermare
+//        throw std::runtime_error("Errore apertura file input, forse non e' stato trovato");
     }
     if (!fin.good()) {
-        throw std::runtime_error("Errore file input");
+        throw file_failed();
+//        throw std::runtime_error("Errore file input");
     }
 }
 
@@ -614,6 +639,9 @@ string Database::leggi_id_maggiore(const string &file_db) {
         controlli_file(fin, file_db);
     } catch (runtime_error &e) {
         cout << e.what() << endl;
+//        return first;
+    } catch(file_non_aperto &e){ //TODO: da rivedere
+        cout << e.what() << endl;
         return first;
     }
 
@@ -683,6 +711,7 @@ void Database::nuovo_corso(const string &row, bool source_db) {
 
 }
 
+//TODO: usando il template questa non dovrebbe più servire
 void Database::leggi_prof_db() {
     ifstream fin_db;
     fin_db.open(_file_db_professori);
@@ -728,6 +757,8 @@ vector<Database::Professore *> Database::getVProfessori() {
 }
 
 
+
+
 void Database::Studente::fstampa(ofstream &fout) const {
     fout << _matricola << _sep << _nome << _sep << _cognome << _sep << _email << '\n';
 }
@@ -758,6 +789,23 @@ Database::Studente::Studente(const string &row, const string &ultima_matricola) 
     _nome = studente_temp[1];
     _cognome = studente_temp[2];
     _email = studente_temp[3];
+}
+
+Database::Studente::Studente(const string &row) {
+    vector<string> studente_temp;
+    _matricola = "s";
+
+    //   [Aggiornamento] Legge dal file db, quindi c'è anche la _matricola, da confrontare più avanti
+    if (!_regstud.search_and_read(_regstud.target_expression(lettura::studenti_db), row, studente_temp)) {
+        cerr << "Errore formattazione file input studenti\n";
+        exit(3);
+    }
+
+    //le stringhe vuote sono gestite dai metodi setter
+    setMatricola(studente_temp[1]);
+    setNome(studente_temp[2]);
+    setCognome(studente_temp[3]);
+    setEmail(studente_temp[4]);
 }
 
 Database::Professore::Professore() {
@@ -791,6 +839,23 @@ Database::Professore::Professore(const string &row, const string &ultima_matrico
     _cognome = prof_temp[2];
     _email = prof_temp[3];
 
+}
+
+Database::Professore::Professore(const string &row) {
+    vector<string> prof_temp;
+    _matricola = "d";
+
+    //   [Aggiornamento] Legge dal file _dbcal, quindi c'è anche la _matricola, da confrontare più avanti
+    if (!_regprof.search_and_read(_regprof.target_expression(lettura::professori_db), row, prof_temp)) {
+        cerr << "Errore formattazione file input professore\n";
+        exit(3);
+    }
+
+    //le stringhe vuote sono gestite dai metodi setter
+    setMatricola(prof_temp[1]);
+    setNome(prof_temp[2]);
+    setCognome(prof_temp[3]);
+    setEmail(prof_temp[4]);
 }
 
 void Database::Persona::setMatricola(const string &matricola) {
@@ -993,6 +1058,14 @@ Database::Corso::nuovo_anno_accademico(const string &anno, int n_versioni, const
     }
     string s_esame = out_esame[0];
     a_temp->setEsame(a_temp->nuovo_esame(s_esame));
+
+    vector<string> out_idcorso;
+    //TODO: da cambiare lettura, non so quanti idcorso ci devono essere
+    if(!_regcorso.search_and_read(_regcorso.target_expression(lettura::id_corsi), row, out_idcorso)){
+        cout << "Errore lettura idcorso graffe nel corso " << _titolo << endl;
+        exit(2);
+    }
+
 
     return a_temp;
 }
