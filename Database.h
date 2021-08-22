@@ -20,7 +20,7 @@
 
 using namespace std;
 
-//Aggiungi = leggi da file e salva in memoria
+//Aggiungi = leggi_db da file e salva in memoria
 //Scrivi = scrivi su file output i dati salvati in memoria
 
 namespace options {
@@ -257,6 +257,10 @@ public:
     protected:
         string _id_corso;
     public:
+        Corso_id() = default;
+
+        explicit Corso_id(const string &row);
+
         void fstampa_id(ofstream &fout) const;
 
         void setIdCorso(const string &id_corso);
@@ -451,7 +455,7 @@ private:
 
     //qui il file db serve per la lettura dell'ultimo id
     template<typename T>
-    void t_aggiungi(vector<T *> &_classedati_db, const string &file_db);
+    void leggi_in(const string &file_db, vector<T *> &_classedati_db);
 
     //qui il file db serve per la rilettura di tutti i dati
     template<typename T>
@@ -468,7 +472,7 @@ private:
 
 public:
     template<typename T>
-    void leggi(const string &nome_file, vector<T *> &_classedati_xx);
+    void leggi_db(const string &nome_file, vector<T *> &_classedati_xx);
 
 
     //Per i dati da file con matricole da generare

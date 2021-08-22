@@ -390,7 +390,7 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
     vector<string> outstring;
 
     //Leggo i prof presenti nel database per confrontare le matricole
-//    _dbcal.leggi<Database::Professore>();
+//    _dbcal.leggi_db<Database::Professore>();
     _dbcal.leggi_prof_db();
     vector<Database::Professore *> professori_temp;
     professori_temp = _dbcal.getVProfessori();
@@ -609,7 +609,7 @@ vector<string> Calendario::leggi_db_date_sessioni(const vector<string> &argoment
     }
 
     for(const auto& i: outstring){
-        cout << "outstring leggi db date sessioni: " << i << endl;
+        cout << "outstring leggi_db db date sessioni: " << i << endl;
     }
 
     return outstring;

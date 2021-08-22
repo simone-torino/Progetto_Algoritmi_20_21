@@ -21,9 +21,9 @@ void Database::tfstampa(vector<T> _classedati_db, const string &file_db, bool ap
     }
 }
 
-//questa è identica a leggi<> tranne per l'incremento_id
+//questa è identica a leggi_db<> tranne per l'incremento_id
 template<typename T>
-void Database::t_aggiungi(vector<T *> &_classedati_db, const string &file_db) {
+void Database::leggi_in(const string &file_db, vector<T *> &_classedati_db)  {
     ifstream fin;
     fin.open(_file_argomento);
     try {
@@ -62,8 +62,9 @@ void Database::t_aggiungi(vector<T *> &_classedati_db, const string &file_db) {
 }
 
 //Per aggiornamento chiama una volta con file db e una volta con file argomento
+//leggi_db usato anche per i file aggiornamento con classedati_agg
 template<typename T>
-void Database::leggi(const string &nome_file, vector<T *> &_classedati_xx) {
+void Database::leggi_db(const string &nome_file, vector<T *> &_classedati_xx) {
     ifstream fin;
     fin.open(nome_file);
     //TODO: try catch per gestire file db non trovato
@@ -109,8 +110,8 @@ void Database::aggiorna_campo(const T (*get)(), void (*set)(const T&)) {
 template<typename T>
 void Database::t_aggiorna(vector<T *> &_classedati_db, vector<T *> &_classedati_agg, const string &file_db) {
 
-    leggi<T>(file_db, _classedati_db);
-    leggi<T>(_file_argomento, _classedati_agg);
+    leggi_db<T>(file_db, _classedati_db);
+    leggi_db<T>(_file_argomento, _classedati_agg);
 
     bool matricola_trovata = false;
 

@@ -139,27 +139,27 @@ void Database::target_aggiungi(options::opzione o) {
         case (options::studenti): {
             cout << "Aggiunta studenti in corso...\n";
             //funziona anche senza specificare il tipo
-            t_aggiungi<Database::Studente>(_studenti_db, _file_db_studenti);
+            leggi_in<Database::Studente>(_file_db_studenti, _studenti_db);
             break;
         }
         case options::professori: {
             cout << "Aggiunta professori in corso...\n";
-            t_aggiungi<Database::Professore>(_professori_db, _file_db_professori);
+            leggi_in<Database::Professore>(_file_db_professori, _professori_db);
             break;
         }
         case options::aule: {
             cout << "Aggiunta aule in corso...\n";
-            t_aggiungi<Database::Aula>(_aule_db, _file_db_aule);
+            leggi_in<Database::Aula>(_file_db_aule,_aule_db);
             break;
         }
         case options::corsi: {
             cout << "Aggiunta corsi in corso...\n";
-            t_aggiungi<Database::Corso>(_corsi_db, _file_db_corsi);
+            leggi_in<Database::Corso>(_file_db_corsi,_corsi_db);
             break;
         }
         case options::cds: {
             cout << "Aggiunta corsi di studio in corso...\n";
-            t_aggiungi(_cds_db, _file_db_cds);
+            leggi_in(_file_db_cds, _cds_db);
             break;
         }
         default:
@@ -410,8 +410,8 @@ void Database::nuova_aula(const string &row, bool source_db) {
 
 void Database::aggiorna_aule() {
 
-    leggi<Aula>(_file_db_aule, _aule_db);
-    leggi<Aula>(_file_argomento, _aule_agg);
+    leggi_db<Aula>(_file_db_aule, _aule_db);
+    leggi_db<Aula>(_file_argomento, _aule_agg);
 
 //    ifstream fin_db, fin_update;
 //    fin_db.open(_file_db_aule);
@@ -1043,6 +1043,14 @@ void Database::Corso_id::setIdCorso(const string &id_corso) {
     _id_corso = id_corso;
 }
 
+Database::Corso_id::Corso_id(const string &row) {
+    //arriva row del corso_db.txt
+    istringstream is(row);
+    string temp_id;
+    getline(is, temp_id, ';');
+
+}
+
 void Database::Corso_di_studio::setLaurea(bool laurea) {
     _laurea = laurea;
 }
@@ -1080,8 +1088,10 @@ void Database::Corso_di_studio::setCorsiPerSemestre(const vector<vector<Corso_id
 }
 
 Database::Corso_di_studio::Corso_di_studio(const string &row, const string &ultimo_id) {
-    //TODO: nei corsi di studio ci devono essere solo id_corso di corsi presenti in memoria (rileggi corsi_db ogni volta)
-    //TODO: leggi bs/l e trasforma in booleano
+    //TODO: nei corsi di studio ci devono essere solo id_corso di corsi presenti in memoria (rileggi corsi_db ogni volta) ma leggi_db solo corso_id
+    //TODO: leggi_db bs/l e trasforma in booleano
+
+
 
     vector<string> cds_temp;
     vector<vector<Corso_id>> lista_corsi_temp;
