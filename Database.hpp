@@ -21,6 +21,17 @@ void Database::tfstampa(vector<T> _classedati_db, const string &file_db, bool ap
     }
 }
 
+void isempty(std::ifstream& fptr)
+{
+//    fptr.peek() == std::ifstream::traits_type::eof()
+    fptr.get();
+    if(fptr.eof()){
+        throw runtime_error("File is empty");
+    }
+    //rimetto il puntatore all'inizio in modo da non saltare il primo carattere se il file non è vuot
+    fptr.seekg(ios::beg);
+}
+
 //questa è identica a leggi_db<> tranne per l'incremento_id
 template<typename T>
 void Database::leggi_in(const string &file_db, vector<T *> &_classedati_db)  {
@@ -42,6 +53,13 @@ void Database::leggi_in(const string &file_db, vector<T *> &_classedati_db)  {
     string row;
     string ultimo_id = leggi_id_maggiore(file_db);
     short unsigned int n = 1;
+
+    try{
+        isempty(fin);
+    }catch(runtime_error &e){
+        cout << e.what() << endl;
+        exit(5);
+    }
 
     while (!fin.eof()) {
         getline(fin, row, '\n');
@@ -77,6 +95,13 @@ void Database::leggi_db(const string &nome_file, vector<T *> &_classedati_xx) {
 
     string row;
     unsigned short n = 1;
+
+    try{
+        isempty(fin);
+    }catch(runtime_error &e){
+        cout << e.what() << endl;
+        exit(5);
+    }
 
     while (!fin.eof()) {
         getline(fin, row, '\n');
@@ -151,6 +176,8 @@ void Database::t_aggiorna(vector<T *> &_classedati_db, vector<T *> &_classedati_
         cout << "[Warning] Nessuna matricola da aggiornare è stata trovata e nessun campo e' stato aggiornato\n";
     }
 }
+
+//TODO: template leggi file (per indisponibilità, date sessioni,  ...?)
 
 
 #endif //PROGETTO_ALGORITMI_20_21_DATABASE_HPP

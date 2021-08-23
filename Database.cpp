@@ -656,8 +656,44 @@ void Database::leggi_corso_db() {
     }
 }
 
-vector<Database::Professore *> Database::getVProfessori() {
+vector<Database::Aula *> Database::getAuleDb() const {
+    return _aule_db;
+}
+
+vector<Database::Studente *> &Database::getStudentiDb() const {
+    return _studenti_db;
+}
+
+vector<Database::Professore *> &Database::getProfessoriDb() const {
     return _professori_db;
+}
+
+vector<Database::Corso *> &Database::getCorsiDb() const {
+    return _corsi_db;
+}
+
+vector<Database::Corso_di_studio *> &Database::getCdsDb() const {
+    return _cds_db;
+}
+
+const string &Database::getFileDbStudenti() const {
+    return _file_db_studenti;
+}
+
+const string &Database::getFileDbProfessori() const {
+    return _file_db_professori;
+}
+
+const string &Database::getFileDbAule() const {
+    return _file_db_aule;
+}
+
+const string &Database::getFileDbCorsi() const {
+    return _file_db_corsi;
+}
+
+const string &Database::getFileDbCds() const {
+    return _file_db_cds;
 }
 
 

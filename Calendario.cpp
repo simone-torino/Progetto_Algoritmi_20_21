@@ -388,10 +388,10 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
     vector<string> outstring;
 
     //Leggo i prof presenti nel database per confrontare le matricole
-//    _dbcal.leggi_db<Database::Professore>();
-    _dbcal.leggi_prof_db();
+    _dbcal.leggi_db<Database::Professore>(_dbcal.getFileDbProfessori(), _dbcal.getProfessoriDb());
+//    _dbcal.leggi_prof_db();
     vector<Database::Professore *> professori_temp;
-    professori_temp = _dbcal.getVProfessori();
+    professori_temp = _dbcal.getProfessoriDb();
 
     while (!fin.eof()) {
         getline(fin, s_temp);
@@ -477,9 +477,9 @@ void Calendario::check_anno_accademico(int year) const {
 
 void Calendario::ordina_giorni() {
 
-//    sort(_esami.begin(), _esami.end(), compare_date);
-    for (auto &i:_esami) {
-        for (auto &k:_esami) {
+//    sort(_esami_giorno.begin(), _esami_giorno.end(), compare_date);
+    for (auto &i:_esami_giorno) {
+        for (auto &k:_esami_giorno) {
             if (i.getData() != k.getData()) {
                 if (compare_date(i.getData(), k.getData())) {
                     GiornoSessione *temp;
@@ -559,8 +559,8 @@ void Calendario::GiornoSessione::Esame::fstampa_esame(ofstream &fout) const {
     if (_numero_versioni > 1) {
         for (int i = 1; i <= _numero_versioni; i++) {
             this->_id_esame.fstampa_id(fout);
-            fout << '[' << i << ']';
-            fout << '(' << _id_cds << ')';
+            fout << '[' << i << ']'; //numero versione
+            fout << '(' << _id_cds << ')'; //id corso di studi
             fout << ';';
         }
     } else {

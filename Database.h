@@ -217,7 +217,7 @@ public:
 
         Aula(const string &row, const string &ultimo_id);
 
-        Aula(const string &row);
+        explicit Aula(const string &row);
 
         void setId(const string &id_aula);
 
@@ -493,7 +493,27 @@ public:
 
     void leggi_corso_db();
 
-    vector<Professore *> getVProfessori();
+    //Metodi getter per passare dati alla classe calendario
+
+    vector<Aula *> &getAuleDb() const;
+
+    vector<Studente *> &getStudentiDb() const;
+
+    vector<Professore *> &getProfessoriDb() const;
+
+    vector<Corso *> &getCorsiDb() const;
+
+    vector<Corso_di_studio *> &getCdsDb() const;
+
+    const string &getFileDbStudenti() const;
+
+    const string &getFileDbProfessori() const;
+
+    const string &getFileDbAule() const;
+
+    const string &getFileDbCorsi() const;
+
+    const string &getFileDbCds() const;
 
 //funzioni per aggiornare dati
     void aggiorna_aule();

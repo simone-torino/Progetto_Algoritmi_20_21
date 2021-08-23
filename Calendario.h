@@ -105,9 +105,7 @@ private:
 
     const string file_db_date_sessioni = "db_date_sessioni.txt";
 
-    //TODO: cambio con struct??
     Anno_Accademico _anno_accademico;
-//    std::pair<string, string> _anno_accademico;
     Periodo _inverno1;
     Periodo _estate2;
     Periodo _autunno3;
@@ -160,7 +158,7 @@ public:
 
         struct Esame{
             int _numero_versioni;
-            Database::Corso_id _id_esame; //TODO: potrebbe anhe essere solo string
+            Database::Corso_id _id_esame; //TODO: potrebbe anche essere solo string
             string _id_cds;
             bool _fascia_oraria[6]{}; //Se l'indice corrispondente è vero, l'Esame occupa quella fascia
             void fstampa_esame(ofstream &fout) const;
@@ -174,7 +172,7 @@ public:
     };
 
 private:
-    vector<GiornoSessione> _esami;
+    vector<GiornoSessione> _esami_giorno;
 
 
 

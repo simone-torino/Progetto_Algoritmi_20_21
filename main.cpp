@@ -154,6 +154,9 @@ int main(int argc, char *argv[]) {
                     case (options::set_av):
                         cout << "Hai scelto: " << "impostazione periodi di indisponibilità\n";
 
+                        //Salvo professori da file db in memoria
+                        db.leggi_db(db.getFileDbProfessori(), db.getProfessoriDb());
+
                         cal.set_indisponibilita(converti_argv(argc, argv));
                         cal.fstampa_indisponibilita();
 
@@ -165,6 +168,9 @@ int main(int argc, char *argv[]) {
                 break;
             case (options::gen_esami):
                 cout << "Hai scelto: " << "generazione _date esami\n";
+
+                //Salvo corsi da file db in memoria
+                db.leggi_db(db.getFileDbCorsi(), db.getCorsiDb());
 
                 cal.genera_date_esami(converti_argv(argc, argv));
 
