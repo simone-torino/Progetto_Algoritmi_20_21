@@ -33,9 +33,9 @@ public:
         friend bool operator!=(const myDate &d1, const myDate &d2);
         friend bool operator==(const myDate &d1, const myDate &d2);
 
-        int days_in_year(int year) const;
-
-        int days_in_month(int month) const;
+//        int days_in_year(int year) const;
+//
+//        int days_in_month(int month) const;
 
     public:
         myDate();
@@ -121,7 +121,7 @@ private:
     //controlli sulle _date delle sessioni
     void check_sessioni() const;
 
-    void check_anno_accademico(int year) const;
+
 
     void display_date_sessioni() const;
 
@@ -131,6 +131,7 @@ private:
 
     void read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_ind);
 
+    void check_anno_accademico(int year) const;
 public:
 
     myDate offset(myDate &d, int n);

@@ -155,7 +155,7 @@ int main(int argc, char *argv[]) {
                         cout << "Hai scelto: " << "impostazione periodi di indisponibilità\n";
 
                         //Salvo professori da file db in memoria
-                        db.leggi_db(db.getFileDbProfessori(), db.getProfessoriDb());
+//                        db.leggi_db(db.getFileDbProfessori(), db.getProfessoriDb());
 
                         cal.set_indisponibilita(converti_argv(argc, argv));
                         cal.fstampa_indisponibilita();
@@ -170,7 +170,7 @@ int main(int argc, char *argv[]) {
                 cout << "Hai scelto: " << "generazione _date esami\n";
 
                 //Salvo corsi da file db in memoria
-                db.leggi_db(db.getFileDbCorsi(), db.getCorsiDb());
+//                db.leggi_db(db.getFileDbCorsi(), db.getCorsiDb());
 
                 cal.genera_date_esami(converti_argv(argc, argv));
 
@@ -180,28 +180,28 @@ int main(int argc, char *argv[]) {
                 throw err_parametri_linea_di_comando();
         }
     } catch (err_parametri_linea_di_comando &e) {
-        cout << "errore trovato" << e.what() << endl;
+        cout << "Errore trovato: : " << e.what() << endl;
         exit(6);
-    } catch (file_non_aperto &e) {
-        cout << "errore trovato" << e.what() << endl;
-        exit(-1);
+//    } catch (file_non_aperto &e) {
+//        cout << "Errore trovato: " << e.what() << endl;
+//        exit(-1);
     } catch (file_non_chiuso &e) {
-        cout << "errore trovato" << e.what() << endl;
+        cout << "Errore trovato: " << e.what() << endl;
         exit(-1);
     } catch (file_failed &e) {
-        cout << "errore trovato" << e.what() << endl;
+        cout << "Errore trovato: " << e.what() << endl;
         exit(-1);
     } catch (errore_matricola &e) {
-        cout << "errore trovato" << e.what() << endl;
+        cout << "Errore trovato: " << e.what() << endl;
         exit(4);
     } catch (errore_riga_vuota &e) {
-        cout << "errore trovato" << e.what() << endl;
+        cout << "Errore trovato: " << e.what() << endl;
         exit(7);
     } catch (errore_non_univoco &e) {
-        cout << "errore trovato" << e.what() << endl;
+        cout << "Errore trovato: " << e.what() << endl;
         exit(8);
     } catch (errore_incongruenza_file &e) {
-        cout << "errore trovato" << e.what() << endl;
+        cout << "Errore trovato: " << e.what() << endl;
         exit(9);
     }
     return 0;

@@ -232,8 +232,8 @@ void Database::target_fstampa(options::opzione o, bool append) {
 void controlli_file(ifstream &fin, const string &nome_file) {
     if (!fin.is_open()) {
         cout << "Errore file input " << nome_file << " non aperto\n";
-        throw file_non_aperto(); //TODO: da confermare
-//        throw std::runtime_error("Errore apertura file input, forse non e' stato trovato");
+//        throw file_non_aperto(); //TODO: da confermare
+        throw std::runtime_error("Errore apertura file input, forse non e' stato trovato");
     }
     if (!fin.good()) {
         throw file_failed();
@@ -412,42 +412,6 @@ void Database::aggiorna_aule() {
 
     leggi_db<Aula>(_file_db_aule, _aule_db);
     leggi_db<Aula>(_file_argomento, _aule_agg);
-
-//    ifstream fin_db, fin_update;
-//    fin_db.open(_file_db_aule);
-//    fin_update.open(_file_argomento);
-//    try {
-//        controlli_file(fin_db, _file_db_aule);
-//        controlli_file(fin_update, _file_argomento);
-//    } catch (std::runtime_error &e) {
-//        cout << e.what() << endl;
-//        exit(3);
-//    }
-//
-//    string row_db, row_update;
-//    unsigned short int n = 1;
-//    while (!fin_db.eof()) {
-//        getline(fin_db, row_db);
-//
-////      [Aggiornamento] La _matricola viene letta dal file
-//        if (!row_db.empty()) {
-//            nuova_aula(row_db, true);
-//        } else {
-//            cout << "[Warning] Riga " << n << " vuota in auladb\n";
-//        }
-//        n++;
-//    }
-//    n = 1;
-//    while (!fin_update.eof()) {
-//        getline(fin_update, row_update);
-////        Qui n dati vengono messi in un vettore diverso da quello di prima, così possono essere confrontati
-//        if (!row_update.empty()) {
-//            nuova_aula(row_update, false);
-//        } else {
-//            cout << "[Warning] Riga " << n << " vuota in aula update\n";
-//        }
-//        n++;
-//    }
 
     bool matricola_trovata = false;
 
@@ -656,23 +620,23 @@ void Database::leggi_corso_db() {
     }
 }
 
-vector<Database::Aula *> Database::getAuleDb() const {
+vector<Database::Aula *> &Database::getAuleDb()  {
     return _aule_db;
 }
 
-vector<Database::Studente *> &Database::getStudentiDb() const {
+vector<Database::Studente *> &Database::getStudentiDb() {
     return _studenti_db;
 }
 
-vector<Database::Professore *> &Database::getProfessoriDb() const {
+vector<Database::Professore *> &Database::getProfessoriDb() {
     return _professori_db;
 }
 
-vector<Database::Corso *> &Database::getCorsiDb() const {
+vector<Database::Corso *> &Database::getCorsiDb() {
     return _corsi_db;
 }
 
-vector<Database::Corso_di_studio *> &Database::getCdsDb() const {
+vector<Database::Corso_di_studio *> &Database::getCdsDb() {
     return _cds_db;
 }
 

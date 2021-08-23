@@ -494,16 +494,15 @@ public:
     void leggi_corso_db();
 
     //Metodi getter per passare dati alla classe calendario
+    vector<Aula *> &getAuleDb();
 
-    vector<Aula *> &getAuleDb() const;
+    vector<Studente *> &getStudentiDb();
 
-    vector<Studente *> &getStudentiDb() const;
+    vector<Professore *> &getProfessoriDb();
 
-    vector<Professore *> &getProfessoriDb() const;
+    vector<Corso *> &getCorsiDb();
 
-    vector<Corso *> &getCorsiDb() const;
-
-    vector<Corso_di_studio *> &getCdsDb() const;
+    vector<Corso_di_studio *> &getCdsDb();
 
     const string &getFileDbStudenti() const;
 

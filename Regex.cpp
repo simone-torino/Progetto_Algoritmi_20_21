@@ -19,6 +19,7 @@ bool Database::Regex::search_and_read(const std::regex &expression, const string
     }
 }
 
+//estrae regex multiple da una sola stringa
 vector<string>
 Database::Corso::Anno_Accademico::estraimultipli(const regex &reg, string &daleggere, const string &delim) {
     vector<string> v_temp;
@@ -108,7 +109,7 @@ std::regex Database::Regex::target_expression(lettura::reg_expressions exp) {
             return std::regex(_anno_acc);
 
         case lettura::indisp:
-            return std::regex();
+            return std::regex(_indisponibilita);
 
         case lettura::esame_campi:
             return std::regex(_esame_campi);

@@ -19,35 +19,35 @@ void Calendario::myDate::checkDate() const {
     }
 }
 
-int Calendario::myDate::days_in_year(int year) const {
-    if (year % 400 == 0) {
-        return 366;
-    }
-        // not a leap year if divisible by 100
-        // but not divisible by 400
-    else if (year % 100 == 0) {
-        return 365;
-    }
-        // leap year if not divisible by 100
-        // but divisible by 4
-    else if (year % 4 == 0) {
-        return 366;
-    }
-        // all other years are not leap years
-    else {
-        return 365;
-    }
-}
-
-int Calendario::myDate::days_in_month(int month) const {
-    if (month == 2) {
-        return 28;
-    } else if (month == 4 || month == 6 || month == 9 || month == 11) {
-        return 30;
-    } else {
-        return 31;
-    }
-}
+//int Calendario::myDate::days_in_year(int year) const {
+//    if (year % 400 == 0) {
+//        return 366;
+//    }
+//        // not a leap year if divisible by 100
+//        // but not divisible by 400
+//    else if (year % 100 == 0) {
+//        return 365;
+//    }
+//        // leap year if not divisible by 100
+//        // but divisible by 4
+//    else if (year % 4 == 0) {
+//        return 366;
+//    }
+//        // all other years are not leap years
+//    else {
+//        return 365;
+//    }
+//}
+//
+//int Calendario::myDate::days_in_month(int month) const {
+//    if (month == 2) {
+//        return 28;
+//    } else if (month == 4 || month == 6 || month == 9 || month == 11) {
+//        return 30;
+//    } else {
+//        return 31;
+//    }
+//}
 
 int Calendario::myDate::date_to_days() const {
 
@@ -301,7 +301,7 @@ void Calendario::set_indisponibilita(const vector<string> &argomenti_ind) {
         controlli_file(fin_db, db_indisponibilita);
     } catch (std::runtime_error &e) {
         cout << e.what() << endl;
-        cout << "Creazione file _dbcal indisponibilita per l'anno accademico " << _anno_accademico.getPrimo() << '-'
+        cout << "Creazione file indisponibilita per l'anno accademico " << _anno_accademico.getPrimo() << '-'
              << _anno_accademico.getSecondo() << endl;
         update = false;
     }
@@ -312,7 +312,7 @@ void Calendario::set_indisponibilita(const vector<string> &argomenti_ind) {
         read_indisponibilita(fin_db, _ind_db);
         update_indisponibilita(fin_in);
     } else {
-        //Se il file _dbcal è stato appena creato ci metto tutto ciò che leggo in input
+        //Se il file indisponibilitadb è stato appena creato ci metto tutto ciò che leggo in input
         read_indisponibilita(fin_in, _ind_db);
     }
 
@@ -377,11 +377,15 @@ void Calendario::update_indisponibilita(ifstream &fin_in) {
             _ind_db.push_back(i);
         }
     }
-    cout << "Stampo _dbcal:\n";
+    cout << "Stampo indisponibilita:\n";
     display_indisponibilita(_ind_db);
 
 }
 
+//qua non sono riuscito a ricondurlo ad un template
+//perche dovrei passargli il vettore di matricole, ma il costruttore template prende un solo parametro
+//e check_annoaccademico dovrebbe essere static e non so come passarglielo
+//file pointer to file_indisponibilita.txt
 void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_ind) {
     string s_temp;
     int n = 1;
@@ -390,8 +394,11 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
     //Leggo i prof presenti nel database per confrontare le matricole
     _dbcal.leggi_db<Database::Professore>(_dbcal.getFileDbProfessori(), _dbcal.getProfessoriDb());
 //    _dbcal.leggi_prof_db();
+
+    //I prof vengono letti nel main
     vector<Database::Professore *> professori_temp;
     professori_temp = _dbcal.getProfessoriDb();
+    //Non copio le matricole in un altro vettore perchè dovrei comunque chiamare getMatricola n volte
 
     while (!fin.eof()) {
         getline(fin, s_temp);
@@ -633,3 +640,61 @@ vector<Calendario::Periodo> Calendario::Indisponibilita::getDate() const {
 string Calendario::Indisponibilita::getMatricolaProf() const {
     return _matricola;
 }
+
+//ci ho provato
+//Calendario::Indisponibilita::Indisponibilita(const string &row) {
+//    vector<string> outstring;
+//    //leggo il file indisponibilita
+//    if (!_regind.search_and_read(_regind.target_expression(lettura::indisp), row, outstring)) {
+//        cerr << "Errore formattazione file indisponibilita\n";
+//        exit(3);
+//    }
+//    //trasformo i numeri letti in interi
+//    vector<int> gmy; //Data come interi
+//    try {
+//        transform(outstring.begin() + 1, outstring.end(), back_inserter(gmy), strToInt);
+//    } catch (std::runtime_error &e) {
+//        cout << "Errore string to int: " << e.what() << endl;
+//    }
+//
+//    //compongo un oggetto indisponibilita per poi salvarlo
+////    Indisponibilita ind_temp;
+//    int j = 1, offset = 3;
+//    _matricola = outstring[j]; //Prendo la stringa dal vettore non convertito
+//    bool matricola_presente = false;
+//    for (auto &i: ) {
+//        //                cout << i->getMatricola() << endl;
+//        if ('d' + _matricola == i->getMatricola()) {
+//            matricola_presente = true;
+//        }
+//    }
+//    if (!matricola_presente) {
+//        //TODO: eccezioni
+//        cout << "Errore matricola " << _matricola << " professore non presente nel database\n";
+//        exit(7);
+//    }
+//
+//    for (; j < gmy.size();) { //ciclo i periodi di una riga indisponibilita (comprende la _matricola)
+//        Periodo p_temp;
+//        myDate data_inizio_temp, data_fine_temp;
+//        data_inizio_temp.setData(gmy[j], gmy[j + 1], gmy[j + 2]);
+//        //                p_temp._primo.setData(gmy[j], gmy[j + 1], gmy[j + 2]);
+//        j += offset;
+//        data_fine_temp.setData(gmy[j], gmy[j + 1], gmy[j + 2]);
+//        //                p_temp._secondo.setData(gmy[j], gmy[j + 1], gmy[j + 2]);
+//        j += offset;
+//
+//
+//        try { //TODO: eccezioni
+//            p_temp.setPeriodo(data_inizio_temp, data_fine_temp);
+//            check_anno_accademico(data_fine_temp.getYear());
+//            check_anno_accademico(data_inizio_temp.getYear());
+//        } catch (runtime_error &e) {
+//            cout << e.what() << endl;
+//            exit(5);
+//        }
+//
+//        _date.push_back(p_temp);
+//        //            cout << "Debug: " << p_temp << endl;
+//    }
+//}
