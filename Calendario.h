@@ -90,19 +90,24 @@ private:
         string getMatricolaProf() const;
     };
 
-    struct Anno_Accademico{
+    class Anno_Accademico{
         string _primo, _secondo;
         friend std::ostream &operator<<(std::ostream &stream, const Anno_Accademico &a){
             stream << a._primo << '-' << a._secondo;
             return stream;
         }
+    public:
+        string getPrimo() const;
+        string getSecondo() const;
+
         void setAnnoAccademico(const string &inizio,const string &fine);
     };
 
     const string file_db_date_sessioni = "db_date_sessioni.txt";
 
     //TODO: cambio con struct??
-    std::pair<string, string> _anno_accademico;
+    Anno_Accademico _anno_accademico;
+//    std::pair<string, string> _anno_accademico;
     Periodo _inverno1;
     Periodo _estate2;
     Periodo _autunno3;

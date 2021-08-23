@@ -160,12 +160,11 @@ void Calendario::set_date_sessioni(const vector<string> &argomenti_sessioni, boo
         cerr << "Errore formattazione anno accademico\n";
         exit(3); //TODO eccezioni
     }
-    _anno_accademico.first = outstring[1];
-    _anno_accademico.second = outstring[2];
+    _anno_accademico.setAnnoAccademico(outstring[1], outstring[2]);
     outstring.clear();
 
 
-    cout << "Anno accademico: " << _anno_accademico.first << '-' << _anno_accademico.second << endl;
+    cout << "Anno accademico: " << _anno_accademico.getPrimo() << '-' << _anno_accademico.getSecondo() << endl;
 
     //Lettura _date di _primo e _secondo sessioni
     for (auto & i : periodi_temp) {
@@ -256,7 +255,7 @@ void Calendario::fstampa_date_sessioni() {
     ofstream fout;
 
     //Un file diverso per ogni anno accademico
-    fout.open(_anno_accademico.first + '-' + _anno_accademico.second + file_db_date_sessioni, ios::out);
+    fout.open(_anno_accademico.getPrimo() + '-' + _anno_accademico.getSecondo() + file_db_date_sessioni, ios::out);
     controlli_file(fout, file_db_date_sessioni);
 
     fout << _inverno1 << endl << _estate2 << endl << _autunno3;
@@ -276,17 +275,16 @@ void Calendario::set_indisponibilita(const vector<string> &argomenti_ind) {
 
     vector<string> outstring;
 
-    //Lettura l'anno accademico di riferimento
+    //Lettura dell'anno accademico di riferimento
     if (!_regcal.search_and_read(_regcal.target_expression(lettura::anno_acc), argomenti_ind[3], outstring)) {
         cerr << "Errore formattazione anno accademico\n";
         exit(3);
     }
-    _anno_accademico.first = outstring[1];
-    _anno_accademico.second = outstring[2];
+    _anno_accademico.setAnnoAccademico(outstring[1], outstring[2]);
     outstring.clear();
 
     ifstream fin_db, fin_in;
-    string db_indisponibilita = _anno_accademico.first + '-' + _anno_accademico.second + "db_indisponibilita.txt";
+    string db_indisponibilita = _anno_accademico.getPrimo() + '-' + _anno_accademico.getSecondo() + "db_indisponibilita.txt";
     fin_db.open(db_indisponibilita, ios::in);
 //    cout << "DEBUG: " << argomenti_ind[4] << endl;
     fin_in.open(argomenti_ind[4], ios::in);
@@ -303,8 +301,8 @@ void Calendario::set_indisponibilita(const vector<string> &argomenti_ind) {
         controlli_file(fin_db, db_indisponibilita);
     } catch (std::runtime_error &e) {
         cout << e.what() << endl;
-        cout << "Creazione file _dbcal indisponibilita per l'anno accademico " << _anno_accademico.first << '-'
-             << _anno_accademico.second << endl;
+        cout << "Creazione file _dbcal indisponibilita per l'anno accademico " << _anno_accademico.getPrimo() << '-'
+             << _anno_accademico.getSecondo() << endl;
         update = false;
     }
 
@@ -337,7 +335,7 @@ void Calendario::display_indisponibilita(vector<Indisponibilita> &v) const {
 void Calendario::fstampa_indisponibilita() {
     //C'è un file diverso per ogni anno accademico
     ofstream fout;
-    string db_indisponibilita = _anno_accademico.first + '-' + _anno_accademico.second + "db_indisponibilita.txt";
+    string db_indisponibilita = _anno_accademico.getPrimo() + '-' + _anno_accademico.getSecondo() + "db_indisponibilita.txt";
     //Stampa sempre da capo, quindi non c'è bisogno di append
     fout.open(db_indisponibilita, ios::out);
 
@@ -471,18 +469,11 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
 }
 
 void Calendario::check_anno_accademico(int year) const {
-    if (to_string(year) != _anno_accademico.second) {
+    if (to_string(year) != _anno_accademico.getSecondo()) {
         cout << "Errore anno: " << year << endl;
         throw std::runtime_error("Almeno una data non corrisponde all'anno accademico di riferimento");
     }
 }
-
-//bool compare_dates(Calendario::GiornoSessione &i, Calendario::GiornoSessione &j){
-//    if(subtract(i.getData(),j.getData()) > 0)
-//        return true;
-//    else
-//        return false;
-//}
 
 void Calendario::ordina_giorni() {
 
@@ -532,6 +523,14 @@ void Calendario::Anno_Accademico::setAnnoAccademico(const string &inizio, const 
         _primo = inizio;
         _secondo = fine;
     }
+}
+
+string Calendario::Anno_Accademico::getPrimo() const {
+    return _primo;
+}
+
+string Calendario::Anno_Accademico::getSecondo() const {
+    return _secondo;
 }
 
 void Calendario::GiornoSessione::fstampa_giornosessione(ofstream &fout) {
