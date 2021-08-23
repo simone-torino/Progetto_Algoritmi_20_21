@@ -58,19 +58,23 @@ public:
 
 private:
 
-    struct Periodo{
+    class Periodo{
         myDate _inizio;
         myDate _fine;
+
 
         friend std::ostream &operator<<(std::ostream &stream, const Periodo &p) {
             stream << p._inizio << '|' << p._fine;
             return stream;
         }
+    public:
+        myDate getInizio() const;
+        myDate getFine() const;
 
         void setPeriodo(const myDate &inizio, const myDate &fine);
     };
 
-    struct Indisponibilita{
+    class Indisponibilita{
         vector<Periodo> _date;
         string _matricola = "d";
 
@@ -81,6 +85,9 @@ private:
             }
             return stream;
         }
+    public:
+        vector<Periodo> getDate() const;
+        string getMatricolaProf() const;
     };
 
     struct Anno_Accademico{

@@ -215,28 +215,28 @@ void Calendario::set_date_sessioni(const vector<string> &argomenti_sessioni, boo
 
 void Calendario::display_date_sessioni() const {
     cout << "Sessione invernale: ";
-    cout << "dal " << _inverno1._inizio << " al " << _inverno1._fine << endl;
+    cout << "dal " << _inverno1.getInizio() << " al " << _inverno1.getFine() << endl;
     cout << "Sessione estiva: ";
-    cout << "dal " << _estate2._inizio << " al " << _estate2._fine << endl;
+    cout << "dal " << _estate2.getInizio() << " al " << _estate2.getFine() << endl;
     cout << "Sessione autunnale: ";
-    cout << "dal " << _autunno3._inizio << " al " << _autunno3._fine << endl;
+    cout << "dal " << _autunno3.getInizio() << " al " << _autunno3.getFine() << endl;
 }
 
 void Calendario::check_sessioni() const {
-    check_anno_accademico(_inverno1._inizio.getYear());
-    check_anno_accademico(_inverno1._fine.getYear());
-    check_anno_accademico(_estate2._inizio.getYear());
-    check_anno_accademico(_estate2._fine.getYear());
-    check_anno_accademico(_autunno3._inizio.getYear());
-    check_anno_accademico(_autunno3._fine.getYear());
+    check_anno_accademico(_inverno1.getInizio().getYear());
+    check_anno_accademico(_inverno1.getFine().getYear());
+    check_anno_accademico(_estate2.getInizio().getYear());
+    check_anno_accademico(_estate2.getFine().getYear());
+    check_anno_accademico(_autunno3.getInizio().getYear());
+    check_anno_accademico(_autunno3.getFine().getYear());
 
-    if (subtract(_inverno1._fine, _inverno1._inizio) != SEI_SETTIMANE) {
+    if (subtract(_inverno1.getFine(), _inverno1.getInizio()) != SEI_SETTIMANE) {
         throw std::runtime_error("Errore: la sessione invernale inserita non e' di sei settimane");
     }
-    if (subtract(_estate2._fine, _estate2._inizio) != SEI_SETTIMANE) {
+    if (subtract(_estate2.getFine(), _estate2.getInizio()) != SEI_SETTIMANE) {
         throw std::runtime_error("Errore: la sessione estiva inserita non e' di sei settimane");
     }
-    if (subtract(_autunno3._fine, _autunno3._inizio) != QUATTRO_SETTIMANE) {
+    if (subtract(_autunno3.getFine(), _autunno3.getInizio()) != QUATTRO_SETTIMANE) {
         throw std::runtime_error("Errore: la sessione autunnale inserita non e' di quattro settimane");
     }
 
@@ -263,7 +263,7 @@ void Calendario::fstampa_date_sessioni() {
 }
 
 bool Calendario::falls_within(Calendario::Periodo p, Calendario::myDate d) {
-    if ((subtract(d, p._inizio) < 0) || (subtract(p._fine, d) > 0)) {
+    if ((subtract(d, p.getInizio()) < 0) || (subtract(p.getFine(), d) > 0)) {
         cout << "La data " << d << " non e' compresa nel periodo " << p << endl;
         return false;
     } else
@@ -326,8 +326,8 @@ void Calendario::set_indisponibilita(const vector<string> &argomenti_ind) {
 void Calendario::display_indisponibilita(vector<Indisponibilita> &v) const {
     cout << "Indisponibilita salvate in memoria:\n";
     for (const auto &i: v) {
-        cout << i._matricola;
-        for (auto k: i._date) {
+        cout << i.getMatricolaProf();
+        for (auto k: i.getDate()) {
             cout << ' ' << k;
         }
         cout << '\n';
@@ -350,8 +350,8 @@ void Calendario::fstampa_indisponibilita() {
 
     cout << "Stampando indisponibilita su file...\n";
     for (const auto &i: _ind_db) {
-        fout << 'd' << i._matricola;
-        for (auto k: i._date) {
+        fout << 'd' << i.getMatricolaProf();
+        for (auto k: i.getDate()) {
             fout << ';' << k;
         }
         fout << '\n';
@@ -369,9 +369,9 @@ void Calendario::update_indisponibilita(ifstream &fin_in) {
     for (const auto &i: _ind_agg) {
         for (auto &k: _ind_db) {
             //Se trovo una _matricola uguale nel database
-            if (i._matricola == k._matricola) {
+            if (i.getMatricolaProf() == k.getMatricolaProf()) {
                 //Aggiorno le _date
-                k._date = i._date;
+                k.getDate() = i.getDate();
                 trovato = true;
             }
         }
@@ -415,17 +415,17 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
             //compongo un oggetto indisponibilita per poi salvarlo
             Indisponibilita ind_temp;
             int j = 1, offset = 3;
-            ind_temp._matricola = outstring[j]; //Prendo la stringa dal vettore non convertito
+            ind_temp.getMatricolaProf() = outstring[j]; //Prendo la stringa dal vettore non convertito
             bool matricola_presente = false;
             for (auto &i: professori_temp) {
 //                cout << i->getMatricola() << endl;
-                if ('d' + ind_temp._matricola == i->getMatricola()) {
+                if ('d' + ind_temp.getMatricolaProf() == i->getMatricola()) {
                     matricola_presente = true;
                 }
             }
             if (!matricola_presente) {
                 //TODO: eccezioni
-                cout << "Errore matricola " << ind_temp._matricola << " professore non presente nel database\n";
+                cout << "Errore matricola " << ind_temp.getMatricolaProf() << " professore non presente nel database\n";
                 exit(7);
             }
 
@@ -449,7 +449,7 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
                     exit(5);
                 }
 
-                ind_temp._date.push_back(p_temp);
+                ind_temp.getDate().push_back(p_temp);
 //            cout << "Debug: " << p_temp << endl;
             }
 
@@ -514,6 +514,14 @@ void Calendario::Periodo::setPeriodo(const myDate &inizio, const myDate &fine) {
         throw runtime_error("Errore periodo non valido");
     }
 
+}
+
+Calendario::myDate Calendario::Periodo::getInizio() const {
+    return _inizio;
+}
+
+Calendario::myDate Calendario::Periodo::getFine() const {
+    return _fine;
 }
 
 void Calendario::Anno_Accademico::setAnnoAccademico(const string &inizio, const string &fine) {
@@ -617,4 +625,12 @@ vector<string> Calendario::leggi_db_date_sessioni(const vector<string> &argoment
 
 Calendario::Calendario(const string &file_argomento) {
     _file_argomento = file_argomento;
+}
+
+vector<Calendario::Periodo> Calendario::Indisponibilita::getDate() const {
+    return _date;
+}
+
+string Calendario::Indisponibilita::getMatricolaProf() const {
+    return _matricola;
 }
