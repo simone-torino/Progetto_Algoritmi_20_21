@@ -121,8 +121,6 @@ private:
     //controlli sulle _date delle sessioni
     void check_sessioni() const;
 
-
-
     void display_date_sessioni() const;
 
     void display_indisponibilita(vector<Indisponibilita> &v) const;

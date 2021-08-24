@@ -586,6 +586,11 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
     _dbcal.target_fstampa(options::corsi, true); //debug
 
     //da finire
+
+    /* Dati da salvara dal database:
+     * Corso: durata esame, bool semestre di appartenenza (elenco semestri con i corso_id)
+     * Id corso di studi
+     * Versioni esami, raggruppamenti*/
 }
 
 vector<string> Calendario::leggi_db_date_sessioni(const vector<string> &argomenti_es) {
