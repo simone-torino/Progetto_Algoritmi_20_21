@@ -509,9 +509,8 @@ void Calendario::Periodo::setPeriodo(const myDate &inizio, const myDate &fine) {
         _fine = fine;
     } else {
         cout << "Periodo: " << inizio << '|' << fine << " non valido\n";
-        throw runtime_error("Errore periodo non valido");
+        throw runtime_error("Errore periodo non valido"); //TODO: eccezioni periodo_non_valido
     }
-
 }
 
 Calendario::myDate Calendario::Periodo::getInizio() const {
