@@ -1,0 +1,3 @@
+"C:\Program Files\JetBrains\CLion 2020.3.2\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\Progetto_Algoritmi_20_21.dir/objects.a
+C:\PROGRA~2\mingw-w64\i686-8.1.0-posix-dwarf-rt_v6-rev0\mingw32\bin\ar.exe cr CMakeFiles\Progetto_Algoritmi_20_21.dir/objects.a @CMakeFiles\Progetto_Algoritmi_20_21.dir\objects1.rsp
+C:\PROGRA~2\mingw-w64\i686-8.1.0-posix-dwarf-rt_v6-rev0\mingw32\bin\g++.exe -g -Wl,--whole-archive CMakeFiles\Progetto_Algoritmi_20_21.dir/objects.a -Wl,--no-whole-archive -o Progetto_Algoritmi_20_21.exe -Wl,--out-implib,libProgetto_Algoritmi_20_21.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\Progetto_Algoritmi_20_21.dir\linklibs.rsp
