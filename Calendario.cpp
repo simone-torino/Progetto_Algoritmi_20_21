@@ -204,11 +204,11 @@ void Calendario::set_date_sessioni(const vector<string> &argomenti_sessioni, boo
     }
     this->display_date_sessioni();
 
-    try {
-        check_sessioni();
-    } catch (std::runtime_error &e) {
-        cout << e.what() << endl; //TODO: da definire
-    }
+    //try {
+        check_sessioni(); // non è più necessario fare il try qui perchè lo fa già all'interno
+   // } catch (std::runtime_error &e) {
+   //   cout << e.what() << endl; //TODO: da definire
+   //}
 
 }
 
@@ -222,12 +222,15 @@ void Calendario::display_date_sessioni() const {
 }
 
 void Calendario::check_sessioni() const {
-    check_anno_accademico(_inverno1.getInizio().getYear());
-    check_anno_accademico(_inverno1.getFine().getYear());
-    check_anno_accademico(_estate2.getInizio().getYear());
-    check_anno_accademico(_estate2.getFine().getYear());
-    check_anno_accademico(_autunno3.getInizio().getYear());
-    check_anno_accademico(_autunno3.getFine().getYear());
+   try{ check_anno_accademico(_inverno1.getInizio().getYear());  //try su tutti i check
+        check_anno_accademico(_inverno1.getFine().getYear());
+        check_anno_accademico(_estate2.getInizio().getYear());
+        check_anno_accademico(_estate2.getFine().getYear());
+        check_anno_accademico(_autunno3.getInizio().getYear());
+        check_anno_accademico(_autunno3.getFine().getYear());
+   } catch (err_check_anno_accademico &e) {   //se uno dei check genera un'eccezione generiamo messagio di errore
+       cout << e.what() << endl;
+   }
 
     if (subtract(_inverno1.getFine(), _inverno1.getInizio()) != SEI_SETTIMANE) {
         throw std::runtime_error("Errore: la sessione invernale inserita non e' di sei settimane");
@@ -478,7 +481,7 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
 void Calendario::check_anno_accademico(int year) const {
     if (to_string(year) != _anno_accademico.getSecondo()) {
         cout << "Errore anno: " << year << endl;
-        throw std::runtime_error("Almeno una data non corrisponde all'anno accademico di riferimento");
+        throw err_check_anno_accademico(); //se entro nell'if genero l'eccezione altrimenti non fa nulla
     }
 }
 

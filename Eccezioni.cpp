@@ -162,3 +162,8 @@ const char * errore_cfu::what() const noexcept {return messaggio;}
 
 errore_incongruenza_file::errore_incongruenza_file():messaggio("i file non sono gli stessi non è possibile svolgere le operazioni") {}
 const char * errore_incongruenza_file::what() noexcept {return messaggio;}
+
+err_check_anno_accademico::err_check_anno_accademico():messaggio("Almeno una data non corrisponde all'anno accademico di riferimento"){}
+const char* err_check_anno_accademico::what() noexcept {return messaggio;}
+
+

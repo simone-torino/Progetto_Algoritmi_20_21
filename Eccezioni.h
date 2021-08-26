@@ -268,6 +268,14 @@ public:
     errore_incongruenza_file();
 };
 
+class err_check_anno_accademico:public std::exception{
+private:
+    const char* messaggio;
+public:
+    const char* what() noexcept;
+    err_check_anno_accademico();
+};
+
 
 
 #endif //PROGETTO_3_ECCEZIONI_H
