@@ -458,11 +458,14 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
                 j += offset;
 
 
-                try { //TODO: eccezioni
+                try {
                     p_temp.setPeriodo(data_inizio_temp, data_fine_temp);
                     check_anno_accademico(data_fine_temp.getYear());
                     check_anno_accademico(data_inizio_temp.getYear());
-                } catch (runtime_error &e) {
+                } catch (err_periodo &e) {
+                    cout << e.what() << endl;
+                    exit(5);
+                } catch (err_check_anno_accademico &e){
                     cout << e.what() << endl;
                     exit(5);
                 }
@@ -516,13 +519,14 @@ void Calendario::ordina_giorni() {
 void Calendario::Periodo::setPeriodo(const myDate &inizio, const myDate &fine) {
     if (subtract(fine, inizio) >= 0) {
         if (subtract(fine, inizio) == 0) {
-            cout << "[Warning] Il periodo: " << inizio << '|' << fine << " indica un giorno solo\n";
+           // cout << "[Warning] Il periodo: " << inizio << '|' << fine << " indica un giorno solo\n";
+           throw err_periodo(); //descrizione stampata dall'ecceaione
         }
         _inizio = inizio;
         _fine = fine;
     } else {
-        cout << "Periodo: " << inizio << '|' << fine << " non valido\n";
-        throw runtime_error("Errore periodo non valido"); //TODO: eccezioni periodo_non_valido
+        //cout << "Periodo: " << inizio << '|' << fine << " non valido\n";
+        throw err_periodo(); // ora la descrizione viene stampata dall'eccezione
     }
 }
 
@@ -609,11 +613,14 @@ vector<string> Calendario::leggi_db_date_sessioni(const vector<string> &argoment
     ifstream fin;
     const string f_db_sessioni = argomenti_es[2] + file_db_date_sessioni;
     fin.open(f_db_sessioni, ios::in);
-    try{ //TODO: eccezioni
+    try{
         controlli_file(fin, f_db_sessioni);
-    }catch(runtime_error &e){
+    }catch(file_non_aperto &e){
         cout << e.what() << endl;
-        cout << "Errore: file " << f_db_sessioni << " db date sessioni Esame non trovato\n";
+        //cout << "Errore: file " << f_db_sessioni << " db date sessioni Esame non trovato\n";
+        exit(9);
+    } catch (file_failed &e){
+        cout << e.what() << endl;
         exit(9);
     }
 
@@ -686,7 +693,7 @@ string Calendario::Indisponibilita::getMatricolaProf() const {
 //        }
 //    }
 //    if (!matricola_presente) {
-//        //TODO: eccezioni
+//
 //        cout << "Errore matricola " << _matricola << " professore non presente nel database\n";
 //        exit(7);
 //    }
@@ -702,7 +709,7 @@ string Calendario::Indisponibilita::getMatricolaProf() const {
 //        j += offset;
 //
 //
-//        try { //TODO: eccezioni
+//        try {
 //            p_temp.setPeriodo(data_inizio_temp, data_fine_temp);
 //            check_anno_accademico(data_fine_temp.getYear());
 //            check_anno_accademico(data_inizio_temp.getYear());
