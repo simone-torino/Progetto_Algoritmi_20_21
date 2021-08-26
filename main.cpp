@@ -132,7 +132,7 @@ int main(int argc, char *argv[]) {
 
                         break;
                     default:
-                        //TODO: eccezione
+
                         cout << "Errore inserimento parametri procedura aggiornamento\n";
                         throw err_parametri_linea_di_comando();
                 }
