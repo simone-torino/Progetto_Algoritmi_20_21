@@ -292,17 +292,19 @@ void Calendario::set_indisponibilita(const vector<string> &argomenti_ind) {
 //    cout << "DEBUG: " << argomenti_ind[4] << endl;
     fin_in.open(argomenti_ind[4], ios::in);
 
-    try { //TODO: eccezioni
-        controlli_file(fin_in, argomenti_ind[4]);
-    } catch (std::runtime_error &e) {
+    try {
+        controlli_file(fin_in, argomenti_ind[4]); //ora controlli_file può generare due eccezzioni
+    } catch (file_non_aperto &e) {
         cout << e.what() << endl;
         exit(4);
+    } catch (file_failed &e){
+        cout << e.what() << endl;
     }
     bool update = true;
 
-    try { //TODO: eccezioni
+    try {
         controlli_file(fin_db, db_indisponibilita);
-    } catch (std::runtime_error &e) {
+    } catch (file_non_aperto &e) { //ora manda il messaggio "file non aperto o inesistente" poi lo crea
         cout << e.what() << endl;
         cout << "Creazione file indisponibilita per l'anno accademico " << _anno_accademico.getPrimo() << '-'
              << _anno_accademico.getSecondo() << endl;
@@ -344,9 +346,12 @@ void Calendario::fstampa_indisponibilita() {
 
     try {
         controlli_file(fout, db_indisponibilita);
-    } catch (std::runtime_error &e) {
+    } catch (file_non_aperto &e) {
         cout << e.what() << endl;
-        exit(3); //TODO: eccezioni
+        exit(3); //ora come nel controllo dei file di input controlla sia l'apertura che flag di errore
+    } catch (file_failed &e){
+        cout << e.what() << endl;
+        exit(3);
     }
 
     cout << "Stampando indisponibilita su file...\n";
@@ -425,15 +430,20 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
             int j = 1, offset = 3;
             ind_temp.getMatricolaProf() = outstring[j]; //Prendo la stringa dal vettore non convertito
             bool matricola_presente = false;
-            for (auto &i: professori_temp) {
+            try {
+                for (auto &i: professori_temp) {
 //                cout << i->getMatricola() << endl;
-                if ('d' + ind_temp.getMatricolaProf() == i->getMatricola()) {
-                    matricola_presente = true;
+                    if ('d' + ind_temp.getMatricolaProf() == i->getMatricola()) {
+                        matricola_presente = true;
+                    }
+
                 }
-            }
-            if (!matricola_presente) {
-                //TODO: eccezioni
-                cout << "Errore matricola " << ind_temp.getMatricolaProf() << " professore non presente nel database\n";
+                if (!matricola_presente) {
+
+                    throw prof_non_presente(); //se non cìè riscontro genero eccezione
+                }
+            } catch (prof_non_presente &e) {
+                cout << ind_temp.getMatricolaProf() << " " << e.what() << endl; //stampo messaggio
                 exit(7);
             }
 

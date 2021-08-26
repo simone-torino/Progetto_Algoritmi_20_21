@@ -232,8 +232,8 @@ void Database::target_fstampa(options::opzione o, bool append) {
 void controlli_file(ifstream &fin, const string &nome_file) {
     if (!fin.is_open()) {
         cout << "Errore file input " << nome_file << " non aperto\n";
-//        throw file_non_aperto(); //TODO: da confermare
-        throw std::runtime_error("Errore apertura file input, forse non e' stato trovato");
+        throw file_non_aperto(); //genera l'eccezione file_non_aperto
+//        throw std::runtime_error("Errore apertura file input, forse non e' stato trovato");
     }
     if (!fin.good()) {
         throw file_failed();
@@ -244,10 +244,10 @@ void controlli_file(ifstream &fin, const string &nome_file) {
 void controlli_file(ofstream &fout, const string &nome_file) {
     if (!fout.is_open()) {
         cout << "Errore file output " << nome_file << " non aperto\n";
-        throw std::runtime_error("Errore apertura file output");
+        throw file_non_aperto(); //stessa eccezione vista sopra tanto scrive già il cout di che tipo è il file
     }
     if (!fout.good()) {
-        throw std::runtime_error("Errore file output");
+        throw file_failed(); // anche qui come nella funzione sopra
     }
 }
 
