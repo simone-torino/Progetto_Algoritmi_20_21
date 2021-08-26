@@ -207,7 +207,7 @@ void Calendario::set_date_sessioni(const vector<string> &argomenti_sessioni, boo
     //try {
         check_sessioni(); // non è più necessario fare il try qui perchè lo fa già all'interno
    // } catch (std::runtime_error &e) {
-   //   cout << e.what() << endl; //TODO: da definire
+   //   cout << e.what() << endl;
    //}
 
 }
