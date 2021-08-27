@@ -265,7 +265,14 @@ void Calendario::fstampa_date_sessioni() {
 
     //Un file diverso per ogni anno accademico
     fout.open(_anno_accademico.getPrimo() + '-' + _anno_accademico.getSecondo() + file_db_date_sessioni, ios::out);
-    controlli_file(fout, file_db_date_sessioni);
+
+    try {
+        controlli_file(fout, file_db_date_sessioni);
+    } catch (file_non_aperto &e){
+        cout << e.what() << endl;
+    } catch (file_failed &e){
+        cout << e.what() << endl;
+    }
 
     fout << _inverno1 << endl << _estate2 << endl << _autunno3;
 }
@@ -285,7 +292,7 @@ void Calendario::set_indisponibilita(const vector<string> &argomenti_ind) {
     vector<string> outstring;
 
     //Lettura dell'anno accademico di riferimento
-    try {_regcal.search_and_read(_regcal.target_expression(lettura::anno_acc), argomenti_ind[3], outstring);
+    try { _regcal.search_and_read(_regcal.target_expression(lettura::anno_acc), argomenti_ind[3], outstring);
 
     } catch (errore_formattazione &e){
         cout << e.what() << endl;

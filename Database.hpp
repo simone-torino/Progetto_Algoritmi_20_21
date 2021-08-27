@@ -15,7 +15,15 @@ void Database::tfstampa(vector<T> _classedati_db, const string &file_db, bool ap
         fout.open(file_db, ios::app);
     else
         fout.open(file_db, ios::out);
-    controlli_file(fout, file_db);
+
+    try {
+        controlli_file(fout, file_db);
+    } catch (file_non_aperto &e){
+        cout << e.what() << endl;
+    } catch (file_failed &e){
+        cout << e.what() << endl;
+    }
+
     for (auto i : _classedati_db) {
         i->fstampa(fout);
     }
@@ -39,9 +47,9 @@ void Database::leggi_in(const string &file_db, vector<T *> &_classedati_db)  {
     fin.open(_file_argomento);
     try {
         controlli_file(fin, _file_argomento);
-    } catch (file_non_chiuso &e) {
+    /*} catch (file_non_chiuso &e) {
         cout << "errore trovato:" << e.what() << endl;
-        exit(-1);
+        exit(-1); */
     } catch (file_non_aperto &e) {
         cout << "errore trovato:" << e.what() << endl;
         exit(-1);
@@ -85,10 +93,10 @@ template<typename T>
 void Database::leggi_db(const string &nome_file, vector<T *> &_classedati_xx) {
     ifstream fin;
     fin.open(nome_file);
-    //TODO: try catch per gestire file db non trovato
+
     try {
         controlli_file(fin, nome_file);
-    } catch (std::runtime_error &e) {
+    } catch (file_non_aperto &e) {
         cout << e.what() << endl;
         exit(3);
     }

@@ -31,13 +31,16 @@ vector<string> converti_argv(int f_argc, char *f_argv[]);
 int main(int argc, char *argv[]) {
 
     //controlli argc su ogni switch?
-    if (argc < 3) { //TODO controlla questo numero
-        cout << "Errore numero argomenti\n";
-        //TODO: eccezione
-        return -1;
-    }
-
+   try {
+       if (argc < 3) { //TODO controlla questo numero
+           throw err_parametri_linea_di_comando();
+       }
+   } catch (err_parametri_linea_di_comando &e){
+       cout << e.what() << endl;
+       exit (-1);
+   }
     //Da levare
+
     cout << "Argomenti inseriti: ";
     for (int i = 1; i < argc; i++) {
         const string argvs(argv[i]);

@@ -1,7 +1,7 @@
 
 #include "Eccezioni.h"
 
-//TODO completa con eccezioni mancanti
+
 
 
 file_non_aperto::file_non_aperto():messaggio("Errore apertura file, forse non e' stato trovato") {}

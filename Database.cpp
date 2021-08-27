@@ -517,10 +517,10 @@ string Database::leggi_id_maggiore(const string &file_db) {
 
     try {
         controlli_file(fin, file_db);
-    } catch (runtime_error &e) {
+    } catch (file_non_aperto &e) {
         cout << e.what() << endl;
 //        return first;
-    } catch (file_non_aperto &e) { //TODO: da rivedere
+    } catch (file_failed &e) {
         cout << e.what() << endl;
         return first;
     }
@@ -597,7 +597,15 @@ void Database::nuovo_corso(const string &row, bool source_db) {
 void Database::leggi_prof_db() {
     ifstream fin_db;
     fin_db.open(_file_db_professori);
-    controlli_file(fin_db, _file_db_professori);
+
+    try {
+        controlli_file(fin_db, _file_db_professori);
+    } catch (file_non_aperto &e) {
+        cout << e.what() << endl;
+    } catch (file_failed &e) {
+        cout << e.what() << endl;
+    }
+
     string row_db;
     int n = 1;
     while (!fin_db.eof()) {
@@ -617,7 +625,15 @@ void Database::leggi_prof_db() {
 void Database::leggi_corso_db() {
     ifstream fin_db;
     fin_db.open(_file_db_corsi);
-    controlli_file(fin_db, _file_db_corsi);
+
+    try {
+        controlli_file(fin_db, _file_db_corsi);
+    } catch (file_non_aperto &e){
+        cout << e.what() << endl;
+    } catch (file_failed &e) {
+        cout << e.what() << endl;
+    }
+
     string row_db;
     int n = 1;
     while (!fin_db.eof()) {
