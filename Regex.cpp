@@ -51,11 +51,11 @@ vector<string> Database::Corso::cut_versioni(const string &row, const vector<int
     for (int i = 0; i < n_versioni * 2; i += 2) {
         start = indicigraffe[i] + 1;
         end = indicigraffe[i + 1] - indicigraffe[i];
-        try { //TODO: eccezioni
-            temp = row.substr(start, end);
+
+        try { temp = row.substr(start, end);
+
         } catch (std::out_of_range &e) {
             cout << e.what() << "\nROW: " << row << endl;
-
         }
 //        cout << "DEBUG TEMP cut_versioni: " << temp << endl;
         out.push_back(temp);
