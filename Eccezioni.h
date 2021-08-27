@@ -117,12 +117,12 @@ public:
     errore_non_univoco();
 };
 
-class err_formattazione_errata: public std::exception{
+class errore_formattazione: public std::exception{
 private:
     const char* messaggio;
 public:
     const char* what() const noexcept;
-    err_formattazione_errata();
+    errore_formattazione();
 
 };
 

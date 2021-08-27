@@ -3,7 +3,7 @@
 
 //TODO rivedi metodi statici
 
-bool Database::Regex::search_and_read(const std::regex &expression, const string &row, vector<string> &out) {
+void Database::Regex::search_and_read(const std::regex &expression, const string &row, vector<string> &out) {
 
     if (regex_search(row, _match, expression)) {
         for (int i = 0; i < _match.length(); i++) {
@@ -12,10 +12,11 @@ bool Database::Regex::search_and_read(const std::regex &expression, const string
                 out.push_back(_match[i]);
             }
         }
-        return true;
+      return;
     } else {
-        cout << "No _match found for: " << row << endl;
-        return false;
+        cout << "Nella riga: " << row << endl;
+        throw errore_formattazione();
+     return;
     }
 }
 

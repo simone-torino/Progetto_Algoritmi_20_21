@@ -117,10 +117,13 @@ void Database::nuovo_studente(const string &row, bool source_db) {
     vector<string> studente_temp;
 
 //   [Aggiornamento] Legge dal file db, quindi c'è anche la _matricola, da confrontare più avanti
-    if (!_regdb.search_and_read(_regdb.target_expression(lettura::studenti_db), row, studente_temp)) {
-        cerr << "Errore formattazione file input _dbcal\n";
+    try { _regdb.search_and_read(_regdb.target_expression(lettura::studenti_db), row, studente_temp);
+
+    } catch (errore_formattazione &e){
+        cout << e.what() << endl;
         exit(3);
     }
+
 
     //le stringhe vuote sono gestite dai metodi setter
     s->setMatricola(studente_temp[1]);
@@ -314,8 +317,11 @@ Database::Aula::Aula(const string &row, const string &ultimo_id) {
     vector<string> aula_temp;
 
     //   [Aggiunta] Legge da file in (lista) quindi la _matricola va assegnata
-    if (!_regaula.search_and_read(_regaula.target_expression(lettura::aule_in), row, aula_temp)) {
-        cerr << "Errore formattazione aula\n";
+    try {_regaula.search_and_read(_regaula.target_expression(lettura::aule_in), row, aula_temp);
+
+
+    } catch (errore_formattazione &e){
+        cout << e.what() << endl;
         exit(15);
     }
 
@@ -339,8 +345,10 @@ Database::Aula::Aula(const string &row) {
     _capienza = 0;
 
     //   [Aggiornamento] Legge dal file _dbcal, quindi c'è anche la _matricola, da confrontare più avanti
-    if (!_regaula.search_and_read(_regaula.target_expression(lettura::aule_db), row, aula_temp)) {
-        cerr << "Errore formattazione auledb o aule update\n";
+    try {_regaula.search_and_read(_regaula.target_expression(lettura::aule_db), row, aula_temp);
+
+    } catch (errore_formattazione &e){
+        cout << e.what() << endl;
         exit(15);
     }
 
@@ -362,9 +370,11 @@ void Database::nuovo_professore(const string &row, bool source_db) {
     vector<string> prof_temp;
 
 //   [Aggiornamento] Legge dal file _dbcal, quindi c'è anche la _matricola, da confrontare più avanti
-    if (!_regdb.search_and_read(_regdb.target_expression(lettura::professori_db), row, prof_temp)) {
-        cerr << "Errore formattazione file input _dbcal\n";
-        exit(3);
+    try{ _regdb.search_and_read(_regdb.target_expression(lettura::professori_db), row, prof_temp);
+
+    } catch (errore_formattazione &e){
+        cout << e.what() << endl;
+        exit(15);
     }
 
     //le stringhe vuote sono gestite dai metodi setter
@@ -384,8 +394,10 @@ void Database::nuova_aula(const string &row, bool source_db) {
     vector<string> aula_temp;
 
 //   [Aggiornamento] Legge dal file _dbcal, quindi c'è anche la _matricola, da confrontare più avanti
-    if (!_regdb.search_and_read(_regdb.target_expression(lettura::aule_db), row, aula_temp)) {
-        cerr << "Errore formattazione auledb o aule update\n";
+    try { _regdb.search_and_read(_regdb.target_expression(lettura::aule_db), row, aula_temp);
+
+    } catch (errore_formattazione &e){
+        cout << e.what() << endl;
         exit(15);
     }
 
@@ -556,9 +568,11 @@ void Database::nuovo_corso(const string &row, bool source_db) {
     vector<string> corso_temp;
 
 //   [Aggiornamento] Legge dal file _dbcal, quindi c'è anche la _matricola, da confrontare più avanti
-    if (!_regdb.search_and_read(_regdb.target_expression(lettura::corsi_db), row, corso_temp)) {
-        cerr << "Errore formattazione corso db\n";
-        exit(3); //TODO: codici exit
+    try { _regdb.search_and_read(_regdb.target_expression(lettura::corsi_db), row, corso_temp);
+
+    } catch (errore_formattazione &e) {
+        cout << e.what() << endl;
+        exit(15);
     }
 
     vector<int> corso_temp_int;
@@ -682,9 +696,11 @@ Database::Studente::Studente(const string &row, const string &ultima_matricola) 
     vector<string> studente_temp;
 
     //   [Aggiunta] Legge da file in (lista) quindi la _matricola va assegnata
-    if (!_regstud.search_and_read(_regstud.target_expression(lettura::studenti_in), row, studente_temp)) {
-        cerr << "Errore formattazione file input studenti\n";
-        exit(3);
+    try { _regstud.search_and_read(_regstud.target_expression(lettura::studenti_in), row, studente_temp);
+
+    } catch (errore_formattazione &e) {
+        cout << e.what() << endl;
+        exit(15);
     }
 
     _matricola = "s" + ultima_matricola;
@@ -698,9 +714,11 @@ Database::Studente::Studente(const string &row) {
     _matricola = "s";
 
     //   [Aggiornamento] Legge dal file db, quindi c'è anche la _matricola, da confrontare più avanti
-    if (!_regstud.search_and_read(_regstud.target_expression(lettura::studenti_db), row, studente_temp)) {
-        cerr << "Errore formattazione file input studenti\n";
-        exit(3);
+    try { _regstud.search_and_read(_regstud.target_expression(lettura::studenti_db), row, studente_temp);
+
+    } catch (errore_formattazione &e){
+        cout << e.what() << endl;
+        exit(15);
     }
 
     //le stringhe vuote sono gestite dai metodi setter
@@ -731,9 +749,11 @@ Database::Professore::Professore(const string &row, const string &ultima_matrico
     vector<string> prof_temp;
 
     //   [Aggiunta] Legge da file in (lista) quindi la _matricola va assegnata
-    if (!_regprof.search_and_read(_regprof.target_expression(lettura::professori_in), row, prof_temp)) {
-        cerr << "Errore formattazione file input prof\n";
-        exit(3);
+    try { _regprof.search_and_read(_regprof.target_expression(lettura::professori_in), row, prof_temp);
+
+    } catch (errore_formattazione &e){
+        cout << e.what() << endl;
+        exit(15);
     }
 
     _matricola = "d" + ultima_matricola;
@@ -748,9 +768,11 @@ Database::Professore::Professore(const string &row) {
     _matricola = "d";
 
     //   [Aggiornamento] Legge dal file _dbcal, quindi c'è anche la _matricola, da confrontare più avanti
-    if (!_regprof.search_and_read(_regprof.target_expression(lettura::professori_db), row, prof_temp)) {
-        cerr << "Errore formattazione file input professore\n";
-        exit(3);
+    try {_regprof.search_and_read(_regprof.target_expression(lettura::professori_db), row, prof_temp);
+
+    } catch (errore_formattazione &e){
+        cout << e.what() << endl;
+        exit(15);
     }
 
     //le stringhe vuote sono gestite dai metodi setter
@@ -900,9 +922,12 @@ Database::Corso::Anno_Accademico::Prof_per_versione::Profn *
 Database::Corso::Anno_Accademico::Prof_per_versione::nuovo_profn(string &prof_n) {
     Profn *pn{new Profn};
     vector<string> out_profn;
-    if (!_reg_profv.search_and_read(_reg_profv.target_expression(lettura::profn_campi), prof_n, out_profn)) {
-        cout << "Errore lettura profn nella versione del prof " << _matricola_titolare << endl;
-        exit(2);
+
+    try {_reg_profv.search_and_read(_reg_profv.target_expression(lettura::profn_campi), prof_n, out_profn);
+
+    } catch (errore_formattazione &e){
+        cout << e.what() << endl;
+        exit(15);
     }
 
     pn->_matricola = out_profn[1];
@@ -954,18 +979,24 @@ Database::Corso::nuovo_anno_accademico(const string &anno, int n_versioni, const
     }
 
     vector<string> out_esame;
-    if (!_regcorso.search_and_read(_regcorso.target_expression(lettura::esame_graffe), row, out_esame)) {
-        cout << "Errore lettura esame graffe nel corso " << _titolo << endl;
-        exit(2);
+
+    try { _regcorso.search_and_read(_regcorso.target_expression(lettura::esame_graffe), row, out_esame);
+
+    } catch (errore_formattazione &e){
+        cout << e.what() << endl;
+        exit(15);
     }
+
     string s_esame = out_esame[0];
     a_temp->setEsame(a_temp->nuovo_esame(s_esame));
 
     vector<string> out_idcorso;
     //TODO: da cambiare lettura, non so quanti idcorso ci devono essere
-    if (!_regcorso.search_and_read(_regcorso.target_expression(lettura::id_corsi), row, out_idcorso)) {
-        cout << "Errore lettura idcorso graffe nel corso " << _titolo << endl;
-        exit(2);
+    try { _regcorso.search_and_read(_regcorso.target_expression(lettura::id_corsi), row, out_idcorso);
+
+    } catch (errore_formattazione &e) {
+        cout << e.what() << endl;
+        exit(15);
     }
 
 
@@ -976,8 +1007,11 @@ Database::Corso::nuovo_anno_accademico(const string &anno, int n_versioni, const
 Database::Corso::Anno_Accademico::Esame *Database::Corso::Anno_Accademico::nuovo_esame(const string &s_esame) {
     Esame *e{new Esame};
     vector<string> out_esame;
-    if (!_reg_anno.search_and_read(_reg_anno.target_expression(lettura::esame_campi), s_esame, out_esame)) {
-        cout << "Errore lettura esame_campi corso\n";
+    try { _reg_anno.search_and_read(_reg_anno.target_expression(lettura::esame_campi), s_esame, out_esame);
+
+    } catch (errore_formattazione &e){
+        cout << e.what() << endl;        // qui non c'era l'exit l'ho messo comunque da verificare che sia corretto
+        exit(15);
     }
 
     vector<int> esame_int;
@@ -1006,9 +1040,11 @@ Database::Corso::Corso(const string &row, const string &ultimo_id) {
     vector<string> corso_temp;
 
     //LEGGE aaaa-aaaa;titolocorso;6;50;10;20;n_versioni;
-    if (!_regcorso.search_and_read(_regcorso.target_expression(lettura::corsi_in), row, corso_temp)) {
-        cout << "Errore formattazione corso\n";
-        exit(3); //TODO: codice exit
+    try { _regcorso.search_and_read(_regcorso.target_expression(lettura::corsi_in), row, corso_temp);
+
+    } catch (errore_formattazione &e){
+        cout << e.what() << endl;
+        exit(15);
     }
 
     if (corso_temp.size() != 9) {
@@ -1097,12 +1133,13 @@ Database::Corso_di_studio::Corso_di_studio(const string &row, const string &ulti
     vector<vector<Corso_id>> lista_corsi_temp;
 
     int i = 0;
-    try {
-        _regcds.search_and_read(_regcds.target_expression(lettura::cds_in), row, cds_temp);
-    } catch (err_formattazione_errata &e) {
-        cout << "errore trovato" << e.what() << endl;
-        exit(3);
+    try { _regcds.search_and_read(_regcds.target_expression(lettura::cds_in), row, cds_temp);
+
+    } catch (errore_formattazione &e) {
+        cout << e.what() << endl;
+        exit(15);
     }
+
     lista_corsi_temp = {cds_temp[1].begin(), cds_temp[cds_temp.size()].end()};
 
     try {

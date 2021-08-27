@@ -156,10 +156,13 @@ void Calendario::set_date_sessioni(const vector<string> &argomenti_sessioni, boo
 
     }
 //Lettura anno accademico di riferimento
-    if (!_regcal.search_and_read(_regcal.target_expression(lettura::anno_acc), anno_accademico_temp, outstring)) {
-        cerr << "Errore formattazione anno accademico\n";
-        exit(3); //TODO eccezioni
+    try { _regcal.search_and_read(_regcal.target_expression(lettura::anno_acc), anno_accademico_temp, outstring);
+
+    } catch (errore_formattazione &e){
+        cout << e.what() << endl;
+        exit(15);
     }
+
     _anno_accademico.setAnnoAccademico(outstring[1], outstring[2]);
     outstring.clear();
 
@@ -169,9 +172,12 @@ void Calendario::set_date_sessioni(const vector<string> &argomenti_sessioni, boo
     //Lettura _date di _primo e _secondo sessioni
     for (auto & i : periodi_temp) {
         cout << i << endl;
-        if (!_regcal.search_and_read(_regcal.target_expression(lettura::sessioni), i, outstring)) {
-            cerr << "Errore formattazione date esami\n";
-            exit(3);
+
+        try {_regcal.search_and_read(_regcal.target_expression(lettura::sessioni), i, outstring);
+
+        } catch (errore_formattazione &e){
+            cout << e.what() << endl;
+            exit (3);
         }
     }
 
@@ -279,10 +285,13 @@ void Calendario::set_indisponibilita(const vector<string> &argomenti_ind) {
     vector<string> outstring;
 
     //Lettura dell'anno accademico di riferimento
-    if (!_regcal.search_and_read(_regcal.target_expression(lettura::anno_acc), argomenti_ind[3], outstring)) {
-        cerr << "Errore formattazione anno accademico\n";
+    try {_regcal.search_and_read(_regcal.target_expression(lettura::anno_acc), argomenti_ind[3], outstring);
+
+    } catch (errore_formattazione &e){
+        cout << e.what() << endl;
         exit(3);
     }
+
     _anno_accademico.setAnnoAccademico(outstring[1], outstring[2]);
     outstring.clear();
 
@@ -413,8 +422,10 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
 
         if (!s_temp.empty()) {
             //leggo il file indisponibilita
-            if (!_regcal.search_and_read(_regcal.target_expression(lettura::indisp), s_temp, outstring)) {
-                cerr << "Errore formattazione file indisponibilita\n";
+            try{ _regcal.search_and_read(_regcal.target_expression(lettura::indisp), s_temp, outstring);
+
+            } catch (errore_formattazione &e){
+                cout << e.what() << endl;
                 exit(3);
             }
             //trasformo i numeri letti in interi
