@@ -513,6 +513,8 @@ string Database::leggi_id_maggiore(const string &file_db) {
         return first;
     }
 
+    //TODO: controllo file vuoto
+
     string rowdb, temp;
 
     while (!fin.eof()) {
