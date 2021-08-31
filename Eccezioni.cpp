@@ -138,7 +138,7 @@ const char * err_prof_indisponibili::what() noexcept {
     return messaggio;
 } */
 
-err_parametri_linea_di_comando::err_parametri_linea_di_comando():messaggio("parametri passati da linea di comando non conformi alle richieste") {}
+err_parametri_linea_di_comando::err_parametri_linea_di_comando():messaggio("Parametri passati da linea di comando non conformi alle richieste") {}
 const char * err_parametri_linea_di_comando::what() noexcept {
     return messaggio;
 }

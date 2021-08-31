@@ -30,6 +30,13 @@ vector<string> converti_argv(int f_argc, char *f_argv[]);
 
 int main(int argc, char *argv[]) {
 
+    cout << "Argomenti inseriti: ";
+    for (int i = 1; i < argc; i++) {
+        const string argvs(argv[i]);
+        cout << argvs << ' ';
+    }
+    cout << '\n';
+
     //controlli argc su ogni switch?
    try {
        if (argc < 3) { //TODO controlla questo numero
@@ -41,12 +48,7 @@ int main(int argc, char *argv[]) {
    }
     //Da levare
 
-    cout << "Argomenti inseriti: ";
-    for (int i = 1; i < argc; i++) {
-        const string argvs(argv[i]);
-        cout << argvs << ' ';
-    }
-    cout << '\n';
+
 
     try {
 
