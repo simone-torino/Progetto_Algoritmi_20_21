@@ -138,8 +138,6 @@ public:
 
         bool search_and_read(const std::regex &expression, const string &row, vector<string> &out);
 
-        void multiple_fields(const std::regex &expression, const string &row, vector<string> &out);
-
     };
 
     struct BracketSearch {
