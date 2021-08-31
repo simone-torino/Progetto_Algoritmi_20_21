@@ -23,6 +23,7 @@ class Calendario {
 
 public:
     explicit Calendario(const string &file_argomento);
+
     class myDate {
 
         int _day;

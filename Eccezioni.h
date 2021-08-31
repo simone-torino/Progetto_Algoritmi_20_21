@@ -32,7 +32,7 @@ public:
 };
 
 
-class errore_stringa: public std::exception{
+/* class errore_stringa: public std::exception{
 private:
     const char* messaggio;
 public:
@@ -72,7 +72,7 @@ private:
 public:
     const char* what() const noexcept;
     errore_anno_accademico();
-};
+}; */
 
 
 class errore_matricola: public std::exception{
@@ -83,7 +83,7 @@ public:
     errore_matricola();
 };
 
-class errore_cfu:public std::exception{
+/* class errore_cfu:public std::exception{
 private:
     const char* messaggio;
 public:
@@ -106,7 +106,7 @@ private:
 public:
     const char* what() const noexcept;
     errore_lunghezza_periodo();
-};
+}; */
 
 
 class errore_non_univoco: public std::exception{
@@ -117,32 +117,32 @@ public:
     errore_non_univoco();
 };
 
-class err_formattazione_errata: public std::exception{
+class errore_formattazione: public std::exception{
 private:
     const char* messaggio;
 public:
     const char* what() const noexcept;
-    err_formattazione_errata();
+    errore_formattazione();
 
 };
 
-class err_giorno: public std::exception{
+/* class err_giorno: public std::exception{
 private:
     const char* messaggio;
 public:
     const char* what() const noexcept;
     err_giorno();
-};
+}; */
 
-class err_mese: public std::exception{
+/* class err_mese: public std::exception{
 private:
     const char* messaggio;
 public:
     const char* what() const noexcept;
     err_mese();
-};
+}; */
 
-class err_anno: public std::exception{
+/* class err_anno: public std::exception{
 private:
     const char* messaggio;
 public:
@@ -186,7 +186,7 @@ private:
     const char* messaggio;
 public:const char* what() noexcept;
     err_dist_minima_stesso_vorso();
-};
+};*/
 
 class err_periodo: public std::exception{
 private:
@@ -202,7 +202,7 @@ public:const char* what() noexcept;
     prof_non_presente();
 };
 
-class err_data_per_anno:public std::exception{
+/*class err_data_per_anno:public std::exception{
 private:
     const char* messaggio;
 public:const char* what() noexcept;
@@ -216,7 +216,7 @@ public:
     const char* what() noexcept;
     err_prof_indisponibili();
 
-};
+};*/
 
 class err_parametri_linea_di_comando: public std::exception{
 private:
@@ -227,7 +227,7 @@ public:
 
 };
 
-class err_procedura: public std::exception{
+/*class err_procedura: public std::exception{
 private:
     const char* messaggio;
 public:
@@ -242,7 +242,7 @@ private:
 public:
     const char* what() noexcept;
     err_inserimento_parametri();
-};
+};*/
 
 class errore_riga_vuota:public std::exception{
 private:
@@ -252,13 +252,13 @@ public:
     errore_riga_vuota();
 };
 
-class err_versioni_corso:public std::exception{
+/*class err_versioni_corso:public std::exception{
 private:
     const char* messaggio;
 public:
     const char* what() noexcept;
     err_versioni_corso();
-};
+};*/
 
 class errore_incongruenza_file:public std::exception{
 private:
@@ -266,6 +266,14 @@ private:
 public:
     const char* what() noexcept;
     errore_incongruenza_file();
+};
+
+class err_check_anno_accademico:public std::exception{
+private:
+    const char* messaggio;
+public:
+    const char* what() noexcept;
+    err_check_anno_accademico();
 };
 
 

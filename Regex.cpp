@@ -3,7 +3,7 @@
 
 //TODO rivedi metodi statici
 
-bool Database::Regex::search_and_read(const std::regex &expression, const string &row, vector<string> &out) {
+void Database::Regex::search_and_read(const std::regex &expression, const string &row, vector<string> &out) {
 
     if (regex_search(row, _match, expression)) {
         for (int i = 0; i < _match.length(); i++) {
@@ -12,10 +12,11 @@ bool Database::Regex::search_and_read(const std::regex &expression, const string
                 out.push_back(_match[i]);
             }
         }
-        return true;
+      return;
     } else {
-        cout << "No _match found for: " << row << endl;
-        return false;
+        cout << "Nella riga: " << row << endl;
+        throw errore_formattazione();
+     return;
     }
 }
 
@@ -65,11 +66,11 @@ vector<string> Database::Corso::cut_versioni(const string &row, const vector<int
     for (int i = 0; i < n_versioni * 2; i += 2) {
         start = indicigraffe[i] + 1;
         end = indicigraffe[i + 1] - indicigraffe[i];
-        try { //TODO: eccezioni
-            temp = row.substr(start, end);
+
+        try { temp = row.substr(start, end);
+
         } catch (std::out_of_range &e) {
             cout << e.what() << "\nROW: " << row << endl;
-
         }
 //        cout << "DEBUG TEMP cut_versioni: " << temp << endl;
         out.push_back(temp);
