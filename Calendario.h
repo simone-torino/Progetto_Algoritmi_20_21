@@ -173,11 +173,6 @@ public:
 private:
     vector<GiornoSessione> _esami_giorno;
 
-
-
-
-
-
 };
 
 //Restituisce la differenza tra le _date in giorni

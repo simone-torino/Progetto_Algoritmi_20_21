@@ -137,6 +137,7 @@ public:
         std::regex target_expression(lettura::reg_expressions exp);
 
         bool search_and_read(const std::regex &expression, const string &row, vector<string> &out);
+        void multiple_fields(const std::regex &expression, const string &row, vector<string> &out);
 
     };
 

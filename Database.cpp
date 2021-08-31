@@ -527,8 +527,6 @@ string Database::leggi_id_maggiore(const string &file_db) {
         } else if (file_db == _file_db_corsi) {
             getline(row_stream, temp, ';'); //Legge c;
             getline(row_stream, temp, ';'); //Legge id_corso;
-        } else {
-            //TODO: eccezioni
         }
 
         if (!temp.empty()) {

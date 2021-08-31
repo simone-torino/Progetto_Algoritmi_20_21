@@ -585,6 +585,7 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
     _dbcal.leggi_corso_db();
     _dbcal.target_fstampa(options::corsi, true); //debug
 
+
     //da finire
 
     /* Dati da salvara dal database:

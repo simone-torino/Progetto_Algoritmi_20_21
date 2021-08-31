@@ -129,8 +129,6 @@ void Database::aggiorna_campo(const T (*get)(), void (*set)(const T&)) {
     }
 }
 
-//Template per controllo matricola duplicata
-
 //Per studenti e professori
 template<typename T>
 void Database::t_aggiorna(vector<T *> &_classedati_db, vector<T *> &_classedati_agg, const string &file_db) {
