@@ -19,6 +19,21 @@ bool Database::Regex::search_and_read(const std::regex &expression, const string
     }
 }
 
+//Può estrarre espressioni ripetute un numero non noto di volte, usa per profn, idcorsi raggruppati, indisponibilita ecc
+void Database::Regex::multiple_fields(const std::regex &expression, const string &row, vector<string> &out){
+    auto it_begin = sregex_iterator (row.begin(), row.end(), expression);
+    auto it_end = sregex_iterator();
+
+    cout << "Found " << distance(it_begin, it_end) << " different fields\n";
+
+    for(sregex_iterator i = it_begin; i != it_end; ++i){
+        smatch match = *i;
+        string match_str = match.str();
+        out.push_back(match_str);
+//        cout << match_str << endl;
+    }
+}
+
 //estrae regex multiple da una sola stringa
 vector<string>
 Database::Corso::Anno_Accademico::estraimultipli(const regex &reg, string &daleggere, const string &delim) {
