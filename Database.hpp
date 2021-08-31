@@ -11,29 +11,32 @@ template<typename T>
 void Database::tfstampa(vector<T> _classedati_db, const string &file_db, bool append) {
     ofstream fout;
 
-    if (append)
+    if (append) {
         fout.open(file_db, ios::app);
-    else
+        cout << "Aggiornamento file " << file_db << " in corso...\n";
+    } else {
         fout.open(file_db, ios::out);
+        cout << "Update file " << file_db << " in corso...\n";
+    }
+
 
     try {
         controlli_file(fout, file_db);
-    } catch (file_non_aperto &e){
+    } catch (file_non_aperto &e) {
         cout << e.what() << endl;
-    } catch (file_failed &e){
+    } catch (file_failed &e) {
         cout << e.what() << endl;
     }
 
-    for (auto i : _classedati_db) {
+    for (auto i: _classedati_db) {
         i->fstampa(fout);
     }
 }
 
-void isempty(std::ifstream& fptr)
-{
+void isempty(std::ifstream &fptr) {
 //    fptr.peek() == std::ifstream::traits_type::eof()
     fptr.get();
-    if(fptr.eof()){
+    if (fptr.eof()) {
         throw runtime_error("File is empty");
     }
     //rimetto il puntatore all'inizio in modo da non saltare il primo carattere se il file non è vuot
@@ -42,14 +45,14 @@ void isempty(std::ifstream& fptr)
 
 //questa è identica a leggi_db<> tranne per l'incremento_id
 template<typename T>
-void Database::leggi_in(const string &file_db, vector<T *> &_classedati_db)  {
+void Database::leggi_in(const string &file_db, vector<T *> &_classedati_db) {
     ifstream fin;
     fin.open(_file_argomento);
     try {
         controlli_file(fin, _file_argomento);
-    /*} catch (file_non_chiuso &e) {
-        cout << "errore trovato:" << e.what() << endl;
-        exit(-1); */
+        /*} catch (file_non_chiuso &e) {
+            cout << "errore trovato:" << e.what() << endl;
+            exit(-1); */
     } catch (file_non_aperto &e) {
         cout << "errore trovato:" << e.what() << endl;
         exit(-1);
@@ -62,9 +65,9 @@ void Database::leggi_in(const string &file_db, vector<T *> &_classedati_db)  {
     string ultimo_id = leggi_id_maggiore(file_db);
     short unsigned int n = 1;
 
-    try{
+    try {
         isempty(fin);
-    }catch(runtime_error &e){
+    } catch (runtime_error &e) {
         cout << e.what() << endl;
         exit(5);
     }
@@ -104,9 +107,9 @@ void Database::leggi_db(const string &nome_file, vector<T *> &_classedati_xx) {
     string row;
     unsigned short n = 1;
 
-    try{
+    try {
         isempty(fin);
-    }catch(runtime_error &e){
+    } catch (runtime_error &e) {
         cout << e.what() << endl;
         exit(5);
     }
@@ -130,7 +133,7 @@ void Database::leggi_db(const string &nome_file, vector<T *> &_classedati_xx) {
 
 //Ci ho provato
 template<typename T>
-void Database::aggiorna_campo(const T (*get)(), void (*set)(const T&)) {
+void Database::aggiorna_campo(const T (*get)(), void (*set)(const T &)) {
     if (!get().empty()) {
         set(get());
         cout << "Aggiornato campo: " << get() << endl;

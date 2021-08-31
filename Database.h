@@ -100,7 +100,7 @@ public:
         const string _matricola_s = "s([0-9]{6});"; //s123456;
         const string _matricola_d = "d([0-9]{6});"; //d123456;
         const string _num = "([0-9]*)";
-        const string _aula_in = "([AL]);([a-z A-Z0-9]*);" + _num + ';' + _num; //A;Aula 5;120;60
+        const string _aula_in = "[AL]);([a-z A-Z0-9]+);" + _num + ';' + _num; //A;Aula 5;120;60
         const string _id_aula = "([0-9][A-Z][A-Z][0-9]);"; //4AD4;
 
         string corso_db_base;
@@ -136,7 +136,7 @@ public:
 
         std::regex target_expression(lettura::reg_expressions exp);
 
-        bool search_and_read(const std::regex &expression, const string &row, vector<string> &out);
+        void search_and_read(const std::regex &expression, const string &row, vector<string> &out);
         void multiple_fields(const std::regex &expression, const string &row, vector<string> &out);
 
     };

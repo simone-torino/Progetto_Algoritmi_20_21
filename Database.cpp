@@ -59,7 +59,7 @@ void Database::Corso::fstampa(ofstream &fout) const {
 //    LOG(_id_corso);
     fout << 'c' << ';' << _id_corso << ';' << _titolo << ';' << _cfu << ';' << _ore_lezione << ';' << _ore_esercitazione
          << ';' << _ore_laboratorio << '\n';
-    for (const auto &i : _anni_accademici) {
+    for (const auto &i: _anni_accademici) {
         i->fstampa_anno_accademico(fout);
         fout << '\n'; //vado a capo anche se ho un solo anno
     }
@@ -117,9 +117,10 @@ void Database::nuovo_studente(const string &row, bool source_db) {
     vector<string> studente_temp;
 
 //   [Aggiornamento] Legge dal file db, quindi c'è anche la _matricola, da confrontare più avanti
-    try { _regdb.search_and_read(_regdb.target_expression(lettura::studenti_db), row, studente_temp);
+    try {
+        _regdb.search_and_read(_regdb.target_expression(lettura::studenti_db), row, studente_temp);
 
-    } catch (errore_formattazione &e){
+    } catch (errore_formattazione &e) {
         cout << e.what() << endl;
         exit(3);
     }
@@ -152,12 +153,12 @@ void Database::target_aggiungi(options::opzione o) {
         }
         case options::aule: {
             cout << "Aggiunta aule in corso...\n";
-            leggi_in<Database::Aula>(_file_db_aule,_aule_db);
+            leggi_in<Database::Aula>(_file_db_aule, _aule_db);
             break;
         }
         case options::corsi: {
             cout << "Aggiunta corsi in corso...\n";
-            leggi_in<Database::Corso>(_file_db_corsi,_corsi_db);
+            leggi_in<Database::Corso>(_file_db_corsi, _corsi_db);
             break;
         }
         case options::cds: {
@@ -234,7 +235,7 @@ void Database::target_fstampa(options::opzione o, bool append) {
 
 void controlli_file(ifstream &fin, const string &nome_file) {
     if (!fin.is_open()) {
-        cout << "Errore file input " << nome_file << " non aperto\n";
+        cout << "Il file in input " << nome_file << " non e' stato aperto\n";
         throw file_non_aperto(); //genera l'eccezione file_non_aperto
 //        throw std::runtime_error("Errore apertura file input, forse non e' stato trovato");
     }
@@ -246,7 +247,7 @@ void controlli_file(ifstream &fin, const string &nome_file) {
 
 void controlli_file(ofstream &fout, const string &nome_file) {
     if (!fout.is_open()) {
-        cout << "Errore file output " << nome_file << " non aperto\n";
+        cout << "Il file in output " << nome_file << " non e' stato aperto\n";
         throw file_non_aperto(); //stessa eccezione vista sopra tanto scrive già il cout di che tipo è il file
     }
     if (!fout.good()) {
@@ -317,10 +318,9 @@ Database::Aula::Aula(const string &row, const string &ultimo_id) {
     vector<string> aula_temp;
 
     //   [Aggiunta] Legge da file in (lista) quindi la _matricola va assegnata
-    try {_regaula.search_and_read(_regaula.target_expression(lettura::aule_in), row, aula_temp);
-
-
-    } catch (errore_formattazione &e){
+    try {
+        _regaula.search_and_read(_regaula.target_expression(lettura::aule_in), row, aula_temp);
+    } catch (errore_formattazione &e) {
         cout << e.what() << endl;
         exit(15);
     }
@@ -345,9 +345,10 @@ Database::Aula::Aula(const string &row) {
     _capienza = 0;
 
     //   [Aggiornamento] Legge dal file _dbcal, quindi c'è anche la _matricola, da confrontare più avanti
-    try {_regaula.search_and_read(_regaula.target_expression(lettura::aule_db), row, aula_temp);
+    try {
+        _regaula.search_and_read(_regaula.target_expression(lettura::aule_db), row, aula_temp);
 
-    } catch (errore_formattazione &e){
+    } catch (errore_formattazione &e) {
         cout << e.what() << endl;
         exit(15);
     }
@@ -370,9 +371,10 @@ void Database::nuovo_professore(const string &row, bool source_db) {
     vector<string> prof_temp;
 
 //   [Aggiornamento] Legge dal file _dbcal, quindi c'è anche la _matricola, da confrontare più avanti
-    try{ _regdb.search_and_read(_regdb.target_expression(lettura::professori_db), row, prof_temp);
+    try {
+        _regdb.search_and_read(_regdb.target_expression(lettura::professori_db), row, prof_temp);
 
-    } catch (errore_formattazione &e){
+    } catch (errore_formattazione &e) {
         cout << e.what() << endl;
         exit(15);
     }
@@ -394,9 +396,10 @@ void Database::nuova_aula(const string &row, bool source_db) {
     vector<string> aula_temp;
 
 //   [Aggiornamento] Legge dal file _dbcal, quindi c'è anche la _matricola, da confrontare più avanti
-    try { _regdb.search_and_read(_regdb.target_expression(lettura::aule_db), row, aula_temp);
+    try {
+        _regdb.search_and_read(_regdb.target_expression(lettura::aule_db), row, aula_temp);
 
-    } catch (errore_formattazione &e){
+    } catch (errore_formattazione &e) {
         cout << e.what() << endl;
         exit(15);
     }
@@ -568,7 +571,8 @@ void Database::nuovo_corso(const string &row, bool source_db) {
     vector<string> corso_temp;
 
 //   [Aggiornamento] Legge dal file _dbcal, quindi c'è anche la _matricola, da confrontare più avanti
-    try { _regdb.search_and_read(_regdb.target_expression(lettura::corsi_db), row, corso_temp);
+    try {
+        _regdb.search_and_read(_regdb.target_expression(lettura::corsi_db), row, corso_temp);
 
     } catch (errore_formattazione &e) {
         cout << e.what() << endl;
@@ -628,7 +632,7 @@ void Database::leggi_corso_db() {
 
     try {
         controlli_file(fin_db, _file_db_corsi);
-    } catch (file_non_aperto &e){
+    } catch (file_non_aperto &e) {
         cout << e.what() << endl;
     } catch (file_failed &e) {
         cout << e.what() << endl;
@@ -650,7 +654,7 @@ void Database::leggi_corso_db() {
     }
 }
 
-vector<Database::Aula *> &Database::getAuleDb()  {
+vector<Database::Aula *> &Database::getAuleDb() {
     return _aule_db;
 }
 
@@ -712,7 +716,8 @@ Database::Studente::Studente(const string &row, const string &ultima_matricola) 
     vector<string> studente_temp;
 
     //   [Aggiunta] Legge da file in (lista) quindi la _matricola va assegnata
-    try { _regstud.search_and_read(_regstud.target_expression(lettura::studenti_in), row, studente_temp);
+    try {
+        _regstud.search_and_read(_regstud.target_expression(lettura::studenti_in), row, studente_temp);
 
     } catch (errore_formattazione &e) {
         cout << e.what() << endl;
@@ -730,9 +735,10 @@ Database::Studente::Studente(const string &row) {
     _matricola = "s";
 
     //   [Aggiornamento] Legge dal file db, quindi c'è anche la _matricola, da confrontare più avanti
-    try { _regstud.search_and_read(_regstud.target_expression(lettura::studenti_db), row, studente_temp);
+    try {
+        _regstud.search_and_read(_regstud.target_expression(lettura::studenti_db), row, studente_temp);
 
-    } catch (errore_formattazione &e){
+    } catch (errore_formattazione &e) {
         cout << e.what() << endl;
         exit(15);
     }
@@ -765,9 +771,10 @@ Database::Professore::Professore(const string &row, const string &ultima_matrico
     vector<string> prof_temp;
 
     //   [Aggiunta] Legge da file in (lista) quindi la _matricola va assegnata
-    try { _regprof.search_and_read(_regprof.target_expression(lettura::professori_in), row, prof_temp);
+    try {
+        _regprof.search_and_read(_regprof.target_expression(lettura::professori_in), row, prof_temp);
 
-    } catch (errore_formattazione &e){
+    } catch (errore_formattazione &e) {
         cout << e.what() << endl;
         exit(15);
     }
@@ -784,9 +791,10 @@ Database::Professore::Professore(const string &row) {
     _matricola = "d";
 
     //   [Aggiornamento] Legge dal file _dbcal, quindi c'è anche la _matricola, da confrontare più avanti
-    try {_regprof.search_and_read(_regprof.target_expression(lettura::professori_db), row, prof_temp);
+    try {
+        _regprof.search_and_read(_regprof.target_expression(lettura::professori_db), row, prof_temp);
 
-    } catch (errore_formattazione &e){
+    } catch (errore_formattazione &e) {
         cout << e.what() << endl;
         exit(15);
     }
@@ -939,9 +947,10 @@ Database::Corso::Anno_Accademico::Prof_per_versione::nuovo_profn(string &prof_n)
     Profn *pn{new Profn};
     vector<string> out_profn;
 
-    try {_reg_profv.search_and_read(_reg_profv.target_expression(lettura::profn_campi), prof_n, out_profn);
+    try {
+        _reg_profv.search_and_read(_reg_profv.target_expression(lettura::profn_campi), prof_n, out_profn);
 
-    } catch (errore_formattazione &e){
+    } catch (errore_formattazione &e) {
         cout << e.what() << endl;
         exit(15);
     }
@@ -996,9 +1005,10 @@ Database::Corso::nuovo_anno_accademico(const string &anno, int n_versioni, const
 
     vector<string> out_esame;
 
-    try { _regcorso.search_and_read(_regcorso.target_expression(lettura::esame_graffe), row, out_esame);
+    try {
+        _regcorso.search_and_read(_regcorso.target_expression(lettura::esame_graffe), row, out_esame);
 
-    } catch (errore_formattazione &e){
+    } catch (errore_formattazione &e) {
         cout << e.what() << endl;
         exit(15);
     }
@@ -1008,7 +1018,8 @@ Database::Corso::nuovo_anno_accademico(const string &anno, int n_versioni, const
 
     vector<string> out_idcorso;
     //TODO: da cambiare lettura, non so quanti idcorso ci devono essere
-    try { _regcorso.search_and_read(_regcorso.target_expression(lettura::id_corsi), row, out_idcorso);
+    try {
+        _regcorso.search_and_read(_regcorso.target_expression(lettura::id_corsi), row, out_idcorso);
 
     } catch (errore_formattazione &e) {
         cout << e.what() << endl;
@@ -1023,9 +1034,10 @@ Database::Corso::nuovo_anno_accademico(const string &anno, int n_versioni, const
 Database::Corso::Anno_Accademico::Esame *Database::Corso::Anno_Accademico::nuovo_esame(const string &s_esame) {
     Esame *e{new Esame};
     vector<string> out_esame;
-    try { _reg_anno.search_and_read(_reg_anno.target_expression(lettura::esame_campi), s_esame, out_esame);
+    try {
+        _reg_anno.search_and_read(_reg_anno.target_expression(lettura::esame_campi), s_esame, out_esame);
 
-    } catch (errore_formattazione &e){
+    } catch (errore_formattazione &e) {
         cout << e.what() << endl;        // qui non c'era l'exit l'ho messo comunque da verificare che sia corretto
         exit(15);
     }
@@ -1056,9 +1068,10 @@ Database::Corso::Corso(const string &row, const string &ultimo_id) {
     vector<string> corso_temp;
 
     //LEGGE aaaa-aaaa;titolocorso;6;50;10;20;n_versioni;
-    try { _regcorso.search_and_read(_regcorso.target_expression(lettura::corsi_in), row, corso_temp);
+    try {
+        _regcorso.search_and_read(_regcorso.target_expression(lettura::corsi_in), row, corso_temp);
 
-    } catch (errore_formattazione &e){
+    } catch (errore_formattazione &e) {
         cout << e.what() << endl;
         exit(15);
     }
@@ -1134,7 +1147,7 @@ void Database::Corso_di_studio::setCorsiDiUnSemestre(vector<Corso_id> corsi_in_u
 }
 
 void Database::Corso_di_studio::setCorsiPerSemestre(const vector<vector<Corso_id>> &corsi_per_semestre) {
-    for (auto &i : corsi_per_semestre) {
+    for (auto &i: corsi_per_semestre) {
         setCorsiDiUnSemestre(i);
     }
 }
@@ -1149,7 +1162,8 @@ Database::Corso_di_studio::Corso_di_studio(const string &row, const string &ulti
     vector<vector<Corso_id>> lista_corsi_temp;
 
     int i = 0;
-    try { _regcds.search_and_read(_regcds.target_expression(lettura::cds_in), row, cds_temp);
+    try {
+        _regcds.search_and_read(_regcds.target_expression(lettura::cds_in), row, cds_temp);
 
     } catch (errore_formattazione &e) {
         cout << e.what() << endl;

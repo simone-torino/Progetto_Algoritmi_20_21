@@ -180,7 +180,7 @@ int main(int argc, char *argv[]) {
                 throw err_parametri_linea_di_comando();
         }
     } catch (err_parametri_linea_di_comando &e) {
-        cout << "Errore trovato: : " << e.what() << endl;
+        cout << "Errore trovato: " << e.what() << endl;
         exit(6);
 //    } catch (file_non_aperto &e) {
 //        cout << "Errore trovato: " << e.what() << endl;
