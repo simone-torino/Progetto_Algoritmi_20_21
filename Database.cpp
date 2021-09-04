@@ -1128,6 +1128,10 @@ Database::Corso::Corso() {
 
 }
 
+Database::Corso::Corso(const string &row){
+
+}
+
 void Database::Corso_id::setIdCorso(const string &id_corso) {
     _id_corso = id_corso;
 }

@@ -156,7 +156,7 @@ std::regex Database::Regex::target_expression(lettura::reg_expressions exp) {
         default:
             cout << "Errore target regexp\n";
     }
-    return std::regex();
+    return {};
 }
 
 Database::Regex::Regex() {
