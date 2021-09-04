@@ -73,7 +73,7 @@ void Database::Corso_di_studio::fstampa(ofstream &fout) const {
     fout << ';' << '[';
     fstampa_semestri(fout);
     fout << ']' << ';';
-    if(!_corsi_spenti.empty()) {
+    if (!_corsi_spenti.empty()) {
         cout << '[';
         for (unsigned int i = 0; i < _corsi_spenti.size(); i++) {
             _corsi_spenti[i]->fstampa_id(fout);
@@ -173,8 +173,12 @@ void Database::target_aggiungi(options::opzione o) {
         }
         case options::cds: {
             cout << "Aggiunta corsi di studio in corso...\n";
+            //leggo anche i corsi per confrontare gli id con quelli inseriti da cds
+            leggi_db(_file_db_professori, _corsi_db);
+
             leggi_in(_file_db_cds, _cds_db);
-//            _cds_db.front()->debug();
+
+            this->checkIdCorso_in_Cds();
             break;
         }
         default:
@@ -526,7 +530,7 @@ string Database::leggi_id_maggiore(const string &file_db) {
     } else if (file_db == _file_db_corsi) {
         first = "ABC123";
     } else if (file_db == _file_db_cds) {
-        first = "C101";
+        first = "C100";
     }
 
     cout << "Tentativo di lettura del file " << file_db << " per assegnare codice identificativo\n";
@@ -563,9 +567,9 @@ string Database::leggi_id_maggiore(const string &file_db) {
         }
 
         if (!temp.empty()) {
-            if(file_db ==_file_db_cds){
+            if (file_db == _file_db_cds) {
                 temp = temp.substr(0, temp.length());
-            }else
+            } else
                 temp = temp.substr(1, temp.length());
             if (temp > first) {//aggiorna _matricola maggiore
                 first = temp;
@@ -714,7 +718,6 @@ const string &Database::getFileDbCorsi() const {
 const string &Database::getFileDbCds() const {
     return _file_db_cds;
 }
-
 
 void Database::Studente::fstampa(ofstream &fout) const {
     fout << _matricola << _sep << _nome << _sep << _cognome << _sep << _email << '\n';
@@ -1147,6 +1150,10 @@ void Database::Corso_id::debug() {
     cout << _id_corso << endl;
 }
 
+const string &Database::Corso_id::getIdCorso() const {
+    return _id_corso;
+}
+
 void Database::Corso_di_studio::setLaurea(const string &laurea) {
     if (laurea == "BS") {
         _laurea = true;
@@ -1191,6 +1198,39 @@ void Database::Corso_di_studio::setIdCds(const string &id_cds) {
 //        setCorsiDiUnSemestre(i);
 //    }
 //}
+
+void Database::checkIdCorso_in_Cds() {
+//TODO probabilmente esiste un algoritmo per fare questo in due righe
+    bool trovato = false;
+    for (auto cds: _cds_db) {
+        for (const auto &semestre: cds->getCorsiSemestre()) {
+            for (auto idcorso_cds: semestre) {
+                for (auto idcorso: _corsi_db) {
+                    if (idcorso_cds->getIdCorso() == idcorso->getIdCorso()) {
+                        trovato = true;
+                    }
+                }
+                if (!trovato) {
+                    cout << "Errore corso " << idcorso_cds << " non trovato\n";
+                }
+                trovato = false;
+            }
+        }
+        for (auto id_spento: cds->getCorsiSpenti()) {
+            for (auto idcorso: _corsi_db) {
+                if (id_spento->getIdCorso() == idcorso->getIdCorso()) {
+                    trovato = true;
+                }
+            }
+            if (!trovato) {
+                cout << "Errore corso spento " << id_spento << " non trovato\n";
+            }
+            trovato = false;
+        }
+
+    }
+
+}
 
 // legge BS;[{ABC123,ABC124},{ABC125,ABC126,ABC127},{ABC128,ABC129},{ABC130,ABC135,ABC136},{ABC147,ABC148},{ABC149,ABC150,ABC151}]
 Database::Corso_di_studio::Corso_di_studio(const string &row, const string &ultimo_id) {
@@ -1246,7 +1286,7 @@ Database::Corso_di_studio::Corso_di_studio(const string &row, const string &ulti
 //        LOGV(str_semestre_temp);
 
         //Faccio un vettore di corso_id temporaneo per poi salvarlo nel vettore _corsi_semestre
-        vector<Corso_id*> semestre_temp;
+        vector<Corso_id *> semestre_temp;
         for (const auto &id_corso_letto: str_semestre_temp) {
             //oggetto corso id da salvare nel vettore di corsi_id
             auto *c = new Corso_id(id_corso_letto);
@@ -1265,4 +1305,12 @@ Database::Corso_di_studio::Corso_di_studio(const string &row, const string &ulti
 
 Database::Corso_di_studio::Corso_di_studio() {
 
+}
+
+const vector<vector<Database::Corso_id *>> &Database::Corso_di_studio::getCorsiSemestre() const {
+    return _corsi_semestre;
+}
+
+const vector<Database::Corso_id *> &Database::Corso_di_studio::getCorsiSpenti() const {
+    return _corsi_spenti;
 }

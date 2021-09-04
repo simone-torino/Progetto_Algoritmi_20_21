@@ -270,6 +270,7 @@ public:
         void fstampa_id(ofstream &fout) const;
 
         void setIdCorso(const string &id_corso);
+        const string &getIdCorso() const;
 
         void debug();
 
@@ -423,11 +424,18 @@ public:
 
         //contiene i corsi divisi per semestre, vector<corso> è un semestre, ci sono due semestri per ogni anno
         vector<vector<Corso_id*>> _corsi_semestre;
+    public:
+        const vector<vector<Corso_id *>> &getCorsiSemestre() const;
+
+        const vector<Corso_id *> &getCorsiSpenti() const;
+
+    private:
 
         vector<Corso_id*> _corsi_spenti;
 //        vector<Corso_id> _corsi_;
 
         Regex _regcds;
+
 
         void fstampa_semestri(ofstream &fout) const;
 
@@ -444,8 +452,10 @@ public:
 
         void setLaurea(const string &laurea);
 
+
         void debug();
     };
+
 
 private:
     Regex _regdb;
@@ -481,6 +491,7 @@ private:
 
     string leggi_id_maggiore(const string &file_db);
 
+    void checkIdCorso_in_Cds();
 
 public:
     template<typename T>

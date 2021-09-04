@@ -21,19 +21,21 @@ void Database::Regex::search_and_read(const std::regex &expression, const string
     }
 }
 
-//prende una espressione regolare, una string ada cui leggere e un vettore in cui salvare le stringhe lette separate
+//TODO: attenzione: non rileva se manca un campo
+//prende una espressione regolare, una stringa da cui leggere e un vettore in cui salvare le stringhe lette separate
 void Database::Regex::multiple_fields(const std::regex &expression, const string &row, vector<string> &out) {
     auto it_begin = sregex_iterator(row.begin(), row.end(), expression);
     auto it_end = sregex_iterator();
 
-//    cout << "Found " << distance(it_begin, it_end) << " different fields\n";
+    cout << "Found " << distance(it_begin, it_end) << " different fields\n";
 
     for (sregex_iterator i = it_begin; i != it_end; ++i) {
-        smatch match = *i;
-        string match_str = match.str();
+        _match = *i;
+        string match_str = _match.str();
         out.push_back(match_str);
 //        cout << match_str << endl;
     }
+
 }
 
 
