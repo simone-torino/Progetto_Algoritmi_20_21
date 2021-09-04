@@ -3,6 +3,7 @@
 
 //TODO rivedi metodi statici
 
+//prende una espressione regolare, una stringa da cui leggere e un vettore in cui salvare le stringhe lette separate
 void Database::Regex::search_and_read(const std::regex &expression, const string &row, vector<string> &out) {
 
     if (regex_search(row, _match, expression)) {
@@ -12,21 +13,22 @@ void Database::Regex::search_and_read(const std::regex &expression, const string
                 out.push_back(_match[i]);
             }
         }
-      return;
+        return;
     } else {
         cout << "Nella riga: " << row << endl;
         throw errore_formattazione();
-     return;
+        return;
     }
 }
 
-void multiple_fields(const std::regex &expression, const string &row, vector<string> &out){
-    auto it_begin = sregex_iterator (row.begin(), row.end(), expression);
+//prende una espressione regolare, una string ada cui leggere e un vettore in cui salvare le stringhe lette separate
+void Database::Regex::multiple_fields(const std::regex &expression, const string &row, vector<string> &out) {
+    auto it_begin = sregex_iterator(row.begin(), row.end(), expression);
     auto it_end = sregex_iterator();
 
-    cout << "Found " << distance(it_begin, it_end) << " different fields\n";
+//    cout << "Found " << distance(it_begin, it_end) << " different fields\n";
 
-    for(sregex_iterator i = it_begin; i != it_end; ++i){
+    for (sregex_iterator i = it_begin; i != it_end; ++i) {
         smatch match = *i;
         string match_str = match.str();
         out.push_back(match_str);
@@ -67,7 +69,8 @@ vector<string> Database::Corso::cut_versioni(const string &row, const vector<int
         start = indicigraffe[i] + 1;
         end = indicigraffe[i + 1] - indicigraffe[i];
 
-        try { temp = row.substr(start, end);
+        try {
+            temp = row.substr(start, end);
 
         } catch (std::out_of_range &e) {
             cout << e.what() << "\nROW: " << row << endl;
@@ -81,36 +84,51 @@ vector<string> Database::Corso::cut_versioni(const string &row, const vector<int
 
 std::regex Database::Regex::target_expression(lettura::reg_expressions exp) {
     switch (exp) {
+        //studenti su file database
         case lettura::studenti_db:
             return std::regex(_matricola_s + _persona_in);
 
+            //studenti su file di aggiunta
         case lettura::studenti_in:
             return std::regex(_persona_in);
 
+            //professori su file database
         case lettura::professori_db:
             return std::regex(_matricola_d + _persona_in);
 
+            //professori su file di aggiunta
         case lettura::professori_in:
             return std::regex(_persona_in);
 
+            //aule su file database
         case lettura::aule_db:
             return std::regex(_id_aula + _aula_in);
 
+            //aule su file di aggiunta
         case lettura::aule_in:
             return std::regex(_aula_in);
 
-        case lettura::corsi_in:
-            return std::regex(_corso_in_base);
-
-        case lettura::id_corsi_in:
-            return std::regex(_id_corso);
-
-        case lettura::cds_in:
-            return std::regex(_id_cds);
-
+            //corsi su file database
         case lettura::corsi_db:
             LOG(corso_db_base);
             return std::regex(corso_db_base);
+
+            //corsi su file di aggiunta
+        case lettura::corsi_in:
+            return std::regex(_corso_in_base);
+
+            //corsi di studio su file di aggiunta
+        case lettura::cds_in:
+            return std::regex(_cds_row);
+
+            //id corso raggruppati per semestre
+        case lettura::cds_semestri:
+            return std::regex(_cds_semestri);
+
+            //id corso singoli
+        case lettura::cds_id_corso:
+            return std::regex(_cds_id_corso);
+
 
         case lettura::prof_singolo:
             return std::regex(_profn_graffe);
@@ -150,7 +168,9 @@ Database::Regex::Regex() {
 
 
     //corso di studi : C120;BS;[{AXC345,BVX123},{CBV123,ASD564}]
+
     _cds = _id_cds + ";" + _laurea + ";";
+
     _laurea = "([BS|MS])";
     _id_cds = "([A-Z0-9]+)";
     _id_corso_del_semestre_n = "\\{" + _id_corso_n;
@@ -195,7 +215,7 @@ bool Database::BracketSearch::balancedBrackets(const string &str) {
                     {']', '['}
             };
 
-    for (char currentCharacter : str) {
+    for (char currentCharacter: str) {
         if (IsOpenBracket(currentCharacter)) {
             s.push(currentCharacter);
         } else if (IsClosedBracket(currentCharacter)) {

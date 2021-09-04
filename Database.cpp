@@ -72,29 +72,39 @@ void Database::Corso_di_studio::fstampa(ofstream &fout) const {
     fstampa_bool(_laurea, "BS", "MS", fout);
     fout << ';' << '[';
     fstampa_semestri(fout);
-    fout << ']' << ';' << '[';
-    for (unsigned int i = 0; i < _corsi_spenti.size(); i++) {
-        _corsi_spenti[i].fstampa_id(fout);
-        //se non sto stampando l'ultimo campo, metto una virgola
-        if (i != _corsi_spenti.size() - 1) {
-            fout << ',';
-        }
-    }
-    fout << ']';
-}
-
-void Database::Corso_di_studio::fstampa_semestri(ofstream &fout) const {
-    fout << '{';
-    for (unsigned int i = 0; i < _corsi_per_semestre.size(); i++) {
-        for (int j = 0; j < _corsi_per_semestre[i].size(); j++) {
-            _corsi_per_semestre[i][j].fstampa_id(fout);
+    fout << ']' << ';';
+    if(!_corsi_spenti.empty()) {
+        cout << '[';
+        for (unsigned int i = 0; i < _corsi_spenti.size(); i++) {
+            _corsi_spenti[i]->fstampa_id(fout);
             //se non sto stampando l'ultimo campo, metto una virgola
-            if (i < _corsi_per_semestre[i].size() - 1) {
+            if (i != _corsi_spenti.size() - 1) {
                 fout << ',';
             }
         }
+        fout << ']';
     }
-    fout << '}';
+    fout << endl;
+}
+
+//C120;BS;[{AXC345, BVX123},{CBV123,ASD564}];[AXC321]
+void Database::Corso_di_studio::fstampa_semestri(ofstream &fout) const {
+    for (unsigned int i = 0; i < _corsi_semestre.size(); i++) {
+        //stampo semestre
+        fout << '{';
+        for (int j = 0; j < _corsi_semestre[i].size(); j++) {
+            _corsi_semestre[i][j]->fstampa_id(fout);
+            //se non sto stampando l'ultimo campo, metto una virgola
+            if (j < _corsi_semestre[i].size() - 1) {
+                fout << ',';
+            }
+        }
+        fout << '}';
+        if (i < _corsi_semestre.size() - 1) {
+            fout << ',';
+        }
+    }
+
 }
 
 void Database::Corso_id::fstampa_id(ofstream &fout) const {
@@ -164,6 +174,7 @@ void Database::target_aggiungi(options::opzione o) {
         case options::cds: {
             cout << "Aggiunta corsi di studio in corso...\n";
             leggi_in(_file_db_cds, _cds_db);
+//            _cds_db.front()->debug();
             break;
         }
         default:
@@ -515,20 +526,27 @@ string Database::leggi_id_maggiore(const string &file_db) {
     } else if (file_db == _file_db_corsi) {
         first = "ABC123";
     } else if (file_db == _file_db_cds) {
-        first = "A123";
+        first = "C101";
     }
+
+    cout << "Tentativo di lettura del file " << file_db << " per assegnare codice identificativo\n";
 
     try {
         controlli_file(fin, file_db);
     } catch (file_non_aperto &e) {
         cout << e.what() << endl;
-//        return first;
+        return first;
     } catch (file_failed &e) {
         cout << e.what() << endl;
         return first;
     }
 
-    //TODO: controllo file vuoto
+    try {
+        isempty(fin);
+    } catch (runtime_error &e) {
+        cout << e.what() << endl;
+        exit(5);
+    }
 
     string rowdb, temp;
 
@@ -545,7 +563,10 @@ string Database::leggi_id_maggiore(const string &file_db) {
         }
 
         if (!temp.empty()) {
-            temp = temp.substr(1, temp.length());
+            if(file_db ==_file_db_cds){
+                temp = temp.substr(0, temp.length());
+            }else
+                temp = temp.substr(1, temp.length());
             if (temp > first) {//aggiorna _matricola maggiore
                 first = temp;
             }
@@ -955,10 +976,10 @@ Database::Corso::Anno_Accademico::Prof_per_versione::nuovo_profn(string &prof_n)
         exit(15);
     }
 
-    pn->_matricola = out_profn[1];
-    pn->_ore_lez = stoi(out_profn[2]);
-    pn->_ore_es = stoi(out_profn[3]);
-    pn->_ore_lab = stoi(out_profn[4]);
+    pn->setMatricolaProf(out_profn[1]);
+    pn->setOreLezProf(stoi(out_profn[2]));
+    pn->setOreEsercProf(stoi(out_profn[3]));
+    pn->setOreLabProf(stoi(out_profn[4]));
 
     return pn;
 }
@@ -1108,16 +1129,34 @@ void Database::Corso_id::setIdCorso(const string &id_corso) {
     _id_corso = id_corso;
 }
 
-Database::Corso_id::Corso_id(const string &row) {
-    //arriva row del corso_db.txt
-    istringstream is(row);
-    string temp_id;
-    getline(is, temp_id, ';');
+Database::Corso_id::Corso_id(const string &id_corso) {
+    if (!id_corso.empty()) {
+        if (regex_match(id_corso, std::regex("([A-Z]{3}[0-9]{3})"))) {
+            _id_corso = id_corso;
+        } else {
+            throw errore_formattazione();
+        }
+    } else {
+        throw errore_riga_vuota();
+    }
+
 
 }
 
-void Database::Corso_di_studio::setLaurea(bool laurea) {
-    _laurea = laurea;
+void Database::Corso_id::debug() {
+    cout << _id_corso << endl;
+}
+
+void Database::Corso_di_studio::setLaurea(const string &laurea) {
+    if (laurea == "BS") {
+        _laurea = true;
+    } else if (laurea == "MS") {
+        _laurea = false;
+    } else {
+        cout << "Laurea non riconosciuta, inserire BS o MS\n";
+        throw errore_formattazione();
+    }
+
 }
 
 int strToInt(std::string const &s) {
@@ -1130,6 +1169,7 @@ int strToInt(std::string const &s) {
 }
 
 void Database::Corso_di_studio::setIdCds(const string &id_cds) {
+    //TODO: fai con regex match
     if (!id_cds.empty())
         _id_cds = id_cds;
     if (_id_cds.size() != 4)
@@ -1140,49 +1180,87 @@ void Database::Corso_di_studio::setIdCds(const string &id_cds) {
     }
 }
 
-void Database::Corso_di_studio::setCorsiDiUnSemestre(vector<Corso_id> corsi_in_un_semestre) {
-    for (int i = 0; i < corsi_in_un_semestre.size(); i++) {
-        _corsi_in_un_semestre[i] = corsi_in_un_semestre[i];
-    }
-}
+//void Database::Corso_di_studio::setCorsiDiUnSemestre(vector<Corso_id> corsi_in_un_semestre) {
+//    for (int i = 0; i < corsi_in_un_semestre.size(); i++) {
+//        _corsi_in_un_semestre[i] = corsi_in_un_semestre[i];
+//    }
+//}
+//
+//void Database::Corso_di_studio::setCorsiPerSemestre(const vector<vector<Corso_id>> &corsi_per_semestre) {
+//    for (auto &i: corsi_per_semestre) {
+//        setCorsiDiUnSemestre(i);
+//    }
+//}
 
-void Database::Corso_di_studio::setCorsiPerSemestre(const vector<vector<Corso_id>> &corsi_per_semestre) {
-    for (auto &i: corsi_per_semestre) {
-        setCorsiDiUnSemestre(i);
-    }
-}
-
+// legge BS;[{ABC123,ABC124},{ABC125,ABC126,ABC127},{ABC128,ABC129},{ABC130,ABC135,ABC136},{ABC147,ABC148},{ABC149,ABC150,ABC151}]
 Database::Corso_di_studio::Corso_di_studio(const string &row, const string &ultimo_id) {
     //TODO: nei corsi di studio ci devono essere solo id_corso di corsi presenti in memoria (rileggi corsi_db ogni volta) ma leggi_db solo corso_id
     //TODO: leggi_db bs/l e trasforma in booleano
 
-
-
     vector<string> cds_temp;
-    vector<vector<Corso_id>> lista_corsi_temp;
 
-    int i = 0;
     try {
         _regcds.search_and_read(_regcds.target_expression(lettura::cds_in), row, cds_temp);
+//BS
+//{ABC123,ABC124},{ABC125,ABC126,ABC127},{ABC128,ABC129},{ABC130,ABC135,ABC136},{ABC147,ABC148},{ABC149,ABC150,ABC151}
 
     } catch (errore_formattazione &e) {
         cout << e.what() << endl;
         exit(15);
     }
 
-    lista_corsi_temp = {cds_temp[1].begin(), cds_temp[cds_temp.size()].end()};
+    string row_semestri = cds_temp[2];
+//    for (int i = 0; i < cds_temp.size(); i++) {
+//        cout << "Vettore " << i << " : " << cds_temp[i] << endl;
+//    }
+    cds_temp.clear(); //svuoto per riusarlo
+
 
     try {
         setIdCds(ultimo_id);
-        setLaurea(stoi(cds_temp[1]));
-        setCorsiPerSemestre(lista_corsi_temp);
-    } catch (errore_matricola &e) {
-        cout << "errore trovato" << e.what() << endl;
-        exit(4);
+        setLaurea(cds_temp[1]); // BS o MS
+
+        //TODO: catch delle eccezioni di multiple fields
+        //ora leggo gli id dei corsi divisi per semestre
+        _regcds.multiple_fields(_regcds.target_expression(lettura::cds_semestri), row_semestri, cds_temp);
+//        {ABC123,ABC124} ecc
     } catch (invalid_argument &e) {
-        cout << "errore trovato" << e.what() << endl;
+        cout << "errore trovato " << e.what() << endl;
         exit(10);
+    } catch (errore_matricola &e) { //lanciato dal costruttore
+        cout << "errore trovato " << e.what() << endl;
+        exit(4);
+    } catch (errore_formattazione &e) {
+        cout << "errore trovato " << e.what() << endl;
     }
+
+//    for (int i = 0; i < cds_temp.size(); i++) {
+//        cout << "Vettore " << i << " : " << cds_temp[i] << endl;
+//    }
+
+    vector<string> str_semestre_temp;
+    //ora leggo i singoli id_corso divisi per semestre
+    for (const auto &k: cds_temp) {
+        _regcds.multiple_fields(_regcds.target_expression(lettura::cds_id_corso), k, str_semestre_temp);
+//        ABC123 ecc
+//        LOGV(str_semestre_temp);
+
+        //Faccio un vettore di corso_id temporaneo per poi salvarlo nel vettore _corsi_semestre
+        vector<Corso_id*> semestre_temp;
+        for (const auto &id_corso_letto: str_semestre_temp) {
+            //oggetto corso id da salvare nel vettore di corsi_id
+            auto *c = new Corso_id(id_corso_letto);
+//            cout << "Debug corso_id: ";
+//            c->debug();
+            semestre_temp.push_back(c);
+        }
+        _corsi_semestre.push_back(semestre_temp);
+
+        semestre_temp.clear();
+        str_semestre_temp.clear();
+
+    }
+
 }
 
 Database::Corso_di_studio::Corso_di_studio() {

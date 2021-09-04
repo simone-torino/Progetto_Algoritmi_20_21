@@ -1,12 +1,13 @@
-﻿Analisi1                     ABC123        {ABC128,ABC137,ABC142,ABC147}
-Informatica                  ABC124        {ABC129,ABC138,ABC143,ABC148}
-Chimica                      ABC125        {ABC130,ABC139,ABC144,ABC149}
-Fisica1                      ABC126     {ABC131,ABC133,ABC135,ABC140,ABC145,ABC150}
-Geometria                    ABC127    {ABC132,ABC134,ABC136,ABC141,ABC146,ABC151}
+﻿Analisi1                     ABC123  {ABC128,ABC137,ABC142,ABC147}
+Informatica                  ABC124  {ABC129,ABC138,ABC143,ABC148}
+Chimica                      ABC125  {ABC130,ABC139,ABC144,ABC149}
+Fisica1                      ABC126  {ABC131,ABC133,ABC135,ABC140,ABC145,ABC150}
+Geometria                    ABC127  {ABC132,ABC134,ABC136,ABC141,ABC146,ABC151}
 
-Fisica2                      ABC128         {ABC123,ABC137,ABC142,ABC147}
-Analisi2                     ABC129         {ABC124,ABC138,ABC143,ABC148}
-Metodi Matematici            ABC130         {ABC125,ABC139,ABC144,ABC149}
+
+Fisica2                      ABC128  {ABC123,ABC137,ABC142,ABC147}
+Analisi2                     ABC129  {ABC124,ABC138,ABC143,ABC148}
+Metodi Matematici            ABC130  {ABC125,ABC139,ABC144,ABC149}
 
 
 Circuiti Elettronici         ABC131 {ABC126,ABC133,ABC135,ABC140,ABC145,ABC150}
@@ -21,17 +22,17 @@ Calcolatori Elettronici      ABC135 {ABC126,ABC131,ABC133,ABC140,ABC145,ABC150}
 Strutture Dati               ABC136 {ABC127,ABC132,ABC134,ABC141,ABC146,ABC151}
 
 
-Elettronica Applicata        ABC137    {ABC123,ABC128,ABC142,ABC147}
-Campi Elettromagnetici       ABC138   {ABC124,ABC129,ABC143,ABC148}
-Sistemi Digitali             ABC139   {ABC125,ABC130,ABC144,ABC149}
+Elettronica Applicata        ABC137 {ABC123,ABC128,ABC142,ABC147}
+Campi Elettromagnetici       ABC138 {ABC124,ABC129,ABC143,ABC148}
+Sistemi Digitali             ABC139 {ABC125,ABC130,ABC144,ABC149}
 Misure                       ABC140 {ABC126,ABC131,ABC133,ABC135,ABC145,ABC150}
 Dispositivi Elettronici      ABC141 {ABC127,ABC132,ABC134,ABC136,ABC146,ABC151}
 
 
 
-Costruzione Macchine         ABC142  {ABC123,ABC128,ABC137,ABC147}
-Oleodinamica                 ABC143  {ABC124,ABC129,ABC138,ABC148}
-Impianti Industriali         ABC144  {ABC125,ABC130,ABC139,ABC149}
+Costruzione Macchine         ABC142 {ABC123,ABC128,ABC137,ABC147}
+Oleodinamica                 ABC143 {ABC124,ABC129,ABC138,ABC148}
+Impianti Industriali         ABC144 {ABC125,ABC130,ABC139,ABC149}
 Meccanica Dei Fluidi         ABC145 {ABC126,ABC131,ABC133,ABC135,ABC140,ABC150}
 Meccanica Strutturale        ABC146 {ABC127,ABC132,ABC134,ABC136,ABC141,ABC151}
 

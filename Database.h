@@ -4,7 +4,7 @@
 
 
 #define LOG(x) std::cout << "\nLOG: " << x << std::endl;
-#define LOGV(x) for(auto i: x){std::cout << "Vettore:" << ' ' << i << endl;}
+#define LOGV(x) for(auto i: x){std::cout << "Vettore: " << i << endl;}
 
 #include <string>
 #include <vector>
@@ -57,11 +57,11 @@ namespace lettura {
         corsi_in = 8,
         cds_db = 9,
         cds_in = 10,
-        sessioni = 11,
-        anno_acc = 12,
-        indisp = 13,
-        id_corsi_in = 14,
-        id_cds_in = 17,
+        cds_semestri = 11,
+        cds_id_corso = 12,
+        sessioni = 13,
+        anno_acc = 14,
+        indisp = 16,
         prof_singolo = 18,
         profn_campi = 19,
         esame_campi = 20,
@@ -103,6 +103,10 @@ public:
         const string _aula_in = "[AL]);([a-z A-Z0-9]+);" + _num + ';' + _num; //A;Aula 5;120;60
         const string _id_aula = "([0-9][A-Z][A-Z][0-9]);"; //4AD4;
 
+        const string _cds_row = "(BS|MS);\\[([{}A-Z0-9,]*)\\]";
+        const string _cds_semestri = "\\{([A-Z0-9,]+)\\}";
+        const string _cds_id_corso = "([A-Z]{3}[0-9]{3})";
+
         string corso_db_base;
         string _id_corso;
         string _anno_acc;
@@ -112,6 +116,7 @@ public:
         string _id_corso_n;
 
         //corso di studi : C120;BS;[{AXC345,BVX123},{CBV123,ASD564}]
+
         string _cds;
         string _laurea;
         string _id_cds;
@@ -260,11 +265,13 @@ public:
     public:
         Corso_id() = default;
 
-        explicit Corso_id(const string &row);
+        explicit Corso_id(const string &id_corso);
 
         void fstampa_id(ofstream &fout) const;
 
         void setIdCorso(const string &id_corso);
+
+        void debug();
 
     };
 
@@ -276,20 +283,22 @@ public:
         short unsigned int _ore_laboratorio{};
 //        vector<Corso_id *> _lista_corsi_aggiuntivi;
 
-        struct Anno_Accademico {
+
+        class Anno_Accademico {
             string _anno_accademico;
             bool _attivo; //attivo 1, non attivo 0
             short unsigned int _n_versioni_in_parallelo;
+        public:
+        void fstampa_anno_accademico(ofstream &fout) const;
 
-            void fstampa_anno_accademico(ofstream &fout) const;
-
-            struct Esame {
+            class Esame {
                 short unsigned int _durata_esame;
                 short unsigned int _t_ingresso;
                 short unsigned int _t_uscita;
                 string _modalita;
                 string _luogo;
 
+            public:
                 void fstampa_esame(ofstream &fout) const;
 
                 void setDurataEsame(unsigned short int durata_esame);
@@ -303,15 +312,16 @@ public:
                 void setLuogo(string &luogo);
             };
 
-            struct Prof_per_versione {
+            class Prof_per_versione {
                 string _matricola_titolare;
-
-                struct Profn {
+            public:
+                class Profn {
                     string _matricola;
                     short unsigned int _ore_lez;
                     short unsigned int _ore_es;
                     short unsigned int _ore_lab;
 
+                public:
                     void setMatricolaProf(string &matricola_prof);
 
                     void setOreLezProf(unsigned short int ore_lez_prof);
@@ -410,9 +420,12 @@ public:
     class Corso_di_studio {
         string _id_cds;
         bool _laurea; //BS 1, MS 0
-        vector<vector<Corso_id>> _corsi_per_semestre;
-        vector<Corso_id> _corsi_spenti;
-        vector<Corso_id> _corsi_in_un_semestre;
+
+        //contiene i corsi divisi per semestre, vector<corso> è un semestre, ci sono due semestri per ogni anno
+        vector<vector<Corso_id*>> _corsi_semestre;
+
+        vector<Corso_id*> _corsi_spenti;
+//        vector<Corso_id> _corsi_;
 
         Regex _regcds;
 
@@ -429,11 +442,9 @@ public:
 
         void setIdCds(const string &id_cds);
 
-        void setLaurea(bool laurea);
+        void setLaurea(const string &laurea);
 
-        void setCorsiDiUnSemestre(vector<Corso_id> corsi_in_un_semestre);
-
-        void setCorsiPerSemestre(const vector<vector<Corso_id>> &corsi_per_semestre);
+        void debug();
     };
 
 private:

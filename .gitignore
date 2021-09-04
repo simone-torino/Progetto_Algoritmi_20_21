@@ -8,7 +8,7 @@
 /cmake-build-debug/db_aule.txt
 /cmake-build-debug/db_corsi.txt
 /cmake-build-debug/db_corsi_studio.txt
-/cmake-build-debug/db*.txt
+/cmake-build-debug/db_*.txt
 /cmake-build-debug/CMakeFiles/
 *.com
 *.class

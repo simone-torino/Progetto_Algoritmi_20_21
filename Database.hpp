@@ -37,7 +37,7 @@ void isempty(std::ifstream &fptr) {
 //    fptr.peek() == std::ifstream::traits_type::eof()
     fptr.get();
     if (fptr.eof()) {
-        throw runtime_error("File is empty");
+        throw runtime_error("File is empty"); //TODO: eccezione errore_file_vuoto
     }
     //rimetto il puntatore all'inizio in modo da non saltare il primo carattere se il file non è vuot
     fptr.seekg(ios::beg);
