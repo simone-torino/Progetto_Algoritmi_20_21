@@ -618,6 +618,8 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
     display_date_sessioni();
     _dbcal.leggi_corso_db();
     _dbcal.target_fstampa(options::corsi, true); //debug
+//    _dbcal.leggi_db(_dbcal.getFileDbCds(), _dbcal.getCdsDb());
+//    _dbcal.target_fstampa(options::cds, true);
 
 
     //da finire

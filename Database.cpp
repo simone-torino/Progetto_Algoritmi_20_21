@@ -177,7 +177,7 @@ void Database::target_aggiungi(options::opzione o) {
         case options::cds: {
             cout << "Aggiunta corsi di studio in corso...\n";
             //leggo anche i corsi per confrontare gli id con quelli inseriti da cds
-            leggi_db(_file_db_professori, _corsi_db);
+            leggi_corso_db();
 
             leggi_in(_file_db_cds, _cds_db);
 
@@ -527,7 +527,7 @@ string Database::leggi_id_maggiore(const string &file_db) {
     } else if (file_db == _file_db_aule) {
         first = "1AA1";
     } else if (file_db == _file_db_corsi) {
-        first = "ABC123";
+        first = "ABC122";
     } else if (file_db == _file_db_cds) {
         first = "C100";
     }
@@ -1410,7 +1410,9 @@ void Database::checkIdCorso_in_Cds() {
                     }
                 }
                 if (!trovato) {
-                    cout << "Errore corso " << idcorso_cds << " non trovato\n";
+                    cout << "Errore corso " << idcorso_cds->getIdCorso() << " non trovato\n";
+                    //TODO: throw exception
+                    exit(43);
                 }
                 trovato = false;
             }
@@ -1422,7 +1424,9 @@ void Database::checkIdCorso_in_Cds() {
                 }
             }
             if (!trovato) {
-                cout << "Errore corso spento " << id_spento << " non trovato\n";
+                cout << "Errore corso spento " << id_spento->getIdCorso() << " non trovato\n";
+                //TODO: throw exception
+                exit(43);
             }
             trovato = false;
         }
@@ -1502,6 +1506,9 @@ Database::Corso_di_studio::Corso_di_studio(const string &row, const string &ulti
 
 }
 
+Database::Corso_di_studio::Corso_di_studio(const string &row) {
+
+}
 
 const vector<vector<Database::Corso_id *>> &Database::Corso_di_studio::getCorsiSemestre() const {
     return _corsi_semestre;
@@ -1510,3 +1517,5 @@ const vector<vector<Database::Corso_id *>> &Database::Corso_di_studio::getCorsiS
 const vector<Database::Corso_id *> &Database::Corso_di_studio::getCorsiSpenti() const {
     return _corsi_spenti;
 }
+
+

@@ -114,7 +114,8 @@ public:
         const string _rg_versioni = R"(\{[d0-9,]+,\[[{d0-9,}]+]\})";
 
         const string _id_corso = "([A-Z0-9]+)";
-        const string corso_db_base = "c;" + _id_corso + ';' + _text + ';' + _num + ';' + _num + ';' + _num + ';' + _num + ';';
+        const string corso_db_base =
+                "c;" + _id_corso + ';' + _text + ';' + _num + ';' + _num + ';' + _num + ';' + _num + ';';
         const string rg_n_versioni = "([0-9]);\\[";
         const string _anno_acc = "([0-9]{4})-([0-9]{4})";
         const string _esame_campi = "\\{" + _num + "," + _num + "," + _num + "," + "([SOP]*),([AL])\\}";
@@ -292,7 +293,9 @@ public:
                 Database::Regex _reg_esame;
             public:
                 explicit Esame(const string &str_esame);
+
                 void fstampa_esame(ofstream &fout) const;
+
                 void debug();
 
             };
@@ -308,24 +311,12 @@ public:
                     Database::Regex _reg_profn;
                 public:
                     explicit Profn(const string &profn);
-                    void setMatricolaProf(string &matricola_prof);
-
-                    void setOreLezProf(unsigned short int ore_lez_prof);
-
-                    void setOreEsercProf(unsigned short int ore_eser_prof);
-
-                    void setOreLabProf(unsigned short int ore_lab_prof);
 
                     void fstampa_profn(ofstream &fout) const;
 
                 };
+
                 explicit Prof_per_versione(const string &versione);
-
-                void setMatricolaTitolare(const string &matricola_titolare);
-
-                void setProf_n(Profn *pn);
-
-                Profn *nuovo_profn(string &prof_n);
 
                 void fstampa_versione(ofstream &fout) const;
 
@@ -336,19 +327,9 @@ public:
 
             };
 
-            void setNumVersioni(unsigned short int num_versioni);
-
             void setAttivo(bool attivo);
 
-            void setAnnoAccademico(const string &anno_accademico);
-
             void setEsame(Esame *e);
-
-            Esame *nuovo_esame(const string &s_esame);
-
-            void setProfversione(Prof_per_versione *pv);
-
-//            Prof_per_versione *nuovo_Profversione(string &versione);
 
             vector<string> estraimultipli(const regex &reg, string &daleggere, const string &delim);
 
@@ -363,11 +344,9 @@ public:
             Database::Regex _reg_anno;
         };
 
-        Corso();
-
         Corso(const string &row, const string &ultimo_id);
 
-        Corso(const string &row);
+        explicit Corso(const string &row);
 
         void setOreLez(int ore_lez);
 
@@ -390,8 +369,6 @@ public:
         void setTitolo(const string &titolo);
 
         void setAnnoAccademico(Corso::Anno_Accademico *anno);
-
-//        Anno_Accademico *nuovo_anno_accademico(const string &anno, int n_versioni, const string &row);
 
         vector<string> cut_versioni(const string &row, const vector<int> &indicigraffe, int n_versioni);
 
@@ -425,26 +402,21 @@ public:
     private:
 
         vector<Corso_id *> _corsi_spenti;
-//        vector<Corso_id> _corsi_;
 
         Regex _regcds;
-
 
         void fstampa_semestri(ofstream &fout) const;
 
     public:
-        Corso_di_studio();
-
         Corso_di_studio(const string &row, const string &ultimo_id);
 
-        Corso_di_studio(const string &row);
+        explicit Corso_di_studio(const string &row);
 
         void fstampa(ofstream &fout) const;
 
         void setIdCds(const string &id_cds);
 
         void setLaurea(const string &laurea);
-
 
         void debug();
     };
