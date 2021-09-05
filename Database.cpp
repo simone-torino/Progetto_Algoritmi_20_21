@@ -47,18 +47,21 @@ void Database::Corso::Anno_Accademico::fstampa_anno_accademico(ofstream &fout) c
     fout << ']' << ';';
     _esame->fstampa_esame(fout);
     fout << ';';
+    fout << '{';
     for (int i = 0; i < _id_corsi_raggruppati.size(); i++) {
         _id_corsi_raggruppati[i]->fstampa_id(fout);
         if (i < _id_corsi_raggruppati.size() - 1) {
             fout << ',';
         }
     }
+    fout << '}';
 }
 
 void Database::Corso::fstampa(ofstream &fout) const {
 //    LOG(_id_corso);
+//    this->debug();
     fout << 'c' << ';' << _id_corso << ';' << _titolo << ';' << _cfu << ';' << _ore_lezione << ';' << _ore_esercitazione
-         << ';' << _ore_laboratorio << '\n';
+         << ';' << _ore_laboratorio << ';' << '\n';
     for (const auto &i: _anni_accademici) {
         i->fstampa_anno_accademico(fout);
         fout << '\n'; //vado a capo anche se ho un solo anno
@@ -567,7 +570,7 @@ string Database::leggi_id_maggiore(const string &file_db) {
         }
 
         if (!temp.empty()) {
-            if (file_db == _file_db_cds) {
+            if (file_db == _file_db_cds || file_db == _file_db_corsi) {
                 temp = temp.substr(0, temp.length());
             } else
                 temp = temp.substr(1, temp.length());
@@ -592,7 +595,7 @@ Database::Database(const string &file_argomento) {
 //c;ABC124;titoloUNO;6;50;10;20
 //a;2019-2020;attivo;1;[{d123456,[{d246813,50,0,0},{d543216,20,10,20}]}];{90,30,0,30,S}
 void Database::nuovo_corso(const string &row, bool source_db) {
-    Corso *c{new Corso};
+    Corso *c{new Corso(row)};
     vector<string> corso_temp;
 
 //   [Aggiornamento] Legge dal file _dbcal, quindi c'è anche la _matricola, da confrontare più avanti
@@ -914,152 +917,215 @@ void Database::Corso::setOreLab(int ore_lab) {
     _ore_laboratorio = ore_lab;
 }
 
-void Database::Corso::Anno_Accademico::setNumVersioni(unsigned short num_versioni) {
-    _n_versioni_in_parallelo = num_versioni;
-}
 
-void Database::Corso::Anno_Accademico::Esame::setDurataEsame(unsigned short durata_esame) {
-    _durata_esame = durata_esame;
-}
-
-void Database::Corso::Anno_Accademico::Esame::setTimeIn(unsigned short t_ingresso) {
-    _t_ingresso = t_ingresso;
-}
-
-void Database::Corso::Anno_Accademico::Esame::setTimeOut(unsigned short t_uscita) {
-    _t_uscita = t_uscita;
-}
-
-void Database::Corso::Anno_Accademico::Esame::setMod(string &mod) {
-    _modalita = mod;
-}
-
-void Database::Corso::Anno_Accademico::Esame::setLuogo(string &luogo) {
-    _luogo = luogo;
-}
-
-void Database::Corso::Anno_Accademico::setAnnoAccademico(const string &anno_accademico) {
-    _anno_accademico = anno_accademico;
-}
-
-void Database::Corso::Anno_Accademico::Prof_per_versione::setMatricolaTitolare(const string &matricola_titolare) {
-    _matricola_titolare = matricola_titolare;
-}
-
-void Database::Corso::Anno_Accademico::Prof_per_versione::Profn::setMatricolaProf(string &matricola_prof) {
-    _matricola = matricola_prof;
-}
-
-void Database::Corso::Anno_Accademico::Prof_per_versione::Profn::setOreLezProf(unsigned short ore_lez_prof) {
-    _ore_lez = ore_lez_prof;
-}
-
-void Database::Corso::Anno_Accademico::Prof_per_versione::Profn::setOreEsercProf(unsigned short ore_eser_prof) {
-    _ore_es = ore_eser_prof;
-}
-
-void Database::Corso::Anno_Accademico::Prof_per_versione::Profn::setOreLabProf(unsigned short ore_lab_prof) {
-    _ore_lab = ore_lab_prof;
-}
 
 void Database::Corso::Anno_Accademico::setAttivo(bool attivo) {
     _attivo = attivo;
 }
 
-Database::Corso::Anno_Accademico::Prof_per_versione::Profn *
-Database::Corso::Anno_Accademico::Prof_per_versione::nuovo_profn(string &prof_n) {
-    Profn *pn{new Profn};
-    vector<string> out_profn;
+//Database::Corso::Anno_Accademico::Prof_per_versione::Profn *
+//Database::Corso::Anno_Accademico::Prof_per_versione::nuovo_profn(string &prof_n) {
+//    Profn *pn{new Profn(prof_n)};
+//    vector<string> out_profn;
+//
+//    try {
+//        _reg_profv.search_and_read(_reg_profv.target_expression(lettura::profn_campi), prof_n, out_profn);
+//
+//    } catch (errore_formattazione &e) {
+//        cout << e.what() << endl;
+//        exit(15);
+//    }
+//
+//    pn->setMatricolaProf(out_profn[1]);
+//    pn->setOreLezProf(stoi(out_profn[2]));
+//    pn->setOreEsercProf(stoi(out_profn[3]));
+//    pn->setOreLabProf(stoi(out_profn[4]));
+//
+//    return pn;
+//}
 
+//void Database::Corso::Anno_Accademico::Prof_per_versione::setProf_n(Profn *pn) {
+//    _altri_prof_n.push_back(pn);
+//}
+
+Database::Corso::Anno_Accademico::Prof_per_versione::Prof_per_versione(const string &versione) {
+
+    //LETTURA matricola titolare {d000001,[{d000002,50,0,0},{d000003,20,10,20}]}
+    vector<string> matricola_titolare;
     try {
-        _reg_profv.search_and_read(_reg_profv.target_expression(lettura::profn_campi), prof_n, out_profn);
-
+        _reg_profv.search_and_read(_reg_profv.target_expression(lettura::prof_titolare), versione, matricola_titolare);
     } catch (errore_formattazione &e) {
         cout << e.what() << endl;
+        READ_ERR("matricola professore titolare");
+        exit(15);
+    }
+    _matricola_titolare = matricola_titolare[1];
+
+    //LETTURA campi professori associati {d000001,[{d000002,50,0,0},{d000003,20,10,20}]}
+    vector<string> profn_temp;
+    try {
+        _reg_profv.multiple_fields(_reg_profv.target_expression(lettura::prof_singolo), versione, profn_temp);
+    } catch (errore_formattazione &e) {
+        cout << e.what() << endl;
+        READ_ERR("campi professori associati");
         exit(15);
     }
 
-    pn->setMatricolaProf(out_profn[1]);
-    pn->setOreLezProf(stoi(out_profn[2]));
-    pn->setOreEsercProf(stoi(out_profn[3]));
-    pn->setOreLabProf(stoi(out_profn[4]));
-
-    return pn;
-}
-
-void Database::Corso::Anno_Accademico::Prof_per_versione::setProf_n(Profn *pn) {
-    _altri_prof_n.push_back(pn);
-}
-
-Database::Corso::Anno_Accademico::Prof_per_versione *
-Database::Corso::Anno_Accademico::nuovo_Profversione(string &versione) {
-    Prof_per_versione *pv_temp{new(nothrow) Prof_per_versione};
-
-    pv_temp->setMatricolaTitolare(versione.substr(0, versione.find(',')));
-
-    vector<string> professori_n = estraimultipli(_reg_anno.target_expression(lettura::prof_singolo), versione, "}");
-
-    for (string professore_n: professori_n) {
-        pv_temp->setProf_n(pv_temp->nuovo_profn(professore_n));
+    for (const string &singolo_profn: profn_temp) {
+        auto *pn = new Profn(singolo_profn);
+        _altri_prof_n.push_back(pn);
     }
-    return pv_temp;
 }
+
+Database::Corso::Anno_Accademico::Prof_per_versione::Profn::Profn(const string &profn) {
+
+    //LETTURA campi professore associato {d000002,50,0,0}
+    vector<string> out_profn;
+    try {
+        _reg_profn.search_and_read(_reg_profn.target_expression(lettura::profn_campi), profn, out_profn);
+
+    } catch (errore_formattazione &e) {
+        cout << e.what() << endl;
+        READ_ERR("campi professore associato");
+        exit(15);
+    }
+    vector<int> profn_int;
+    profn_int.reserve(3);
+    transform(out_profn.begin() + 2, out_profn.begin() + 4, profn_int.begin(), strToInt);
+
+    _matricola = out_profn[1];
+    _ore_lez = profn_int[0];
+    _ore_es = profn_int[1];
+    _ore_lab = profn_int[2];
+}
+
+//Database::Corso::Anno_Accademico::Prof_per_versione *
+//Database::Corso::Anno_Accademico::nuovo_Profversione(string &versione) {
+//    Prof_per_versione *pv_temp{new(nothrow) Prof_per_versione(versione)};
+//    cout << versione << endl;
+//
+//    pv_temp->setMatricolaTitolare(versione.substr(0, versione.find(',')));
+//
+//    vector<string> professori_n = estraimultipli(_reg_anno.target_expression(lettura::prof_singolo), versione, "}");
+//
+//    for (string professore_n: professori_n) {
+//        pv_temp->setProf_n(pv_temp->nuovo_profn(professore_n));
+//    }
+//    return pv_temp;
+//}
 
 void Database::Corso::Anno_Accademico::setEsame(Database::Corso::Anno_Accademico::Esame *e) {
     _esame = e;
 }
 
-//TODO: anche qui dovresti chiamare il costruttore di anno accademico,
-// situazione diversa da prima (dichiara e pushback) fai dichiara e setta per ogni tipo nested
-Database::Corso::Anno_Accademico *
-Database::Corso::nuovo_anno_accademico(const string &anno, int n_versioni, const string &row) {
-    Anno_Accademico *a_temp{new(nothrow) Anno_Accademico};
-    a_temp->setAnnoAccademico(anno);
-    a_temp->setAttivo(true);
-    a_temp->setNumVersioni(n_versioni);
+Database::Corso::Anno_Accademico::Anno_Accademico(const string &anno, int n_versioni, const string &row) {
+    _anno_accademico = anno;
+    _attivo = true;
+    _n_versioni_in_parallelo = n_versioni;
 
+    //TODO: i processi di lettura potrebbero essere dei template
 
     //LETTURA [{<matricola_titolare>,[{<matricolare_prof1>,n1,n2,n3},..,{<matricolare_profn>,<ore_lez>,<ore_es>,<ore_lab>}]},...]
-    vector<string> versioni = cut_versioni(row, _bs.posBrackets(row),
-                                           n_versioni); //Vettore che salva {..{.},{.}..},...,{..}
-
-    for (string stringa_versione: versioni) {
-        a_temp->setProfversione(a_temp->nuovo_Profversione(stringa_versione));
+//    rg_versioni {[d0-9,]+,\[[{d0-9,}]+]}
+    vector<string> versioni;
+    try {
+        _reg_anno.multiple_fields(_reg_anno.target_expression(lettura::anno_versioni), row, versioni);
+    } catch (errore_formattazione &e) {
+        cout << e.what() << endl;
+        READ_ERR("versioni corso nell'anno accademico");
+        exit(15);
     }
 
+//    LOGV(versioni);
+
+    for (const string &stringa_versione: versioni) {
+        auto *pv = new Prof_per_versione(stringa_versione);
+        _versioni.push_back(pv);
+    }
+
+    //LETTURA {90,30,30,S,A};  {<durata_esame>,<t_ingresso>,<t_uscita>,<modalità>,<luogo(A/L)>}
     vector<string> out_esame;
 
     try {
-        _regcorso.search_and_read(_regcorso.target_expression(lettura::esame_graffe), row, out_esame);
+        _reg_anno.search_and_read(_reg_anno.target_expression(lettura::esame_graffe), row, out_esame);
 
     } catch (errore_formattazione &e) {
+        READ_ERR("esame");
         cout << e.what() << endl;
         exit(15);
     }
 
-    string s_esame = out_esame[0];
-    a_temp->setEsame(a_temp->nuovo_esame(s_esame));
+    auto *e = new Esame(out_esame[0]);
+    _esame = e;
 
-    vector<string> out_idcorso;
-    //TODO: da cambiare lettura, non so quanti idcorso ci devono essere
+    //LETTURA {ABC126,ABC131,ABC133,ABC135,ABC145,ABC150} {<id_corso1>,..,<id_corsoN>}
+    vector<string> out_raggruppati;
     try {
-        _regcorso.search_and_read(_regcorso.target_expression(lettura::id_corsi), row, out_idcorso);
-
+        _reg_anno.multiple_fields(_reg_anno.target_expression(lettura::cds_id_corso), row, out_raggruppati);
     } catch (errore_formattazione &e) {
+        READ_ERR("id corsi raggruppati");
         cout << e.what() << endl;
         exit(15);
     }
 
+    //TODO conversione da string a corso_id* potrebbe essere un template (presente anche in costruttore corso di studio)
+    for (const auto &id_corso: out_raggruppati) {
+        auto *c = new Corso_id(id_corso);
+        _id_corsi_raggruppati.push_back(c);
+    }
 
-    return a_temp;
 }
 
-//{90,30,30,S,A};  {<durata_esame>,<t_ingresso>,<t_uscita>,<modalità>,<luogo(A/L)>}
-Database::Corso::Anno_Accademico::Esame *Database::Corso::Anno_Accademico::nuovo_esame(const string &s_esame) {
-    Esame *e{new Esame};
-    vector<string> out_esame;
+////TODO: anche qui dovresti chiamare il costruttore di anno accademico,
+//// situazione diversa da prima (dichiara e pushback) fai dichiara e setta per ogni tipo nested
+//Database::Corso::Anno_Accademico *
+//Database::Corso::nuovo_anno_accademico(const string &str_anno, int n_versioni, const string &row) {
+//    Anno_Accademico *a_temp{new(nothrow) Anno_Accademico(str_anno, n_versioni, row)};
+////    a_temp->setAnnoAccademico(anno);
+////    a_temp->setAttivo(true);
+////    a_temp->setNumVersioni(n_versioni);
+//
+//
+//    //LETTURA [{<matricola_titolare>,[{<matricolare_prof1>,n1,n2,n3},..,{<matricolare_profn>,<ore_lez>,<ore_es>,<ore_lab>}]},...]
+////    vector<string> versioni = cut_versioni(row, _bs.posBrackets(row),
+////                                           n_versioni); //Vettore che salva {..{.},{.}..},...,{..}
+//
+////    for (string stringa_versione: versioni) {
+////        a_temp->setProfversione(a_temp->nuovo_Profversione(stringa_versione));
+////    }
+//
+//    vector<string> out_esame;
+//
+//    try {
+//        _regcorso.search_and_read(_regcorso.target_expression(lettura::esame_graffe), row, out_esame);
+//
+//    } catch (errore_formattazione &e) {
+//        cout << e.what() << endl;
+//        exit(15);
+//    }
+//
+//    string s_esame = out_esame[0];
+//    a_temp->setEsame(a_temp->nuovo_esame(s_esame));
+//
+//    vector<string> out_idcorso;
+//    //TODO: da cambiare lettura, non so quanti idcorso ci devono essere
+//    try {
+//        _regcorso.search_and_read(_regcorso.target_expression(lettura::id_corsi), row, out_idcorso);
+//
+//    } catch (errore_formattazione &e) {
+//        cout << e.what() << endl;
+//        exit(15);
+//    }
+//
+//
+//    return a_temp;
+//}
+
+Database::Corso::Anno_Accademico::Esame::Esame(const string &str_esame) {
+    //{90,30,30,S,A};
+    vector<string> out_esame_campi;
     try {
-        _reg_anno.search_and_read(_reg_anno.target_expression(lettura::esame_campi), s_esame, out_esame);
+        _reg_esame.search_and_read(_reg_esame.target_expression(lettura::esame_campi), str_esame, out_esame_campi);
 
     } catch (errore_formattazione &e) {
         cout << e.what() << endl;        // qui non c'era l'exit l'ho messo comunque da verificare che sia corretto
@@ -1068,40 +1134,65 @@ Database::Corso::Anno_Accademico::Esame *Database::Corso::Anno_Accademico::nuovo
 
     vector<int> esame_int;
     esame_int.reserve(3);
-    transform(out_esame.begin() + 1, out_esame.begin() + 3, esame_int.begin(), strToInt);
+    transform(out_esame_campi.begin() + 1, out_esame_campi.begin() + 3, esame_int.begin(), strToInt);
 
-    e->setDurataEsame(esame_int[0]);
-    e->setTimeIn(esame_int[1]);
-    e->setTimeOut(esame_int[2]);
-    e->setMod(out_esame[3]);
-    e->setLuogo(out_esame[4]);
-
-    return e;
+    _durata_esame = esame_int[0];
+    _t_ingresso = esame_int[1];
+    _t_uscita = esame_int[2];
+    _modalita = out_esame_campi[3];
+    _luogo = out_esame_campi[4];
 }
 
-void Database::Corso::Anno_Accademico::setProfversione(Prof_per_versione *pv) {
-    _versioni.push_back(pv);
-}
+//{90,30,30,S,A};  {<durata_esame>,<t_ingresso>,<t_uscita>,<modalità>,<luogo(A/L)>}
+//Database::Corso::Anno_Accademico::Esame *Database::Corso::Anno_Accademico::nuovo_esame(const string &s_esame) {
+//    Esame *e{new Esame(s_esame)};
+//    vector<string> out_esame;
+//    try {
+//        _reg_anno.search_and_read(_reg_anno.target_expression(lettura::esame_campi), s_esame, out_esame);
+//
+//    } catch (errore_formattazione &e) {
+//        cout << e.what() << endl;        // qui non c'era l'exit l'ho messo comunque da verificare che sia corretto
+//        exit(15);
+//    }
+//
+//    vector<int> esame_int;
+//    esame_int.reserve(3);
+//    transform(out_esame.begin() + 1, out_esame.begin() + 3, esame_int.begin(), strToInt);
+//
+//    e->setDurataEsame(esame_int[0]);
+//    e->setTimeIn(esame_int[1]);
+//    e->setTimeOut(esame_int[2]);
+//    e->setMod(out_esame[3]);
+//    e->setLuogo(out_esame[4]);
+//
+//    return e;
+//}
 
-void Database::Corso::setAnnoAccademico(Corso::Anno_Accademico *anno) {
-    _anni_accademici.push_back(anno);
-}
+//void Database::Corso::Anno_Accademico::setProfversione(Prof_per_versione *pv) {
+//    _versioni.push_back(pv);
+//}
+
+
+//void Database::Corso::setAnnoAccademico(Corso::Anno_Accademico *anno) {
+//    _anni_accademici.push_back(anno);
+//}
 
 Database::Corso::Corso(const string &row, const string &ultimo_id) {
     //TODO: controlla inserimento corsi duplicati
     vector<string> corso_temp;
-
-    //LEGGE aaaa-aaaa;titolocorso;6;50;10;20;n_versioni;
+//    cout << "STO LEGGENDO " << row << endl;
+    //LEGGE aaaa-aaaa;titolocorso;6;50;10;20;n_versioni
     try {
         _regcorso.search_and_read(_regcorso.target_expression(lettura::corsi_in), row, corso_temp);
 
     } catch (errore_formattazione &e) {
         cout << e.what() << endl;
+        READ_ERR("informazioni corso");
         exit(15);
     }
 
     if (corso_temp.size() != 9) {
-        cout << "Errore lettura corso in base\n";
+        READ_ERR("informazioni corso, numero campi non corretto");
     }
     vector<int> corso_temp_int;
     corso_temp_int.reserve(5);
@@ -1114,9 +1205,10 @@ Database::Corso::Corso(const string &row, const string &ultimo_id) {
     _ore_esercitazione = corso_temp_int[2];
     _ore_laboratorio = corso_temp_int[3];
 
-    //legge e setta l'anno accademico
-    setAnnoAccademico(nuovo_anno_accademico(corso_temp[1] + '-' + corso_temp[2], corso_temp_int[4], row));
-    //TODO: cosa cambia nel tipo di ritorno tra nuovo studente e i nuovo annidati della classe corso?
+    //TODO: è più di uno?
+    auto *a = new Anno_Accademico(corso_temp[1] + '-' + corso_temp[2], corso_temp_int[4], row);
+    _anni_accademici.push_back(a);
+
 
 }
 
@@ -1124,11 +1216,13 @@ Database::Corso::~Corso() {
 
 }
 
-Database::Corso::Corso() {
+Database::Corso::Corso(const string &row) {
 
 }
 
-Database::Corso::Corso(const string &row){
+void Database::Corso::debug() const {
+    cout << 'c' << ';' << _id_corso << ';' << _titolo << ';' << _cfu << ';' << _ore_lezione << ';' << _ore_esercitazione
+            << ';' << _ore_laboratorio << '\n';
 
 }
 
@@ -1156,6 +1250,10 @@ void Database::Corso_id::debug() {
 
 const string &Database::Corso_id::getIdCorso() const {
     return _id_corso;
+}
+
+Database::Corso_id::~Corso_id() {
+    delete this;
 }
 
 void Database::Corso_di_studio::setLaurea(const string &laurea) {
@@ -1245,8 +1343,8 @@ Database::Corso_di_studio::Corso_di_studio(const string &row, const string &ulti
 
     try {
         _regcds.search_and_read(_regcds.target_expression(lettura::cds_in), row, cds_temp);
-//BS
-//{ABC123,ABC124},{ABC125,ABC126,ABC127},{ABC128,ABC129},{ABC130,ABC135,ABC136},{ABC147,ABC148},{ABC149,ABC150,ABC151}
+//cds_temp[1]: BS
+//cds_temp[2]: {ABC123,ABC124},{ABC125,ABC126,ABC127},{ABC128,ABC129},{ABC130,ABC135,ABC136},{ABC147,ABC148},{ABC149,ABC150,ABC151}
 
     } catch (errore_formattazione &e) {
         cout << e.what() << endl;
@@ -1283,7 +1381,7 @@ Database::Corso_di_studio::Corso_di_studio(const string &row, const string &ulti
 //    }
 
     vector<string> str_semestre_temp;
-    //ora leggo i singoli id_corso divisi per semestre
+    //ora leggo i singoli id_corso per ogni semestre
     for (const auto &k: cds_temp) {
         _regcds.multiple_fields(_regcds.target_expression(lettura::cds_id_corso), k, str_semestre_temp);
 //        ABC123 ecc
@@ -1307,9 +1405,6 @@ Database::Corso_di_studio::Corso_di_studio(const string &row, const string &ulti
 
 }
 
-Database::Corso_di_studio::Corso_di_studio() {
-
-}
 
 const vector<vector<Database::Corso_id *>> &Database::Corso_di_studio::getCorsiSemestre() const {
     return _corsi_semestre;

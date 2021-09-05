@@ -76,7 +76,7 @@ void Database::leggi_in(const string &file_db, vector<T *> &_classedati_db) {
         getline(fin, row, '\n');
         incremento_id(ultimo_id);
         //      [Aggiunta] serve la _matricola da assegnare
-        if (!row.empty()) {
+        if (!row.empty() && !isblank(row.front())) {
 
             T *t = new T(row, ultimo_id);
 
@@ -117,7 +117,8 @@ void Database::leggi_db(const string &nome_file, vector<T *> &_classedati_xx) {
     while (!fin.eof()) {
         getline(fin, row, '\n');
 
-        if (!row.empty()) {
+        //controlla che la riga letta non sia vuota e non cominci per spazio o tab
+        if (!row.empty() && !isblank(row.front())) {
             T *t = new T(row);
 
             //db o agg

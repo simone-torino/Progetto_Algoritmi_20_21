@@ -27,7 +27,7 @@ void Database::Regex::multiple_fields(const std::regex &expression, const string
     auto it_begin = sregex_iterator(row.begin(), row.end(), expression);
     auto it_end = sregex_iterator();
 
-    cout << "Found " << distance(it_begin, it_end) << " different fields\n";
+//    cout << "Found " << distance(it_begin, it_end) << " different fields\n";
 
     for (sregex_iterator i = it_begin; i != it_end; ++i) {
         _match = *i;
@@ -96,7 +96,7 @@ std::regex Database::Regex::target_expression(lettura::reg_expressions exp) {
 
             //professori su file database
         case lettura::professori_db:
-            return std::regex(_matricola_d + _persona_in);
+            return std::regex(_matricola_d + ';' + _persona_in);
 
             //professori su file di aggiunta
         case lettura::professori_in:
@@ -112,12 +112,18 @@ std::regex Database::Regex::target_expression(lettura::reg_expressions exp) {
 
             //corsi su file database
         case lettura::corsi_db:
-            LOG(corso_db_base);
             return std::regex(corso_db_base);
 
             //corsi su file di aggiunta
         case lettura::corsi_in:
+//            cout << _corso_in_base << endl;
             return std::regex(_corso_in_base);
+
+        case lettura:: anno_versioni:
+            return std::regex(_rg_versioni);
+
+        case lettura::prof_titolare:
+            return std::regex(_matricola_d);
 
             //corsi di studio su file di aggiunta
         case lettura::cds_in:

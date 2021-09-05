@@ -5,6 +5,7 @@
 
 #define LOG(x) std::cout << "\nLOG: " << x << std::endl;
 #define LOGV(x) for(auto i: x){std::cout << "Vettore: " << i << endl;}
+#define READ_ERR(x) std::cout << "Errore lettura " << x << std::endl;
 
 #include <string>
 #include <vector>
@@ -55,18 +56,20 @@ namespace lettura {
         aule_in = 6,
         corsi_db = 7,
         corsi_in = 8,
-        cds_db = 9,
-        cds_in = 10,
-        cds_semestri = 11,
-        cds_id_corso = 12,
-        sessioni = 13,
-        anno_acc = 14,
-        indisp = 16,
+        anno_versioni = 9,
+        prof_titolare = 10,
+        cds_db = 11,
+        cds_in = 12,
+        cds_semestri = 13,
+        cds_id_corso = 14,
+        sessioni = 15,
+        anno_acc = 16,
+        indisp = 17,
         prof_singolo = 18,
         profn_campi = 19,
         esame_campi = 20,
         esame_graffe = 21,
-        id_corsi
+        id_corsi = 22
 
 
     };
@@ -98,7 +101,7 @@ public:
         const string _persona_in =
                 _text + ';' + _text + ';' + "([a-zA-Z\\@\\._]*)"; //Alessio Maria;Rossi Aliberti;am.ra@email.it
         const string _matricola_s = "s([0-9]{6});"; //s123456;
-        const string _matricola_d = "d([0-9]{6});"; //d123456;
+        const string _matricola_d = "(d[0-9]{6})"; //d123456;
         const string _num = "([0-9]*)";
         const string _aula_in = "[AL]);([a-z A-Z0-9]+);" + _num + ';' + _num; //A;Aula 5;120;60
         const string _id_aula = "([0-9][A-Z][A-Z][0-9]);"; //4AD4;
@@ -106,6 +109,8 @@ public:
         const string _cds_row = "(BS|MS);\\[([{}A-Z0-9,]*)\\]";
         const string _cds_semestri = "\\{([A-Z0-9,]+)\\}";
         const string _cds_id_corso = "([A-Z]{3}[0-9]{3})";
+
+        const string _rg_versioni = R"(\{[d0-9,]+,\[[{d0-9,}]+]\})";
 
         string corso_db_base;
         string _id_corso;
@@ -142,6 +147,7 @@ public:
         std::regex target_expression(lettura::reg_expressions exp);
 
         void search_and_read(const std::regex &expression, const string &row, vector<string> &out);
+
         void multiple_fields(const std::regex &expression, const string &row, vector<string> &out);
 
     };
@@ -193,7 +199,7 @@ public:
 
         Studente(const string &row, const string &ultima_matricola);
 
-        Studente(const string &row);
+        explicit Studente(const string &row);
 
         void fstampa(ofstream &fout) const;
 
@@ -265,11 +271,14 @@ public:
     public:
         Corso_id() = default;
 
+        ~Corso_id();
+
         explicit Corso_id(const string &id_corso);
 
         void fstampa_id(ofstream &fout) const;
 
         void setIdCorso(const string &id_corso);
+
         const string &getIdCorso() const;
 
         void debug();
@@ -282,15 +291,13 @@ public:
         short unsigned int _ore_lezione{};
         short unsigned int _ore_esercitazione{};
         short unsigned int _ore_laboratorio{};
-//        vector<Corso_id *> _lista_corsi_aggiuntivi;
-
+        vector<Corso_id *> _id_raggruppati;
 
         class Anno_Accademico {
-            string _anno_accademico;
-            bool _attivo; //attivo 1, non attivo 0
-            short unsigned int _n_versioni_in_parallelo;
         public:
-        void fstampa_anno_accademico(ofstream &fout) const;
+            Anno_Accademico(const string &str_anno, int n_versioni, const string &row);
+
+            void fstampa_anno_accademico(ofstream &fout) const;
 
             class Esame {
                 short unsigned int _durata_esame;
@@ -299,22 +306,14 @@ public:
                 string _modalita;
                 string _luogo;
 
+                Database::Regex _reg_esame;
             public:
+                explicit Esame(const string &str_esame);
                 void fstampa_esame(ofstream &fout) const;
 
-                void setDurataEsame(unsigned short int durata_esame);
-
-                void setTimeIn(unsigned short int t_ingresso);
-
-                void setTimeOut(unsigned short int t_uscita);
-
-                void setMod(string &mod);
-
-                void setLuogo(string &luogo);
             };
 
             class Prof_per_versione {
-                string _matricola_titolare;
             public:
                 class Profn {
                     string _matricola;
@@ -322,7 +321,9 @@ public:
                     short unsigned int _ore_es;
                     short unsigned int _ore_lab;
 
+                    Database::Regex _reg_profn;
                 public:
+                    Profn(const string &profn);
                     void setMatricolaProf(string &matricola_prof);
 
                     void setOreLezProf(unsigned short int ore_lez_prof);
@@ -334,10 +335,7 @@ public:
                     void fstampa_profn(ofstream &fout) const;
 
                 };
-
-                Database::Regex _reg_profv;
-                vector<Profn *> _altri_prof_n;
-
+                explicit Prof_per_versione(const string &versione);
 
                 void setMatricolaTitolare(const string &matricola_titolare);
 
@@ -347,13 +345,12 @@ public:
 
                 void fstampa_versione(ofstream &fout) const;
 
+            private:
+                string _matricola_titolare;
+                Database::Regex _reg_profv;
+                vector<Profn *> _altri_prof_n;
+
             };
-
-            vector<Prof_per_versione *> _versioni;
-            Esame *_esame;
-            vector<Corso_id *> _id_corsi_raggruppati;
-
-            Database::Regex _reg_anno;
 
             void setNumVersioni(unsigned short int num_versioni);
 
@@ -367,10 +364,19 @@ public:
 
             void setProfversione(Prof_per_versione *pv);
 
-            Prof_per_versione *nuovo_Profversione(string &versione);
+//            Prof_per_versione *nuovo_Profversione(string &versione);
 
             vector<string> estraimultipli(const regex &reg, string &daleggere, const string &delim);
 
+        private:
+            string _anno_accademico;
+            bool _attivo; //attivo 1, non attivo 0
+            short unsigned int _n_versioni_in_parallelo;
+            vector<Prof_per_versione *> _versioni;
+            Esame *_esame;
+            vector<Corso_id *> _id_corsi_raggruppati;
+
+            Database::Regex _reg_anno;
         };
 
         vector<Anno_Accademico *> _anni_accademici;
@@ -414,6 +420,8 @@ public:
 
         void fstampa(ofstream &fout) const;
 
+        void debug() const;
+
         Database::BracketSearch _bs;
 
     };
@@ -423,7 +431,7 @@ public:
         bool _laurea; //BS 1, MS 0
 
         //contiene i corsi divisi per semestre, vector<corso> è un semestre, ci sono due semestri per ogni anno
-        vector<vector<Corso_id*>> _corsi_semestre;
+        vector<vector<Corso_id *>> _corsi_semestre;
     public:
         const vector<vector<Corso_id *>> &getCorsiSemestre() const;
 
@@ -431,7 +439,7 @@ public:
 
     private:
 
-        vector<Corso_id*> _corsi_spenti;
+        vector<Corso_id *> _corsi_spenti;
 //        vector<Corso_id> _corsi_;
 
         Regex _regcds;
