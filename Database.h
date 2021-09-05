@@ -59,6 +59,7 @@ namespace lettura {
         anno_versioni = 9,
         prof_titolare = 10,
         cds_db = 11,
+        n_versioni = 23,
         cds_in = 12,
         cds_semestri = 13,
         cds_id_corso = 14,
@@ -112,10 +113,11 @@ public:
 
         const string _rg_versioni = R"(\{[d0-9,]+,\[[{d0-9,}]+]\})";
 
-        string corso_db_base;
-        string _id_corso;
-        string _anno_acc;
-        string _esame_campi;
+        const string _id_corso = "([A-Z0-9]+)";
+        const string corso_db_base = "c;" + _id_corso + ';' + _text + ';' + _num + ';' + _num + ';' + _num + ';' + _num + ';';
+        const string rg_n_versioni = "([0-9]);\\[";
+        const string _anno_acc = "([0-9]{4})-([0-9]{4})";
+        const string _esame_campi = "\\{" + _num + "," + _num + "," + _num + "," + "([SOP]*),([AL])\\}";
         string _esame_graffe;
 
         string _id_corso_n;
@@ -125,8 +127,7 @@ public:
         string _cds;
         string _laurea;
         string _id_cds;
-        string _id_corso_del_semestre_n;
-        string _id_corso_del_semestre;
+
 
         //LETTURA CORSI IN
         string _corso_in_base;
@@ -150,16 +151,6 @@ public:
 
         void multiple_fields(const std::regex &expression, const string &row, vector<string> &out);
 
-    };
-
-    struct BracketSearch {
-        bool IsOpenBracket(char InCharacter);
-
-        bool IsClosedBracket(char InCharacter);
-
-        bool balancedBrackets(const string &str);
-
-        vector<int> posBrackets(const string &str);
     };
 
     class Persona {
@@ -225,8 +216,6 @@ public:
     class Aula {
         Regex _regaula;
     public:
-        Aula();
-
         Aula(const string &row, const string &ultimo_id);
 
         explicit Aula(const string &row);
@@ -286,16 +275,10 @@ public:
     };
 
     class Corso : public Corso_id {
-        string _titolo; //nome del corso, può essere duplicato
-        short unsigned int _cfu{};
-        short unsigned int _ore_lezione{};
-        short unsigned int _ore_esercitazione{};
-        short unsigned int _ore_laboratorio{};
-        vector<Corso_id *> _id_raggruppati;
-
+    public:
         class Anno_Accademico {
         public:
-            Anno_Accademico(const string &str_anno, int n_versioni, const string &row);
+            explicit Anno_Accademico(const string &row);
 
             void fstampa_anno_accademico(ofstream &fout) const;
 
@@ -310,6 +293,7 @@ public:
             public:
                 explicit Esame(const string &str_esame);
                 void fstampa_esame(ofstream &fout) const;
+                void debug();
 
             };
 
@@ -323,7 +307,7 @@ public:
 
                     Database::Regex _reg_profn;
                 public:
-                    Profn(const string &profn);
+                    explicit Profn(const string &profn);
                     void setMatricolaProf(string &matricola_prof);
 
                     void setOreLezProf(unsigned short int ore_lez_prof);
@@ -379,13 +363,6 @@ public:
             Database::Regex _reg_anno;
         };
 
-        vector<Anno_Accademico *> _anni_accademici;
-
-        Regex _regcorso; //TODO: non c'è bisogno di specificare
-
-        ~Corso();
-
-    public:
         Corso();
 
         Corso(const string &row, const string &ultimo_id);
@@ -414,7 +391,7 @@ public:
 
         void setAnnoAccademico(Corso::Anno_Accademico *anno);
 
-        Anno_Accademico *nuovo_anno_accademico(const string &anno, int n_versioni, const string &row);
+//        Anno_Accademico *nuovo_anno_accademico(const string &anno, int n_versioni, const string &row);
 
         vector<string> cut_versioni(const string &row, const vector<int> &indicigraffe, int n_versioni);
 
@@ -422,8 +399,16 @@ public:
 
         void debug() const;
 
-        Database::BracketSearch _bs;
+    private:
+        string _titolo; //nome del corso, può essere duplicato
+        short unsigned int _cfu{};
+        short unsigned int _ore_lezione{};
+        short unsigned int _ore_esercitazione{};
+        short unsigned int _ore_laboratorio{};
 
+        vector<Anno_Accademico *> _anni_accademici;
+
+        Regex _regcorso; //TODO: non c'è bisogno di specificare
     };
 
     class Corso_di_studio {
@@ -520,8 +505,7 @@ public:
 
     void nuovo_corso(const string &row, bool source_db);
 
-    void leggi_prof_db();
-
+    //Funzione per leggere il file corso_db.txt non è un template perchè deve leggere più righe per uno stesso oggetto
     void leggi_corso_db();
 
     //Metodi getter per passare dati alla classe calendario

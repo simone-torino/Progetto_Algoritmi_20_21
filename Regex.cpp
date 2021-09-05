@@ -122,6 +122,9 @@ std::regex Database::Regex::target_expression(lettura::reg_expressions exp) {
         case lettura:: anno_versioni:
             return std::regex(_rg_versioni);
 
+        case lettura::n_versioni:
+            return std::regex (rg_n_versioni);
+
         case lettura::prof_titolare:
             return std::regex(_matricola_d);
 
@@ -166,12 +169,8 @@ std::regex Database::Regex::target_expression(lettura::reg_expressions exp) {
 }
 
 Database::Regex::Regex() {
-    _id_corso = "([A-Z0-9]+)";
-    corso_db_base = "c;" + _id_corso + ';' + _text + ';' + _num + ';' + _num + ';' + _num + ';' + _num + ';';
 
 
-    _anno_acc = "([0-9]{4})-([0-9]{4})";
-    _esame_campi = "\\{" + _num + "," + _num + "," + _num + "," + "([SOP]*),([AL])\\}";
     _esame_graffe = "\\{([0-9,SOPAL]+)\\}";
 
 
@@ -181,8 +180,6 @@ Database::Regex::Regex() {
 
     _laurea = "([BS|MS])";
     _id_cds = "([A-Z0-9]+)";
-    _id_corso_del_semestre_n = "\\{" + _id_corso_n;
-    _id_corso_del_semestre = "\\[" + _id_corso_del_semestre_n;
 
     //LETTURA CORSI IN
     _corso_in_base = _anno_acc + ';' + _text + ';' + _num + ';' + _num + ';' + _num + ';' + _num + ';' + _num;
@@ -194,88 +191,4 @@ Database::Regex::Regex() {
     _data = "([0-9]{1,2})\\-([0-9]{1,2})\\-([0-9]{4})";
     _periodo = _data + "\\|" + _data;
     _indisponibilita = _matricola_d;
-}
-
-bool Database::BracketSearch::IsOpenBracket(char InCharacter) {
-    vector<char> openCharacters = {'{', '(', '['};
-    if (count(openCharacters.begin(), openCharacters.end(), InCharacter)) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-bool Database::BracketSearch::IsClosedBracket(char InCharacter) {
-    vector<char> closedCharacters = {'}', ')', ']'};
-    if (count(closedCharacters.begin(), closedCharacters.end(), InCharacter)) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-bool Database::BracketSearch::balancedBrackets(const string &str) {
-    stack<char> s;
-    map<char, char> matching_brackets =
-            {
-                    {'}', '{'},
-                    {')', '('},
-                    {']', '['}
-            };
-
-    for (char currentCharacter: str) {
-        if (IsOpenBracket(currentCharacter)) {
-            s.push(currentCharacter);
-        } else if (IsClosedBracket(currentCharacter)) {
-            if (s.empty()) {
-                return false;
-            }
-
-            if (s.top() == matching_brackets[currentCharacter]) {
-                s.pop();
-            } else {
-                return false;
-            }
-        }
-    }
-
-    if (s.empty()) {
-        return true;
-    }
-
-    return false;
-}
-
-vector<int> Database::BracketSearch::posBrackets(const string &str) {
-    stack<char> s;
-    vector<int> pos;
-//    vector<Versione> v;
-//    vector<pair<int, int>> v;
-    map<char, char> matching_brackets =
-            {
-                    {'}', '{'},
-                    {')', '('},
-                    {']', '['}
-            };
-
-    for (int i = 0; i < str.size(); i++) {
-        if (str[i] == '{') {
-            s.push(str[i]);
-            if (s.size() == 1) {
-                pos.push_back(i);
-            }
-        } else if (str[i] == '}') {
-            if (s.size() == 1) {
-                pos.push_back(i);
-            }
-            if (!s.empty()) {
-                if (s.top() == matching_brackets[str[i]]) {
-                    s.pop();
-                }
-
-            }
-        }
-    }
-
-    return pos;
 }

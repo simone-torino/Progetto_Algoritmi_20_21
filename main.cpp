@@ -38,14 +38,14 @@ int main(int argc, char *argv[]) {
     cout << '\n';
 
     //controlli argc su ogni switch?
-   try {
-       if (argc < 3) { //TODO controlla questo numero
-           throw err_parametri_linea_di_comando();
-       }
-   } catch (err_parametri_linea_di_comando &e){
-       cout << e.what() << endl;
-       exit (-1);
-   }
+    try {
+        if (argc < 3) { //TODO controlla questo numero
+            throw err_parametri_linea_di_comando();
+        }
+    } catch (err_parametri_linea_di_comando &e) {
+        cout << e.what() << endl;
+        exit(-1);
+    }
     //Da levare
 
 
@@ -142,7 +142,7 @@ int main(int argc, char *argv[]) {
                 break;
             case (options::inserimento):
                 cout << "Hai scelto: " << "inserimento corsi\n";
-
+                //controlla inserimento corsi duplicati
 
                 break;
             case (options::set_esami):

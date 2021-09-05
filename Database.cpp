@@ -352,10 +352,6 @@ Database::Aula::Aula(const string &row, const string &ultimo_id) {
 
 }
 
-Database::Aula::Aula() {
-
-}
-
 Database::Aula::Aula(const string &row) {
     vector<string> aula_temp;
     _tipo = 0;
@@ -384,62 +380,62 @@ Database::Aula::Aula(const string &row) {
     setCapEsame(aula_temp_int[1]);
 }
 
-void Database::nuovo_professore(const string &row, bool source_db) {
-    Professore *p{new(nothrow) Professore};
-    vector<string> prof_temp;
+//void Database::nuovo_professore(const string &row, bool source_db) {
+//    Professore *p{new(nothrow) Professore};
+//    vector<string> prof_temp;
+//
+////   [Aggiornamento] Legge dal file _dbcal, quindi c'è anche la _matricola, da confrontare più avanti
+//    try {
+//        _regdb.search_and_read(_regdb.target_expression(lettura::professori_db), row, prof_temp);
+//
+//    } catch (errore_formattazione &e) {
+//        cout << e.what() << endl;
+//        exit(15);
+//    }
+//
+//    //le stringhe vuote sono gestite dai metodi setter
+//    p->setMatricola(prof_temp[1]);
+//    p->setNome(prof_temp[2]);
+//    p->setCognome(prof_temp[3]);
+//    p->setEmail(prof_temp[4]);
+//
+//    if (source_db) {
+//        _professori_db.push_back(p);
+//    } else
+//        _professori_agg.push_back(p);
+//}
 
-//   [Aggiornamento] Legge dal file _dbcal, quindi c'è anche la _matricola, da confrontare più avanti
-    try {
-        _regdb.search_and_read(_regdb.target_expression(lettura::professori_db), row, prof_temp);
-
-    } catch (errore_formattazione &e) {
-        cout << e.what() << endl;
-        exit(15);
-    }
-
-    //le stringhe vuote sono gestite dai metodi setter
-    p->setMatricola(prof_temp[1]);
-    p->setNome(prof_temp[2]);
-    p->setCognome(prof_temp[3]);
-    p->setEmail(prof_temp[4]);
-
-    if (source_db) {
-        _professori_db.push_back(p);
-    } else
-        _professori_agg.push_back(p);
-}
-
-void Database::nuova_aula(const string &row, bool source_db) {
-    Aula *a{new(nothrow) Aula};
-    vector<string> aula_temp;
-
-//   [Aggiornamento] Legge dal file _dbcal, quindi c'è anche la _matricola, da confrontare più avanti
-    try {
-        _regdb.search_and_read(_regdb.target_expression(lettura::aule_db), row, aula_temp);
-
-    } catch (errore_formattazione &e) {
-        cout << e.what() << endl;
-        exit(15);
-    }
-
-    LOGV(aula_temp);
-    vector<int> aula_temp_int;
-    aula_temp_int.resize(2);
-    transform(aula_temp.begin() + 4, aula_temp.begin() + 6, aula_temp_int.begin(), strToInt);
-
-    //le stringhe vuote sono gestite dai metodi setter
-    a->setId(aula_temp[1]);
-    a->setTipo(aula_temp[2][0]);
-    a->setDenominazione(aula_temp[3]);
-    a->setCapienza(aula_temp_int[0]);
-    a->setCapEsame(aula_temp_int[1]);
-
-
-    if (source_db) {
-        _aule_db.push_back(a);
-    } else
-        _aule_agg.push_back(a);
-}
+//void Database::nuova_aula(const string &row, bool source_db) {
+//    Aula *a{new(nothrow) Aula};
+//    vector<string> aula_temp;
+//
+////   [Aggiornamento] Legge dal file _dbcal, quindi c'è anche la _matricola, da confrontare più avanti
+//    try {
+//        _regdb.search_and_read(_regdb.target_expression(lettura::aule_db), row, aula_temp);
+//
+//    } catch (errore_formattazione &e) {
+//        cout << e.what() << endl;
+//        exit(15);
+//    }
+//
+//    LOGV(aula_temp);
+//    vector<int> aula_temp_int;
+//    aula_temp_int.resize(2);
+//    transform(aula_temp.begin() + 4, aula_temp.begin() + 6, aula_temp_int.begin(), strToInt);
+//
+//    //le stringhe vuote sono gestite dai metodi setter
+//    a->setId(aula_temp[1]);
+//    a->setTipo(aula_temp[2][0]);
+//    a->setDenominazione(aula_temp[3]);
+//    a->setCapienza(aula_temp_int[0]);
+//    a->setCapEsame(aula_temp_int[1]);
+//
+//
+//    if (source_db) {
+//        _aule_db.push_back(a);
+//    } else
+//        _aule_agg.push_back(a);
+//}
 
 void Database::aggiorna_aule() {
 
@@ -486,7 +482,7 @@ void Database::aggiorna_aule() {
     }
 
     if (!matricola_trovata) {
-        cout << "[Warning] Nessuna matricola da aggiornare è stata trovata e nessun campo e' stato aggiornato\n";
+        cout << "[Warning] Nessun id da aggiornare è stato trovato e nessun campo e' stato aggiornato\n";
     }
 }
 
@@ -570,6 +566,7 @@ string Database::leggi_id_maggiore(const string &file_db) {
         }
 
         if (!temp.empty()) {
+            //gli id corso e cds non hanno lettere distintive davanti
             if (file_db == _file_db_cds || file_db == _file_db_corsi) {
                 temp = temp.substr(0, temp.length());
             } else
@@ -625,55 +622,87 @@ void Database::nuovo_corso(const string &row, bool source_db) {
 
 }
 
-//TODO: usando il template questa non dovrebbe più servire
-void Database::leggi_prof_db() {
-    ifstream fin_db;
-    fin_db.open(_file_db_professori);
 
-    try {
-        controlli_file(fin_db, _file_db_professori);
-    } catch (file_non_aperto &e) {
-        cout << e.what() << endl;
-    } catch (file_failed &e) {
-        cout << e.what() << endl;
-    }
+//void Database::leggi_prof_db() {
+//    ifstream fin_db;
+//    fin_db.open(_file_db_professori);
+//
+//    try {
+//        controlli_file(fin_db, _file_db_professori);
+//    } catch (file_non_aperto &e) {
+//        cout << e.what() << endl;
+//    } catch (file_failed &e) {
+//        cout << e.what() << endl;
+//    }
+//
+//    string row_db;
+//    int n = 1;
+//    while (!fin_db.eof()) {
+//        getline(fin_db, row_db);
+//
+////      [Aggiornamento] La _matricola viene letta dal file
+//        if (!row_db.empty()) {
+//            nuovo_professore(row_db, true);
+//        } else {
+//            cout << "[Warning] Riga " << n << " vuota in " << _file_db_professori << endl;
+//        }
+//        n++;
+//    }
+//}
 
-    string row_db;
-    int n = 1;
-    while (!fin_db.eof()) {
-        getline(fin_db, row_db);
-
-//      [Aggiornamento] La _matricola viene letta dal file
-        if (!row_db.empty()) {
-            nuovo_professore(row_db, true);
-        } else {
-            cout << "[Warning] Riga " << n << " vuota in " << _file_db_professori << endl;
-        }
-        n++;
-    }
-}
-
-//tieni ancora
 void Database::leggi_corso_db() {
-    ifstream fin_db;
-    fin_db.open(_file_db_corsi);
+    ifstream fin;
+    fin.open(_file_db_corsi);
 
     try {
-        controlli_file(fin_db, _file_db_corsi);
+        controlli_file(fin, _file_db_corsi);
     } catch (file_non_aperto &e) {
         cout << e.what() << endl;
+        exit(3);
     } catch (file_failed &e) {
         cout << e.what() << endl;
+        exit(3);
     }
 
+    try {
+        isempty(fin);
+    } catch (runtime_error &e) {
+        cout << e.what() << endl;
+        exit(5);
+    }
+
+    bool letto_corso = false;
+    bool letto_anno = false;
     string row_db;
     int n = 1;
-    while (!fin_db.eof()) {
-        getline(fin_db, row_db);
+    while (!fin.eof()) {
+        getline(fin, row_db);
 
 //      [Aggiornamento] L'id_corso viene letto dal file
         if (!row_db.empty()) {
-            nuovo_corso(row_db, true);
+            if (row_db.front() == 'c') {
+                if (letto_corso && !letto_anno) {
+                    cout << "Errore formattazione: nel file " << _file_db_corsi
+                         << " trovato corso senza informazioni sugli anni accademici\n";
+                    //TODO: throw exception
+                }
+                //Crea corso con le informazioni base, gli anni accademici verranno aggiunti dopo
+                auto *c = new Corso(row_db);
+                _corsi_db.push_back(c);
+                letto_corso = true;
+            } else if (row_db.front() == 'a') {
+                if (!letto_corso) {
+                    cout << "Erroe formattazione nel file " << _file_db_corsi
+                         << " trovato anno accademico senza corso di riferimento";
+                    //TODO: throw exception
+                }
+                auto *a = new Corso::Anno_Accademico(row_db);
+                _corsi_db.back()->setAnnoAccademico(a);
+                letto_anno = true;
+            } else{
+                cout << "Errore formattazione nel file " << _file_db_corsi << " le righe devono iniziare per c; o a;\n";
+                //TODO: throw exception
+            }
 
         } else {
             cout << "[Warning] Riga " << n << " vuota in " << _file_db_corsi << endl;
@@ -918,7 +947,6 @@ void Database::Corso::setOreLab(int ore_lab) {
 }
 
 
-
 void Database::Corso::Anno_Accademico::setAttivo(bool attivo) {
     _attivo = attivo;
 }
@@ -1018,12 +1046,51 @@ void Database::Corso::Anno_Accademico::setEsame(Database::Corso::Anno_Accademico
     _esame = e;
 }
 
-Database::Corso::Anno_Accademico::Anno_Accademico(const string &anno, int n_versioni, const string &row) {
-    _anno_accademico = anno;
-    _attivo = true;
-    _n_versioni_in_parallelo = n_versioni;
+//2019-2020;Informatica;3;8;35;15;3;[{d000010,[{d000011,15,28,7},{d000012,15,28,7}]},{d000013,[{d000014,15,28,7},{d000015,15,28,7}]},{d000016,[{d000017,15,28,7},{d000018,15,28,7}]}];{90,30,30,S,A};{ABC129,ABC138,ABC143,ABC148}
+//a;2021-2022;attivo;1;[{d000110,[{d000111,25,8,0},{d000112,10,8,0}]}];{90,15,0,25,S};{ABC126,ABC131,ABC133,ABC135,ABC145,ABC150}
+Database::Corso::Anno_Accademico::Anno_Accademico(const string &row) {
+//TODO: i processi di lettura potrebbero essere dei template
 
-    //TODO: i processi di lettura potrebbero essere dei template
+    //LETTURA aaaa-aaaa 2020-2021
+    vector<string> out_anno_acc;
+    try {
+        _reg_anno.search_and_read(_reg_anno.target_expression(lettura::anno_acc), row, out_anno_acc);
+    } catch (errore_formattazione &e) {
+        cout << e.what() << endl;
+        READ_ERR("campo anno accademico in anno");
+        exit(15);
+    }
+    if(strToInt(out_anno_acc[2])- strToInt(out_anno_acc[1]) != 1){
+        cout << "Errore anno accademico non valido, inserire due anni contigui\n";
+        //TODO: throw exception
+        exit(29);
+    }
+    _anno_accademico = out_anno_acc[1] + '-' + out_anno_acc[2];
+
+
+    if(regex_match(row, std::regex("a;"))) {
+        if (regex_match(row, std::regex("attivo"))) {
+            _attivo = true;
+        } else if (regex_match(row, std::regex("non_attivo"))) {
+            _attivo = false;
+        } else {
+            //TODO: eccezione attivo/non_attivo non trovato
+        }
+    }else{
+        _attivo = true; //in questo caso sto leggendo file di input
+    }
+
+    vector<string> out_n_versioni;
+    try {
+        _reg_anno.search_and_read(_reg_anno.target_expression(lettura::n_versioni), row, out_n_versioni);
+    } catch (errore_formattazione &e) {
+        cout << e.what() << endl;
+        READ_ERR("numero versioni in parallelo");
+        exit(15);
+    }
+    _n_versioni_in_parallelo = strToInt(out_n_versioni[1]);
+
+
 
     //LETTURA [{<matricola_titolare>,[{<matricolare_prof1>,n1,n2,n3},..,{<matricolare_profn>,<ore_lez>,<ore_es>,<ore_lab>}]},...]
 //    rg_versioni {[d0-9,]+,\[[{d0-9,}]+]}
@@ -1036,7 +1103,13 @@ Database::Corso::Anno_Accademico::Anno_Accademico(const string &anno, int n_vers
         exit(15);
     }
 
+//    cout << "Stampo versioni del corso:\n";
 //    LOGV(versioni);
+    if (versioni.size() != _n_versioni_in_parallelo) {
+        //TODO: throw exception
+        cout << "Errore numero versioni per il corso " << row << endl;
+        cout << "Versioni acquisite: " << versioni.size() << " Versioni attese: " << _n_versioni_in_parallelo << endl;
+    }
 
     for (const string &stringa_versione: versioni) {
         auto *pv = new Prof_per_versione(stringa_versione);
@@ -1076,8 +1149,7 @@ Database::Corso::Anno_Accademico::Anno_Accademico(const string &anno, int n_vers
 
 }
 
-////TODO: anche qui dovresti chiamare il costruttore di anno accademico,
-//// situazione diversa da prima (dichiara e pushback) fai dichiara e setta per ogni tipo nested
+
 //Database::Corso::Anno_Accademico *
 //Database::Corso::nuovo_anno_accademico(const string &str_anno, int n_versioni, const string &row) {
 //    Anno_Accademico *a_temp{new(nothrow) Anno_Accademico(str_anno, n_versioni, row)};
@@ -1108,7 +1180,6 @@ Database::Corso::Anno_Accademico::Anno_Accademico(const string &anno, int n_vers
 //    a_temp->setEsame(a_temp->nuovo_esame(s_esame));
 //
 //    vector<string> out_idcorso;
-//    //TODO: da cambiare lettura, non so quanti idcorso ci devono essere
 //    try {
 //        _regcorso.search_and_read(_regcorso.target_expression(lettura::id_corsi), row, out_idcorso);
 //
@@ -1128,19 +1199,25 @@ Database::Corso::Anno_Accademico::Esame::Esame(const string &str_esame) {
         _reg_esame.search_and_read(_reg_esame.target_expression(lettura::esame_campi), str_esame, out_esame_campi);
 
     } catch (errore_formattazione &e) {
-        cout << e.what() << endl;        // qui non c'era l'exit l'ho messo comunque da verificare che sia corretto
+        cout << e.what() << endl;
+        READ_ERR("campi esame");
         exit(15);
     }
 
     vector<int> esame_int;
-    esame_int.reserve(3);
-    transform(out_esame_campi.begin() + 1, out_esame_campi.begin() + 3, esame_int.begin(), strToInt);
+    esame_int.reserve(4);
+    transform(out_esame_campi.begin() + 1, out_esame_campi.end() -2, esame_int.begin(), strToInt);
 
     _durata_esame = esame_int[0];
     _t_ingresso = esame_int[1];
     _t_uscita = esame_int[2];
-    _modalita = out_esame_campi[3];
-    _luogo = out_esame_campi[4];
+    _modalita = out_esame_campi[4];
+    _luogo = out_esame_campi[5];
+
+}
+
+void Database::Corso::Anno_Accademico::Esame::debug() {
+    cout << '{' << _durata_esame << ',' << _t_ingresso << ',' << _t_uscita << ',' << _modalita << ',' << _luogo << '}' << endl;
 }
 
 //{90,30,30,S,A};  {<durata_esame>,<t_ingresso>,<t_uscita>,<modalità>,<luogo(A/L)>}
@@ -1173,56 +1250,76 @@ Database::Corso::Anno_Accademico::Esame::Esame(const string &str_esame) {
 //}
 
 
-//void Database::Corso::setAnnoAccademico(Corso::Anno_Accademico *anno) {
-//    _anni_accademici.push_back(anno);
-//}
+void Database::Corso::setAnnoAccademico(Corso::Anno_Accademico *anno) {
+    _anni_accademici.push_back(anno);
+}
 
 Database::Corso::Corso(const string &row, const string &ultimo_id) {
-    //TODO: controlla inserimento corsi duplicati
-    vector<string> corso_temp;
+
+    vector<string> out_corso_base;
 //    cout << "STO LEGGENDO " << row << endl;
     //LEGGE aaaa-aaaa;titolocorso;6;50;10;20;n_versioni
     try {
-        _regcorso.search_and_read(_regcorso.target_expression(lettura::corsi_in), row, corso_temp);
+        _regcorso.search_and_read(_regcorso.target_expression(lettura::corsi_in), row, out_corso_base);
 
     } catch (errore_formattazione &e) {
         cout << e.what() << endl;
-        READ_ERR("informazioni corso");
+        READ_ERR("informazioni corso in");
         exit(15);
     }
 
-    if (corso_temp.size() != 9) {
+    if (out_corso_base.size() != 9) {
         READ_ERR("informazioni corso, numero campi non corretto");
     }
     vector<int> corso_temp_int;
     corso_temp_int.reserve(5);
-    transform(corso_temp.begin() + 4, corso_temp.end(), corso_temp_int.begin(), strToInt);
+    transform(out_corso_base.begin() + 4, out_corso_base.end(), corso_temp_int.begin(), strToInt);
 
     _id_corso = ultimo_id;
-    _titolo = corso_temp[3];
+    _titolo = out_corso_base[3];
     _cfu = corso_temp_int[0];
     _ore_lezione = corso_temp_int[1];
     _ore_esercitazione = corso_temp_int[2];
     _ore_laboratorio = corso_temp_int[3];
 
-    //TODO: è più di uno?
-    auto *a = new Anno_Accademico(corso_temp[1] + '-' + corso_temp[2], corso_temp_int[4], row);
+    auto *a = new Anno_Accademico(row);
     _anni_accademici.push_back(a);
 
-
 }
 
-Database::Corso::~Corso() {
-
-}
-
+//LEGGI DB
+//c;ABC124;Analisi1;10;50;10;20;
+//a;2019-2020;attivo;3;[{d000001,[{d000002,50,0,0},{d000003,20,10,0}]},{d000004,[{d000005,50,0,0},{d000006,20,10,0}]},{d000007,[{d000008,50,0,0},{d000009,20,10,0}]}];{90,30,0,30,S};{ABC128,ABC137,ABC142,ABC147}
 Database::Corso::Corso(const string &row) {
 
+    //LETTURA c;ABC124;Analisi1;10;50;10;20;
+    vector<string> out_corso_base;
+    try {
+        _regcorso.search_and_read(_regcorso.target_expression(lettura::corsi_db), row, out_corso_base);
+    } catch (errore_formattazione &e) {
+        cout << e.what() << endl;
+        READ_ERR("informazioni corso db");
+        exit(15);
+    }
+
+    vector<int> out_corso_int;
+    out_corso_int.reserve(5);
+    std::transform(out_corso_base.begin() + 4, out_corso_base.end(), out_corso_int.begin(), strToInt);
+
+
+    _id_corso = out_corso_base[1];
+    _titolo = out_corso_base[2];
+    _cfu = out_corso_int[0];
+    _ore_lezione = out_corso_int[1];
+    _ore_esercitazione = out_corso_int[2];
+    _ore_laboratorio = out_corso_int[3];
+
 }
+
 
 void Database::Corso::debug() const {
     cout << 'c' << ';' << _id_corso << ';' << _titolo << ';' << _cfu << ';' << _ore_lezione << ';' << _ore_esercitazione
-            << ';' << _ore_laboratorio << '\n';
+         << ';' << _ore_laboratorio << '\n';
 
 }
 
@@ -1271,7 +1368,7 @@ void Database::Corso_di_studio::setLaurea(const string &laurea) {
 int strToInt(std::string const &s) {
     std::istringstream iss(s);
     int value;
-
+    //TODO: eccezione da mettere in eccezioni.h
     if (!(iss >> value)) throw std::runtime_error("stringa non valida non puo essere convertita in int");
 
     return value;

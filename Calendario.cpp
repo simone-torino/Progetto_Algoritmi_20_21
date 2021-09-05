@@ -616,8 +616,7 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
     //Salvo in memoria le date delle sessioni dal file aaaa-aaaadb_date_sessioni.txt
     set_date_sessioni(leggi_db_date_sessioni(argomenti_es), true);
     display_date_sessioni();
-//    _dbcal.leggi_corso_db();
-    _dbcal.leggi_db(_dbcal.getFileDbCorsi(), _dbcal.getCorsiDb());
+    _dbcal.leggi_corso_db();
     _dbcal.target_fstampa(options::corsi, true); //debug
 
 
