@@ -1,5 +1,6 @@
 
 #include "Database.h"
+#include "Eccezioni.h"
 
 //TODO rivedi metodi statici
 
@@ -38,77 +39,31 @@ void Database::Regex::multiple_fields(const std::regex &expression, const string
 
 }
 
-
-//estrae regex multiple da una sola stringa
-vector<string>
-Database::Corso::Anno_Accademico::estraimultipli(const regex &reg, string &daleggere, const string &delim) {
-    vector<string> v_temp;
-    smatch match;
-    while (regex_search(daleggere, match, reg)) {
-        for (int i = 0; i < match.size(); i++) {
-            if (match[i].matched) {
-//                cout << "MATCH " << i << " : " << _match[i] << endl;
-                if (i) {
-                    v_temp.push_back(match[i]);
-                }
-            }
-        }
-        daleggere = daleggere.substr(daleggere.find(delim) + 1, daleggere.length());
-    }
-
-    return v_temp;
-}
-
-
-vector<string> Database::Corso::cut_versioni(const string &row, const vector<int> &indicigraffe, int n_versioni) {
-    vector<string> out;
-    string temp;
-    size_t start;
-    size_t end;
-
-    //Salva gli indici delle graffe e poi estrae il contenuto
-    for (int i = 0; i < n_versioni * 2; i += 2) {
-        start = indicigraffe[i] + 1;
-        end = indicigraffe[i + 1] - indicigraffe[i];
-
-        try {
-            temp = row.substr(start, end);
-
-        } catch (std::out_of_range &e) {
-            cout << e.what() << "\nROW: " << row << endl;
-        }
-//        cout << "DEBUG TEMP cut_versioni: " << temp << endl;
-        out.push_back(temp);
-    }
-    return out;
-}
-
-
 std::regex Database::Regex::target_expression(lettura::reg_expressions exp) {
     switch (exp) {
         //studenti su file database
         case lettura::studenti_db:
-            return std::regex(_matricola_s + _persona_in);
+            return std::regex(_rg_matricola_s + _rg_persona_in);
 
             //studenti su file di aggiunta
         case lettura::studenti_in:
-            return std::regex(_persona_in);
+            return std::regex(_rg_persona_in);
 
             //professori su file database
         case lettura::professori_db:
-            return std::regex(_matricola_d + ';' + _persona_in);
+            return std::regex(_rg_matricola_d + ';' + _rg_persona_in);
 
             //professori su file di aggiunta
         case lettura::professori_in:
-            return std::regex(_persona_in);
+            return std::regex(_rg_persona_in);
 
             //aule su file database
         case lettura::aule_db:
-            return std::regex(_id_aula + _aula_in);
+            return std::regex(_rg_id_aula + _rg_aula_in);
 
             //aule su file di aggiunta
         case lettura::aule_in:
-            return std::regex(_aula_in);
+            return std::regex(_rg_aula_in);
 
             //corsi su file database
         case lettura::corsi_db:
@@ -123,22 +78,26 @@ std::regex Database::Regex::target_expression(lettura::reg_expressions exp) {
             return std::regex(_rg_versioni);
 
         case lettura::n_versioni:
-            return std::regex (rg_n_versioni);
+            return std::regex (_rg_n_versioni);
 
         case lettura::prof_titolare:
-            return std::regex(_matricola_d);
+            return std::regex(_rg_matricola_d);
 
             //corsi di studio su file di aggiunta
         case lettura::cds_in:
-            return std::regex(_cds_row);
+            return std::regex(_rg_cds_row);
+
+            //corsi di studio su file db
+        case::lettura::cds_db:
+            return std::regex(_rg_cds_db);
 
             //id corso raggruppati per semestre
         case lettura::cds_semestri:
-            return std::regex(_cds_semestri);
+            return std::regex(_rg_cds_semestri);
 
             //id corso singoli
         case lettura::cds_id_corso:
-            return std::regex(_cds_id_corso);
+            return std::regex(_rg_id_corso);
 
 
         case lettura::prof_singolo:
@@ -170,19 +129,11 @@ std::regex Database::Regex::target_expression(lettura::reg_expressions exp) {
 
 Database::Regex::Regex() {
 
-
     _esame_graffe = "\\{([0-9,SOPAL]+)\\}";
-
-
     //corso di studi : C120;BS;[{AXC345,BVX123},{CBV123,ASD564}]
 
-    _cds = _id_cds + ";" + _laurea + ";";
-
-    _laurea = "([BS|MS])";
-    _id_cds = "([A-Z0-9]+)";
-
     //LETTURA CORSI IN
-    _corso_in_base = _anno_acc + ';' + _text + ';' + _num + ';' + _num + ';' + _num + ';' + _num + ';' + _num;
+    _corso_in_base = _anno_acc + ';' + _rg_text + ';' + _rg_num + ';' + _rg_num + ';' + _rg_num + ';' + _rg_num + ';' + _rg_num;
     _profn_graffe = "\\{([0-9,d]+)\\}";
     _profn_campi = "([0-9d]+),([0-9]+),([0-9]+),([0-9]+)";
 
@@ -190,5 +141,5 @@ Database::Regex::Regex() {
     //ESPRESSIONI PER DATE ESAMI
     _data = "([0-9]{1,2})\\-([0-9]{1,2})\\-([0-9]{4})";
     _periodo = _data + "\\|" + _data;
-    _indisponibilita = _matricola_d;
+    _indisponibilita = _rg_matricola_d;
 }

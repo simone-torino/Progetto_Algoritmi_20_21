@@ -4,7 +4,7 @@
 
 #ifndef PROGETTO_ALGORITMI_20_21_DATABASE_HPP
 #define PROGETTO_ALGORITMI_20_21_DATABASE_HPP
-
+//#pragma once
 #include "Database.h"
 
 template<typename T>
@@ -31,16 +31,6 @@ void Database::tfstampa(vector<T> _classedati_db, const string &file_db, bool ap
     for (auto i: _classedati_db) {
         i->fstampa(fout);
     }
-}
-
-void isempty(std::ifstream &fptr) {
-//    fptr.peek() == std::ifstream::traits_type::eof()
-    fptr.get();
-    if (fptr.eof()) {
-        throw runtime_error("File is empty"); //TODO: eccezione errore_file_vuoto
-    }
-    //rimetto il puntatore all'inizio in modo da non saltare il primo carattere se il file non è vuoto
-    fptr.seekg(ios::beg);
 }
 
 //questa è identica a leggi_db<> tranne per l'incremento_id

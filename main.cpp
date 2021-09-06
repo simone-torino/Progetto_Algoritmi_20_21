@@ -1,6 +1,7 @@
 
 #include "Database.h"
 #include "Calendario.h"
+#include "Eccezioni.h"
 
 /*  AGGIUNTA
  * -a:s studenti

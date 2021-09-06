@@ -1,6 +1,6 @@
 
-#ifndef PROG1_DATABASE_H
-#define PROG1_DATABASE_H
+#ifndef PROGETTO_ALGORITMI_20_21_DATABASE_H
+#define PROGETTO_ALGORITMI_20_21_DATABASE_H
 
 
 #define LOG(x) std::cout << "\nLOG: " << x << std::endl;
@@ -16,7 +16,7 @@
 #include <stack>
 #include <map>
 #include <functional>
-#include "Eccezioni.h"
+
 
 
 using namespace std;
@@ -98,36 +98,30 @@ public:
 
         //le stringhe non const vengono modificate a runtime perchè ci sono dei campi variabili
 
-        const string _text = "([A-Z a-z0-9]*)";
-        const string _persona_in =
-                _text + ';' + _text + ';' + "([a-zA-Z\\@\\._]*)"; //Alessio Maria;Rossi Aliberti;am.ra@email.it
-        const string _matricola_s = "s([0-9]{6});"; //s123456;
-        const string _matricola_d = "(d[0-9]{6})"; //d123456;
-        const string _num = "([0-9]*)";
-        const string _aula_in = "[AL]);([a-z A-Z0-9]+);" + _num + ';' + _num; //A;Aula 5;120;60
-        const string _id_aula = "([0-9][A-Z][A-Z][0-9]);"; //4AD4;
-
-        const string _cds_row = "(BS|MS);\\[([{}A-Z0-9,]*)\\]";
-        const string _cds_semestri = "\\{([A-Z0-9,]+)\\}";
-        const string _cds_id_corso = "([A-Z]{3}[0-9]{3})";
+        const string _rg_text = "([A-Z a-z0-9]*)";
+        const string _rg_persona_in =
+                _rg_text + ';' + _rg_text + ';' + "([a-zA-Z\\@\\._]*)"; //Alessio Maria;Rossi Aliberti;am.ra@email.it
+        const string _rg_matricola_s = "s([0-9]{6});"; //s123456;
+        const string _rg_matricola_d = "(d[0-9]{6})"; //d123456;
+        const string _rg_num = "([0-9]*)";
+        const string _rg_aula_in = "[AL]);([a-z A-Z0-9]+);" + _rg_num + ';' + _rg_num; //A;Aula 5;120;60
+        const string _rg_id_aula = "([0-9][A-Z][A-Z][0-9]);"; //4AD4;
 
         const string _rg_versioni = R"(\{[d0-9,]+,\[[{d0-9,}]+]\})";
 
-        const string _id_corso = "([A-Z0-9]+)";
+        const string _rg_id_corso = "([A-Z]{3}[0-9]{3})";
         const string corso_db_base =
-                "c;" + _id_corso + ';' + _text + ';' + _num + ';' + _num + ';' + _num + ';' + _num + ';';
-        const string rg_n_versioni = "([0-9]);\\[";
+                "c;" + _rg_id_corso + ';' + _rg_text + ';' + _rg_num + ';' + _rg_num + ';' + _rg_num + ';' + _rg_num + ';';
+        const string _rg_n_versioni = "([0-9]);\\[";
         const string _anno_acc = "([0-9]{4})-([0-9]{4})";
-        const string _esame_campi = "\\{" + _num + "," + _num + "," + _num + "," + "([SOP]*),([AL])\\}";
+        const string _esame_campi = "\\{" + _rg_num + "," + _rg_num + "," + _rg_num + "," + "([SOP]*),([AL])\\}";
         string _esame_graffe;
 
-        string _id_corso_n;
+//corso di studi : C120;BS;[{AXC345,BVX123},{CBV123,ASD564}]
+        const string _rg_cds_row = "(BS|MS);\\[([{}A-Z0-9,]*)\\]";
+        const string _rg_cds_semestri = "\\{([A-Z0-9,]+)\\}";
+        const string _rg_cds_db = "(C[0-9]{3});" + _rg_cds_row;
 
-        //corso di studi : C120;BS;[{AXC345,BVX123},{CBV123,ASD564}]
-
-        string _cds;
-        string _laurea;
-        string _id_cds;
 
 
         //LETTURA CORSI IN
@@ -331,8 +325,6 @@ public:
 
             void setEsame(Esame *e);
 
-            vector<string> estraimultipli(const regex &reg, string &daleggere, const string &delim);
-
         private:
             string _anno_accademico;
             bool _attivo; //attivo 1, non attivo 0
@@ -395,9 +387,7 @@ public:
         //contiene i corsi divisi per semestre, vector<corso> è un semestre, ci sono due semestri per ogni anno
         vector<vector<Corso_id *>> _corsi_semestre;
     public:
-        const vector<vector<Corso_id *>> &getCorsiSemestre() const;
 
-        const vector<Corso_id *> &getCorsiSpenti() const;
 
     private:
 
@@ -415,6 +405,10 @@ public:
         void leggi_semestri(const string &semestri);
 
         void fstampa(ofstream &fout) const;
+
+        const vector<vector<Corso_id *>> &getCorsiSemestre() const;
+
+        const vector<Corso_id *> &getCorsiSpenti() const;
 
         void setIdCds(const string &id_cds);
 
@@ -460,6 +454,8 @@ private:
 
     void checkIdCorso_in_Cds();
 
+    void isempty(ifstream &fptr);
+
 public:
     template<typename T>
     void leggi_db(const string &nome_file, vector<T *> &_classedati_xx);
@@ -469,15 +465,6 @@ public:
     void target_aggiungi(options::opzione o);
 
     void target_aggiorna(options::opzione o);
-
-    //Per i dati ri-letti dal _dbcal o da file di aggiornamento
-    void nuovo_studente(const string &row, bool source_db);
-
-    void nuovo_professore(const string &row, bool source_db);
-
-    void nuova_aula(const string &row, bool source_db);
-
-    void nuovo_corso(const string &row, bool source_db);
 
     //Funzione per leggere il file corso_db.txt non è un template perchè deve leggere più righe per uno stesso oggetto
     void leggi_corso_db();
@@ -511,6 +498,7 @@ public:
 //    con append fstampa_giornosessione può stampare sia in append che in out, sovrascrivendo tutto, utile per aggiornamento
     void target_fstampa(options::opzione o, bool append);
 
+
 };
 
 void fstampa_bool(bool b, const string &vero, const string &falso, ofstream &fout);
@@ -524,4 +512,4 @@ int strToInt(std::string const &s);
 void incremento_id(string &id);
 
 
-#endif //PROG1_DATABASE_H
+#endif //PROGETTO_ALGORITMI_20_21_DATABASE_H

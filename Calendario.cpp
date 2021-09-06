@@ -1,5 +1,7 @@
 
 #include "Calendario.h"
+#include "Eccezioni.h"
+#include "Database.hpp"
 
 void Calendario::myDate::checkDate() const {
     {
@@ -18,36 +20,6 @@ void Calendario::myDate::checkDate() const {
 
     }
 }
-
-//int Calendario::myDate::days_in_year(int year) const {
-//    if (year % 400 == 0) {
-//        return 366;
-//    }
-//        // not a leap year if divisible by 100
-//        // but not divisible by 400
-//    else if (year % 100 == 0) {
-//        return 365;
-//    }
-//        // leap year if not divisible by 100
-//        // but divisible by 4
-//    else if (year % 4 == 0) {
-//        return 366;
-//    }
-//        // all other years are not leap years
-//    else {
-//        return 365;
-//    }
-//}
-//
-//int Calendario::myDate::days_in_month(int month) const {
-//    if (month == 2) {
-//        return 28;
-//    } else if (month == 4 || month == 6 || month == 9 || month == 11) {
-//        return 30;
-//    } else {
-//        return 31;
-//    }
-//}
 
 int Calendario::myDate::date_to_days() const {
 
@@ -417,9 +389,7 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
 
     //Leggo i prof presenti nel database per confrontare le matricole
     _dbcal.leggi_db<Database::Professore>(_dbcal.getFileDbProfessori(), _dbcal.getProfessoriDb());
-//    _dbcal.leggi_prof_db();
 
-    //I prof vengono letti nel main
     vector<Database::Professore *> professori_temp;
     professori_temp = _dbcal.getProfessoriDb();
     //Non copio le matricole in un altro vettore perchè dovrei comunque chiamare getMatricola n volte

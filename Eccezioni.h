@@ -1,5 +1,5 @@
-#ifndef PROGETTO_3_ECCEZIONI_H
-#define PROGETTO_3_ECCEZIONI_H
+#ifndef PROGETTO_ALGORITMI_20_21_ECCEZIONI_H
+#define PROGETTO_ALGORITMI_20_21_ECCEZIONI_H
 
 #include <exception>
 #include <cassert>
@@ -278,4 +278,4 @@ public:
 
 
 
-#endif //PROGETTO_3_ECCEZIONI_H
+#endif //PROGETTO_ALGORITMI_20_21_ECCEZIONI_H

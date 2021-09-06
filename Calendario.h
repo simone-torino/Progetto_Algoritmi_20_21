@@ -1,6 +1,6 @@
 
-#ifndef PROG1_CALENDARIO_H
-#define PROG1_CALENDARIO_H
+#ifndef PROGETTO_ALGORITMI_20_21_CALENDARIO_H
+#define PROGETTO_ALGORITMI_20_21_CALENDARIO_H
 
 #include <iostream>
 #include <utility>
@@ -180,4 +180,4 @@ private:
 int subtract(Calendario::myDate d1, Calendario::myDate d2);
 
 
-#endif //PROG1_CALENDARIO_H
+#endif //PROGETTO_ALGORITMI_20_21_CALENDARIO_H

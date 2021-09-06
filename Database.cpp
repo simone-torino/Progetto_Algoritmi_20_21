@@ -1,5 +1,6 @@
 
 #include "Database.h"
+#include "Eccezioni.h"
 #include "Database.hpp"
 
 //METODI CORSI E CDS
@@ -58,7 +59,7 @@ void Database::Corso::Anno_Accademico::fstampa_anno_accademico(ofstream &fout) c
 }
 
 void Database::Corso::fstampa(ofstream &fout) const {
-//    LOG(_id_corso);
+//    LOG(_rg_id_corso);
 //    this->debug();
     fout << 'c' << ';' << _id_corso << ';' << _titolo << ';' << _cfu << ';' << _ore_lezione << ';' << _ore_esercitazione
          << ';' << _ore_laboratorio << ';' << '\n';
@@ -120,35 +121,6 @@ void fstampa_bool(bool b, const string &vero, const string &falso, ofstream &fou
     } else {
         fout << falso;
     }
-}
-
-
-//Questa funzione è pensata per leggere e salvare studenti da file database
-//Ma è anche usata per aggiungere al vettore agg da file aggiornamento
-void Database::nuovo_studente(const string &row, bool source_db) {
-    Studente *s{new(nothrow) Studente};
-    vector<string> studente_temp;
-
-//   [Aggiornamento] Legge dal file db, quindi c'è anche la _matricola, da confrontare più avanti
-    try {
-        _regdb.search_and_read(_regdb.target_expression(lettura::studenti_db), row, studente_temp);
-
-    } catch (errore_formattazione &e) {
-        cout << e.what() << endl;
-        exit(3);
-    }
-
-
-    //le stringhe vuote sono gestite dai metodi setter
-    s->setMatricola(studente_temp[1]);
-    s->setNome(studente_temp[2]);
-    s->setCognome(studente_temp[3]);
-    s->setEmail(studente_temp[4]);
-
-    if (source_db) {
-        _studenti_db.push_back(s);
-    } else
-        _studenti_agg.push_back(s);
 }
 
 void Database::target_aggiungi(options::opzione o) {
@@ -486,6 +458,16 @@ void Database::aggiorna_aule() {
     }
 }
 
+void Database::isempty(std::ifstream &fptr) {
+//    fptr.peek() == std::ifstream::traits_type::eof()
+    fptr.get();
+    if (fptr.eof()) {
+        throw runtime_error("File is empty"); //TODO: eccezione errore_file_vuoto
+    }
+    //rimetto il puntatore all'inizio in modo da non saltare il primo carattere se il file non è vuoto
+    fptr.seekg(ios::beg);
+}
+
 void incremento_id(string &id) {
     for (unsigned int i = id.size() - 1; i > 0; i--) {
         //controllo se il carattere è un numero o una lettera
@@ -587,68 +569,6 @@ Database::Database(const string &file_argomento) {
     _file_argomento = file_argomento;
 
 }
-
-//DA FILE CORSO DB
-//c;ABC124;titoloUNO;6;50;10;20
-//a;2019-2020;attivo;1;[{d123456,[{d246813,50,0,0},{d543216,20,10,20}]}];{90,30,0,30,S}
-void Database::nuovo_corso(const string &row, bool source_db) {
-    Corso *c{new Corso(row)};
-    vector<string> corso_temp;
-
-//   [Aggiornamento] Legge dal file _dbcal, quindi c'è anche la _matricola, da confrontare più avanti
-    try {
-        _regdb.search_and_read(_regdb.target_expression(lettura::corsi_db), row, corso_temp);
-
-    } catch (errore_formattazione &e) {
-        cout << e.what() << endl;
-        exit(15);
-    }
-
-    vector<int> corso_temp_int;
-    corso_temp_int.reserve(4);
-    transform(corso_temp.begin() + 3, corso_temp.end(), corso_temp_int.begin(), strToInt);
-
-//    c->setIdCorso(corso_temp[1]);
-    c->setTitolo(corso_temp[2]);
-    c->setCFU(corso_temp_int[0]);
-    c->setOreLez(corso_temp_int[1]);
-    c->setOreEser(corso_temp_int[2]);
-    c->setOreLab(corso_temp_int[3]);
-
-    if (source_db) {
-        _corsi_db.push_back(c);
-    } else
-        _corsi_agg.push_back(c);
-
-}
-
-
-//void Database::leggi_prof_db() {
-//    ifstream fin_db;
-//    fin_db.open(_file_db_professori);
-//
-//    try {
-//        controlli_file(fin_db, _file_db_professori);
-//    } catch (file_non_aperto &e) {
-//        cout << e.what() << endl;
-//    } catch (file_failed &e) {
-//        cout << e.what() << endl;
-//    }
-//
-//    string row_db;
-//    int n = 1;
-//    while (!fin_db.eof()) {
-//        getline(fin_db, row_db);
-//
-////      [Aggiornamento] La _matricola viene letta dal file
-//        if (!row_db.empty()) {
-//            nuovo_professore(row_db, true);
-//        } else {
-//            cout << "[Warning] Riga " << n << " vuota in " << _file_db_professori << endl;
-//        }
-//        n++;
-//    }
-//}
 
 void Database::leggi_corso_db() {
     ifstream fin;
