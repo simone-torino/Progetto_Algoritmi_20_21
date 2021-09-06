@@ -699,7 +699,7 @@ void Database::leggi_corso_db() {
                 auto *a = new Corso::Anno_Accademico(row_db);
                 _corsi_db.back()->setAnnoAccademico(a);
                 letto_anno = true;
-            } else{
+            } else {
                 cout << "Errore formattazione nel file " << _file_db_corsi << " le righe devono iniziare per c; o a;\n";
                 //TODO: throw exception
             }
@@ -1060,7 +1060,7 @@ Database::Corso::Anno_Accademico::Anno_Accademico(const string &row) {
         READ_ERR("campo anno accademico in anno");
         exit(15);
     }
-    if(strToInt(out_anno_acc[2])- strToInt(out_anno_acc[1]) != 1){
+    if (strToInt(out_anno_acc[2]) - strToInt(out_anno_acc[1]) != 1) {
         cout << "Errore anno accademico non valido, inserire due anni contigui\n";
         //TODO: throw exception
         exit(29);
@@ -1068,7 +1068,7 @@ Database::Corso::Anno_Accademico::Anno_Accademico(const string &row) {
     _anno_accademico = out_anno_acc[1] + '-' + out_anno_acc[2];
 
 
-    if(regex_match(row, std::regex("a;"))) {
+    if (regex_match(row, std::regex("a;"))) {
         if (regex_match(row, std::regex("attivo"))) {
             _attivo = true;
         } else if (regex_match(row, std::regex("non_attivo"))) {
@@ -1076,7 +1076,7 @@ Database::Corso::Anno_Accademico::Anno_Accademico(const string &row) {
         } else {
             //TODO: eccezione attivo/non_attivo non trovato
         }
-    }else{
+    } else {
         _attivo = true; //in questo caso sto leggendo file di input
     }
 
@@ -1206,7 +1206,7 @@ Database::Corso::Anno_Accademico::Esame::Esame(const string &str_esame) {
 
     vector<int> esame_int;
     esame_int.reserve(4);
-    transform(out_esame_campi.begin() + 1, out_esame_campi.end() -2, esame_int.begin(), strToInt);
+    transform(out_esame_campi.begin() + 1, out_esame_campi.end() - 2, esame_int.begin(), strToInt);
 
     _durata_esame = esame_int[0];
     _t_ingresso = esame_int[1];
@@ -1217,7 +1217,8 @@ Database::Corso::Anno_Accademico::Esame::Esame(const string &str_esame) {
 }
 
 void Database::Corso::Anno_Accademico::Esame::debug() {
-    cout << '{' << _durata_esame << ',' << _t_ingresso << ',' << _t_uscita << ',' << _modalita << ',' << _luogo << '}' << endl;
+    cout << '{' << _durata_esame << ',' << _t_ingresso << ',' << _t_uscita << ',' << _modalita << ',' << _luogo << '}'
+         << endl;
 }
 
 //{90,30,30,S,A};  {<durata_esame>,<t_ingresso>,<t_uscita>,<modalità>,<luogo(A/L)>}
@@ -1451,28 +1452,54 @@ Database::Corso_di_studio::Corso_di_studio(const string &row, const string &ulti
         cout << e.what() << endl;
         exit(15);
     }
-
-    string row_semestri = cds_temp[2];
-//    for (int i = 0; i < cds_temp.size(); i++) {
+    //    for (int i = 0; i < cds_temp.size(); i++) {
 //        cout << "Vettore " << i << " : " << cds_temp[i] << endl;
 //    }
-    cds_temp.clear(); //svuoto per riusarlo
-
 
     try {
         setIdCds(ultimo_id);
-        setLaurea(cds_temp[1]); // BS o MS
-
-        //TODO: catch delle eccezioni di multiple fields
-        //ora leggo gli id dei corsi divisi per semestre
-        _regcds.multiple_fields(_regcds.target_expression(lettura::cds_semestri), row_semestri, cds_temp);
-//        {ABC123,ABC124} ecc
+        setLaurea(cds_temp[1]); // BS o MS}
     } catch (invalid_argument &e) {
         cout << "errore trovato " << e.what() << endl;
         exit(10);
     } catch (errore_matricola &e) { //lanciato dal costruttore
         cout << "errore trovato " << e.what() << endl;
         exit(4);
+    }
+
+    leggi_semestri(cds_temp[2]);
+
+}
+
+Database::Corso_di_studio::Corso_di_studio(const string &row) {
+    //LETTURA C101;BS;[{ABC123,ABC124},{ABC125,ABC126,ABC127},{ABC128,ABC129},{ABC130,ABC131,ABC132},{ABC137,ABC138},{ABC139,ABC140,ABC141}];
+    vector<string> cds_temp;
+
+    try {
+        _regcds.search_and_read(_regcds.target_expression(lettura::cds_db), row, cds_temp);
+        //cds_temp[1]: C000
+        //cds_temp[2]: BS
+        //cds_temp[3]: {ABC123,ABC124},{ABC125,ABC126,ABC127},{ABC128,ABC129},{ABC130,ABC135,ABC136},{ABC147,ABC148},{ABC149,ABC150,ABC151}
+
+    } catch (errore_formattazione &e) {
+        cout << e.what() << endl;
+        exit(15);
+    }
+
+    setIdCds(cds_temp[1]);
+    setLaurea(cds_temp[2]);
+    leggi_semestri(cds_temp[3]);
+
+}
+
+void Database::Corso_di_studio::leggi_semestri(const string &semestri) {
+
+    vector<string> cds_temp;
+    try {
+        //TODO: catch delle eccezioni di multiple fields
+        //ora leggo gli id dei corsi divisi per semestre
+        _regcds.multiple_fields(_regcds.target_expression(lettura::cds_semestri), semestri, cds_temp);
+//        {ABC123,ABC124} ecc
     } catch (errore_formattazione &e) {
         cout << "errore trovato " << e.what() << endl;
     }
@@ -1503,11 +1530,6 @@ Database::Corso_di_studio::Corso_di_studio(const string &row, const string &ulti
         str_semestre_temp.clear();
 
     }
-
-}
-
-Database::Corso_di_studio::Corso_di_studio(const string &row) {
-
 }
 
 const vector<vector<Database::Corso_id *>> &Database::Corso_di_studio::getCorsiSemestre() const {
@@ -1517,5 +1539,7 @@ const vector<vector<Database::Corso_id *>> &Database::Corso_di_studio::getCorsiS
 const vector<Database::Corso_id *> &Database::Corso_di_studio::getCorsiSpenti() const {
     return _corsi_spenti;
 }
+
+
 
 

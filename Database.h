@@ -390,7 +390,7 @@ public:
 
     class Corso_di_studio {
         string _id_cds;
-        bool _laurea; //BS 1, MS 0
+        bool _laurea{}; //BS 1, MS 0
 
         //contiene i corsi divisi per semestre, vector<corso> è un semestre, ci sono due semestri per ogni anno
         vector<vector<Corso_id *>> _corsi_semestre;
@@ -411,6 +411,8 @@ public:
         Corso_di_studio(const string &row, const string &ultimo_id);
 
         explicit Corso_di_studio(const string &row);
+
+        void leggi_semestri(const string &semestri);
 
         void fstampa(ofstream &fout) const;
 

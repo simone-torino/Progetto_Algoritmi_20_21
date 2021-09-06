@@ -618,8 +618,8 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
     display_date_sessioni();
     _dbcal.leggi_corso_db();
     _dbcal.target_fstampa(options::corsi, true); //debug
-//    _dbcal.leggi_db(_dbcal.getFileDbCds(), _dbcal.getCdsDb());
-//    _dbcal.target_fstampa(options::cds, true);
+    _dbcal.leggi_db(_dbcal.getFileDbCds(), _dbcal.getCdsDb()); //non capisco perche non linka
+    _dbcal.target_fstampa(options::cds, true);
 
 
     //da finire
@@ -631,6 +631,7 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
 }
 
 vector<string> Calendario::leggi_db_date_sessioni(const vector<string> &argomenti_es) {
+    //TODO puoi metterla nel template?
     ifstream fin;
     const string f_db_sessioni = argomenti_es[2] + file_db_date_sessioni;
     fin.open(f_db_sessioni, ios::in);
