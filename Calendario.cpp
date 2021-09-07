@@ -608,11 +608,33 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
         //Vettori da usare per ogni corso
         vector<string> anni_accademici;
         vector<string> id_cds;
+        vector<string> id_professori;
+        int n_versioni = 0;
+        vector<string> id_corsi_raggruppati;
 
         //Per ogni anno accademico relativo al corso
         for (auto anno_accademico: corso->getAnniAccademici()) {
             //inserisco una stringa anno accademico relativa al corso nel vettore di stringhe di anni accademici relativi al corso
             anni_accademici.push_back(anno_accademico->getAnnoAccademico());
+            //salvo il numero di versioni del corso
+            n_versioni = anno_accademico->getNVersioniInParallelo();
+
+            //Per ogni versione del corso in un anno accademico
+            for(auto versione: anno_accademico->getVersioni()){
+                //Salvo la matricola del titolare nel vettore di professori
+                id_professori.push_back(versione->getMatricolaTitolare());
+                //Per ogni professore associato
+                for(auto profn : versione->getAltriProfN()){
+                    //Salvo la matricola del professore associato
+                    id_professori.push_back(profn->getMatricola());
+                }
+            }
+
+            //Per ogni id corso raggruppato
+            for(auto id: anno_accademico->getIdCorsiRaggruppati()){
+                //Salvo l'id del corso
+                id_corsi_raggruppati.push_back(id->getIdCorso());
+            }
         }
 
         //Per ogni corso di studio nel database
@@ -630,10 +652,15 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
                 }
             }
         }
+
         //TODO: la funzione genera esami penso che dovrebbe stare all'interno di questo ciclo
 
         anni_accademici.clear();
         id_cds.clear();
+        id_professori.clear();
+        id_corsi_raggruppati.clear();
+        n_versioni = 0;
+
     }
     //TODO: funzione che calcola numero di slot necessari per l'esame (ogni versione ha lo stesso numero di slot) (float)floor((120+15+25) / 120)
 

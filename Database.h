@@ -307,13 +307,20 @@ public:
 
                     void fstampa_profn(ofstream &fout) const;
 
+                    const string &getMatricola() const;
+
                 };
 
                 explicit Prof_per_versione(const string &versione);
 
                 void fstampa_versione(ofstream &fout) const;
 
+                const string &getMatricolaTitolare() const;
+
+                const vector<Profn *> &getAltriProfN() const;
+
             private:
+
                 string _matricola_titolare;
                 Database::Regex _reg_profv;
                 vector<Profn *> _altri_prof_n;
@@ -324,7 +331,15 @@ public:
 
             void setEsame(Esame *e);
 
+            Esame *getEsame() const;
+
             const string &getAnnoAccademico() const;
+
+            unsigned short getNVersioniInParallelo() const;
+
+            const vector<Prof_per_versione *> &getVersioni() const;
+
+            const vector<Corso_id *> &getIdCorsiRaggruppati() const;
 
         private:
             string _anno_accademico;

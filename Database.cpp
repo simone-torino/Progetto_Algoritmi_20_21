@@ -925,6 +925,14 @@ Database::Corso::Anno_Accademico::Prof_per_versione::Prof_per_versione(const str
     }
 }
 
+const string &Database::Corso::Anno_Accademico::Prof_per_versione::getMatricolaTitolare() const {
+    return _matricola_titolare;
+}
+
+const vector<Profn *> &Database::Corso::Anno_Accademico::Prof_per_versione::getAltriProfN() const {
+    return _altri_prof_n;
+}
+
 Database::Corso::Anno_Accademico::Prof_per_versione::Profn::Profn(const string &profn) {
 
     //LETTURA campi professore associato {d000002,50,0,0}
@@ -945,6 +953,10 @@ Database::Corso::Anno_Accademico::Prof_per_versione::Profn::Profn(const string &
     _ore_lez = profn_int[0];
     _ore_es = profn_int[1];
     _ore_lab = profn_int[2];
+}
+
+const string &Database::Corso::Anno_Accademico::Prof_per_versione::Profn::getMatricola() const {
+    return _matricola;
 }
 
 //Database::Corso::Anno_Accademico::Prof_per_versione *
@@ -1071,6 +1083,22 @@ Database::Corso::Anno_Accademico::Anno_Accademico(const string &row) {
 
 const string &Database::Corso::Anno_Accademico::getAnnoAccademico() const {
     return _anno_accademico;
+}
+
+unsigned short Database::Corso::Anno_Accademico::getNVersioniInParallelo() const {
+    return _n_versioni_in_parallelo;
+}
+
+const vector<Prof_per_versione *> &Database::Corso::Anno_Accademico::getVersioni() const {
+    return _versioni;
+}
+
+const vector<Corso_id *> &Database::Corso::Anno_Accademico::getIdCorsiRaggruppati() const {
+    return _id_corsi_raggruppati;
+}
+
+Database::Corso::Anno_Accademico::Esame *Database::Corso::Anno_Accademico::getEsame() const {
+    return _esame;
 }
 
 
