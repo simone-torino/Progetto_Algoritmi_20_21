@@ -8,6 +8,7 @@
 #include <string>
 #include <algorithm>
 #include "Database.h"
+#include "Genera_esami.h"
 
 //Dò per scontato che le _date siano da lunedì a domenica, quindi si conta un giorno in meno
 #define SEI_SETTIMANE 6*7-1
