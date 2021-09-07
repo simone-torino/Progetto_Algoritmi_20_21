@@ -18,7 +18,6 @@
 #include <functional>
 
 
-
 using namespace std;
 
 //Aggiungi = leggi_db da file e salva in memoria
@@ -111,7 +110,8 @@ public:
 
         const string _rg_id_corso = "([A-Z]{3}[0-9]{3})";
         const string corso_db_base =
-                "c;" + _rg_id_corso + ';' + _rg_text + ';' + _rg_num + ';' + _rg_num + ';' + _rg_num + ';' + _rg_num + ';';
+                "c;" + _rg_id_corso + ';' + _rg_text + ';' + _rg_num + ';' + _rg_num + ';' + _rg_num + ';' + _rg_num +
+                ';';
         const string _rg_n_versioni = "([0-9]);\\[";
         const string _anno_acc = "([0-9]{4})-([0-9]{4})";
         const string _esame_campi = "\\{" + _rg_num + "," + _rg_num + "," + _rg_num + "," + "([SOP]*),([AL])\\}";
@@ -121,7 +121,6 @@ public:
         const string _rg_cds_row = "(BS|MS);\\[([{}A-Z0-9,]*)\\]";
         const string _rg_cds_semestri = "\\{([A-Z0-9,]+)\\}";
         const string _rg_cds_db = "(C[0-9]{3});" + _rg_cds_row;
-
 
 
         //LETTURA CORSI IN
@@ -325,6 +324,8 @@ public:
 
             void setEsame(Esame *e);
 
+            const string &getAnnoAccademico() const;
+
         private:
             string _anno_accademico;
             bool _attivo; //attivo 1, non attivo 0
@@ -362,9 +363,9 @@ public:
 
         void setAnnoAccademico(Corso::Anno_Accademico *anno);
 
-        vector<string> cut_versioni(const string &row, const vector<int> &indicigraffe, int n_versioni);
-
         void fstampa(ofstream &fout) const;
+
+        const vector<Anno_Accademico *> &getAnniAccademici() const;
 
         void debug() const;
 
@@ -386,10 +387,6 @@ public:
 
         //contiene i corsi divisi per semestre, vector<corso> è un semestre, ci sono due semestri per ogni anno
         vector<vector<Corso_id *>> _corsi_semestre;
-    public:
-
-
-    private:
 
         vector<Corso_id *> _corsi_spenti;
 
@@ -401,6 +398,8 @@ public:
         Corso_di_studio(const string &row, const string &ultimo_id);
 
         explicit Corso_di_studio(const string &row);
+
+        const string &getIdCds() const;
 
         void leggi_semestri(const string &semestri);
 

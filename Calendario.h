@@ -21,6 +21,7 @@ using namespace std;
 class Calendario {
     string _file_argomento;
     Database _dbcal;
+    Genera_esami _gen;
 
 public:
     explicit Calendario(const string &file_argomento);

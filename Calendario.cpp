@@ -600,6 +600,49 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
     _dbcal.leggi_db(_dbcal.getFileDbCds(), _dbcal.getCdsDb());
 //    _dbcal.target_fstampa(options::cds, true); //debug
 
+    //Per ogni esame
+    //TODO: genera lista per ricavare id corsi di studio che hanno in comune l'esame
+    //TODO stessa cosa  per gli anni accademici
+    //Per ogni corso
+    for (auto corso: _dbcal.getCorsiDb()) {
+        //Vettori da usare per ogni corso
+        vector<string> anni_accademici;
+        vector<string> id_cds;
+
+        //Per ogni anno accademico relativo al corso
+        for (auto anno_accademico: corso->getAnniAccademici()) {
+            //inserisco una stringa anno accademico relativa al corso nel vettore di stringhe di anni accademici relativi al corso
+            anni_accademici.push_back(anno_accademico->getAnnoAccademico());
+        }
+
+        //Per ogni corso di studio nel database
+        for (auto corsodistudio: _dbcal.getCdsDb()) {
+            //questi due cicli servono solo perchè gli id_corso nei cds sono divisi per semestri, ma alla fine il ciclo è su tutti gli id_corso
+            //Per ogni semestre nel corso di studio
+            for (const auto &id_per_semestre: corsodistudio->getCorsiSemestre()) {
+                //Per ogni id nel semestre
+                for (auto id_di_un_semestre: id_per_semestre) {
+                    //Se l'id del corso è nell'elenco di id del semestre del corso di studio
+                    if (corso->getIdCorso() == id_di_un_semestre->getIdCorso()) {
+                        //Salvo l'id del corso di studio
+                        id_cds.push_back(corsodistudio->getIdCds());
+                    }
+                }
+            }
+        }
+        //TODO: la funzione genera esami penso che dovrebbe stare all'interno di questo ciclo
+
+        anni_accademici.clear();
+        id_cds.clear();
+    }
+    //TODO: funzione che calcola numero di slot necessari per l'esame (ogni versione ha lo stesso numero di slot) (float)floor((120+15+25) / 120)
+
+//    for(auto corso : _dbcal.getCorsiDb()){
+//        _gen.set_id_esame_nel_calendario(corso->getIdCorso(), );
+//    }
+
+
+
 
 
     /* Dati da salvara dal database:

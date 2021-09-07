@@ -1069,6 +1069,10 @@ Database::Corso::Anno_Accademico::Anno_Accademico(const string &row) {
 
 }
 
+const string &Database::Corso::Anno_Accademico::getAnnoAccademico() const {
+    return _anno_accademico;
+}
+
 
 //Database::Corso::Anno_Accademico *
 //Database::Corso::nuovo_anno_accademico(const string &str_anno, int n_versioni, const string &row) {
@@ -1242,6 +1246,10 @@ void Database::Corso::debug() const {
     cout << 'c' << ';' << _id_corso << ';' << _titolo << ';' << _cfu << ';' << _ore_lezione << ';' << _ore_esercitazione
          << ';' << _ore_laboratorio << '\n';
 
+}
+
+const vector<Database::Corso::Anno_Accademico *> &Database::Corso::getAnniAccademici() const {
+    return _anni_accademici;
 }
 
 void Database::Corso_id::setIdCorso(const string &id_corso) {
@@ -1458,6 +1466,10 @@ const vector<vector<Database::Corso_id *>> &Database::Corso_di_studio::getCorsiS
 
 const vector<Database::Corso_id *> &Database::Corso_di_studio::getCorsiSpenti() const {
     return _corsi_spenti;
+}
+
+const string &Database::Corso_di_studio::getIdCds() const {
+    return _id_cds;
 }
 
 

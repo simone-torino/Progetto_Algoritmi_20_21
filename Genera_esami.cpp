@@ -9,7 +9,7 @@ Genera_esami::calendar::calendar() {
 }
 
 bool Genera_esami::calendar::set_id_esame_nel_calendario(const string &id_esame, const vector<string> &id_cds,
-                                                         const vector<string> &anno, const int n_slot_necessari,
+                                                         const vector<string> &anno, const int &n_slot_necessari,
                                                          const vector<string> &id_professori, int n_vers_paral,
                                                          const vector<string> &semestre_dell_esame) {
 
@@ -34,7 +34,7 @@ void Genera_esami::calendar::print_calendario() {
 
 }
 
-Genera_esami::appello::appello(const int quale_appello) {
+Genera_esami::appello::appello(const int &quale_appello) {
 
     _quale_appello = quale_appello;
     if (_quale_appello == 1) {
@@ -48,7 +48,7 @@ Genera_esami::appello::appello(const int quale_appello) {
 bool
 Genera_esami::appello::set_id_esame_nell_appello(const string &id_esame, const vector<string> &id_cds,
                                                  const vector<string> &anno,
-                                                 const int n_slot_necessari, const vector<string> &id_professori,
+                                                 const int &n_slot_necessari, const vector<string> &id_professori,
                                                  int n_vers_paral) {
 
     int inserisco_nel_giorno = 0;
@@ -74,7 +74,7 @@ Genera_esami::appello::set_id_esame_nell_appello(const string &id_esame, const v
 
 bool
 Genera_esami::appello::trovato_cds_anno(const vector<string> &id_cds, const vector<string> &anno,
-                                        const int inserisco_nel_giorno) {
+                                        const int &inserisco_nel_giorno) {
 
     bool trovato = false;
     vector<string>::iterator it_oggi;
@@ -140,11 +140,11 @@ void Genera_esami::appello::print_appello() {
 
 }
 
-const int Genera_esami::appello::get_quale_appello() const {
+int Genera_esami::appello::get_quale_appello() const {
     return _quale_appello;
 }
 
-bool Genera_esami::appello::prof_disponibili(const vector<string> &id_professori, const int inserisco_nel_giorno) {
+bool Genera_esami::appello::prof_disponibili(const vector<string> &id_professori, const int &inserisco_nel_giorno) {
 
     /*for(int i=0; i < id_professori.size(); i++)
     {
@@ -164,7 +164,7 @@ Genera_esami::giorno::giorno() {
 
 bool Genera_esami::giorno::set_id_esame_nel_giorno(const string &id_esame, const vector<string> &id_cds,
                                                    const vector<string> &anno,
-                                                   const int n_slot_necessari, const vector<string> &id_professori,
+                                                   const int &n_slot_necessari, const vector<string> &id_professori,
                                                    int n_vers_paral) {
 
     bool esame_inserito = true;
@@ -234,7 +234,7 @@ Genera_esami::sessione::sessione(const string &quale_sessione) {
 }
 
 bool Genera_esami::sessione::set_id_esame_nella_sessione(const string &id_esame, const vector<string> &id_cds,
-                                                         const vector<string> &anno, const int n_slot_necessari,
+                                                         const vector<string> &anno, const int &n_slot_necessari,
                                                          const vector<string> &id_professori, int n_vers_paral,
                                                          const vector<string> &semestre_dell_esame) {
     vector<bool> inserito_nell_appello(_appelli.size());
@@ -327,7 +327,7 @@ void Genera_esami::slot::print_id_esami() {
 }
 
 bool Genera_esami::set_id_esame_nel_calendario(const string &id_esame, const vector<string> &id_cds,
-                                               const vector<string> &anno, const int n_slot_necessari,
+                                               const vector<string> &anno, const int &n_slot_necessari,
                                                const vector<string> &id_professori, int n_vers_paral,
                                                const vector<string> &semestre_dell_esame) {
     if (!_cal1.set_id_esame_nel_calendario(id_esame, id_cds, anno, n_slot_necessari, id_professori,
