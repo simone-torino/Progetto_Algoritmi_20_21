@@ -18,22 +18,25 @@ class Genera_esami {
 public:
 
     Genera_esami() = default;
+
     class slot {
 
     private:
 
-        vector<string> _id_esami;
-        vector<string> _id_professori;
+        vector<string> _id_esami_inseriti;
+        vector<string> _id_professori_inseriti;
 
     public:
 
-        bool set_id_esame_nello_slot(const string &id_esame, const vector<string> &id_professori, int n_vers_paral);
+        bool set_id_esame_nello_slot(const int n_esami_raggruppati, const vector<string> &id_esame,
+                                     const vector<vector<string>> &id_professori, vector<int> &n_vers_paral);
 
         void print_professori();
 
         void print_id_esami();
 
     };
+
     class giorno {
 
     private:
@@ -46,9 +49,10 @@ public:
 
         giorno();
 
-        bool set_id_esame_nel_giorno(const string &id_esame, const vector<string> &id_cds, const vector<string> &anno,
-                                     const int &n_slot_necessari, const vector<string> &id_professori,
-                                     int n_vers_paral);
+        bool set_id_esame_nel_giorno(const int n_esami_raggruppati, const vector<string> &id_esame,
+                                     const vector<vector<string>> &id_cds, const vector<string> &anno,
+                                     const vector<int> &n_slot_necessari, const vector<vector<string>> &id_professori,
+                                     const vector<int> &n_vers_paral);
 
         void print_giorno();
 
@@ -57,35 +61,41 @@ public:
         vector<string> &get_anni_inseriti();
 
     };
+
     class appello {
 
     private:
 
         vector<giorno> _giorni;
         int _quale_appello;
+        vector<string> _id_esami_inseriti;
 
     public:
 
-        explicit appello(const int &quale_appello);
+        appello(const int quale_appello);
 
-        bool set_id_esame_nell_appello(const string &id_esame, const vector<string> &id_cds, const vector<string> &anno,
-                                       const int &n_slot_necessari, const vector<string> &id_professori,
-                                       int n_vers_paral);
+        bool set_id_esame_nell_appello(const int n_esami_raggruppati, const vector<string> &id_esame,
+                                       const vector<vector<string>> &id_cds, const vector<string> &anno,
+                                       const vector<int> &n_slot_necessari, const vector<vector<string>> &id_professori,
+                                       const vector<int> &n_vers_paral);
 
-        bool
-        trovato_cds_anno(const vector<string> &id_cds, const vector<string> &anno, const int &inserisco_nel_giorno);
+        bool trovato_cds_anno(const vector<string> &id_cds, const string &anno, const int inserisco_nel_giorno);
 
-        bool prof_disponibili(const vector<string> &id_professori, const int &inserisco_nel_giorno);
+        bool prof_disponibili(const vector<string> &id_professori, const int inserisco_nel_giorno);
 
         void print_appello();
 
-        int get_quale_appello() const;
+        const int get_quale_appello() const;
 
-        template<class InputIterator, class T>
-        InputIterator find_cds_anno(InputIterator first_cds, InputIterator last_cds, InputIterator first_anno, const T &cds,
-                                    const T &anno);
+        vector<string> &get_id_esami_inseriti();
+
+        template<class InputIterator>
+        InputIterator
+        find_cds_anno(InputIterator first_cds, InputIterator last_cds, InputIterator first_anno, const string &cds,
+                      const string &anno);
 
     };
+
     class sessione {
 
     private:
@@ -95,16 +105,19 @@ public:
 
     public:
 
-        explicit sessione(const string &quale_sessione);
+        sessione(const string &quale_sessione);
 
-        bool
-        set_id_esame_nella_sessione(const string &id_esame, const vector<string> &id_cds, const vector<string> &anno,
-                                    const int &n_slot_necessari, const vector<string> &id_professori, int n_vers_paral,
-                                    const vector<string> &semestre_dell_esame);
+        bool set_id_esame_nella_sessione(const int n_esami_raggruppati, const vector<string> &id_esame,
+                                         const vector<vector<string>> &id_cds, const vector<string> &anno,
+                                         const vector<int> &n_slot_necessari,
+                                         const vector<vector<string>> &id_professori,
+                                         const vector<int> &n_vers_paral,
+                                         const string &semestre_dell_esame);
 
         void print_sessione();
 
     };
+
     class calendar {
 
     private:
@@ -115,17 +128,22 @@ public:
 
         calendar();
 
-        bool set_id_esame_nel_calendario(const string &id_esame, const vector<string> &id_cds,
-                                         const vector<string> &anno, const int &n_slot_necessari,
-                                         const vector<string> &id_professori, int n_vers_paral,
-                                         const vector<string> &semestre_dell_esame);
+        bool set_id_esame_nel_calendario(const int n_esami_raggruppati, const vector<string> &id_esame,
+                                         const vector<vector<string>> &id_cds, const vector<string> &anno,
+                                         const vector<int> &n_slot_necessari,
+                                         const vector<vector<string>> &id_professori, const vector<int> &n_vers_paral,
+                                         const string &semestre_dell_esame);
 
         void print_calendario();
 
     };
-    bool set_id_esame_nel_calendario(const string &id_esame, const vector<string> &id_cds, const vector<string> &anno,
-                                     const int &n_slot_necessari, const vector<string> &id_professori, int n_vers_paral,
-                                     const vector<string> &semestre_dell_esame);
+
+    bool set_id_esame_nel_calendario(const int n_esami_raggruppati, const vector<string> &id_esame,
+                                     const vector<vector<string>> &id_cds, const vector<string> &anno,
+                                     const vector<int> &n_slot_necessari, const vector<vector<string>> &id_professori,
+                                     const vector<int> &n_vers_paral,
+                                     const string &semestre_dell_esame);
+
     void print_calendar();
 
 private:
