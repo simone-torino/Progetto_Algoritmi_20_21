@@ -654,8 +654,8 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
         }
 
 
-//        _gen.set_id_esame_nel_calendario(id_corsi_raggruppati.size(), corso->getIdCorso(), id_cds, anni_accademici,
-//                                         durata, id_professori, n_versioni, semestre);
+       // _gen.set_id_esame_nel_calendario(id_corsi_raggruppati.size(), corso->getIdCorso(), id_cds, anni_accademici,
+       //                                  durata, id_professori, n_versioni, semestre);
 
 
         //TODO: la funzione genera esami penso che dovrebbe stare all'interno di questo ciclo
