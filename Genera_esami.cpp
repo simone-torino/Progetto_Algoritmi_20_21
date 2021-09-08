@@ -99,28 +99,41 @@ bool Genera_esami::sessione::set_id_esame_nella_sessione(const int n_esami_raggr
         }
 
         if (!esami_gia_messi) {
-            if (_appelli[i].get_quale_appello() == 2) {
-                if (!_appelli[i].set_id_esame_nell_appello(n_esami_raggruppati, id_esame, id_cds, anno,
-                                                           n_slot_necessari,
-                                                           id_professori,
-                                                           n_vers_paral, n_studenti_iscritti)) {
+            if (_appelli[i].get_quale_appello() == 2 /*vincolo!=2*/) {
+                int vincolo=0;
+                do
+                {
+                    if (!_appelli[i].set_id_esame_nell_appello(n_esami_raggruppati, id_esame, id_cds, anno,
+                                                               n_slot_necessari,
+                                                               id_professori,
+                                                               n_vers_paral, n_studenti_iscritti, vincolo)) {
 //                cout<<endl<<"Esame "<<id_esame<<" non inserito nell'appello "<<i+1<<" della sessione "<<_quale_sessione<<"!"<<endl;
-                    inserito_nell_appello[i] = false;
+                        inserito_nell_appello[i] = false;
+                        vincolo ++;
+                    }
+                    else
+                    {
+                        inserito_nell_appello[i] = true;
+                    }
+                } while(!inserito_nell_appello[i] && vincolo < 4);
 
-                    // TODO: rilassamento dei vincoli
-
-                }
             } else {
                 if ((_quale_sessione == semestre_dell_esame) && (_quale_sessione != "s3")) {
-                    if (!_appelli[i].set_id_esame_nell_appello(n_esami_raggruppati, id_esame, id_cds, anno,
-                                                               n_slot_necessari, id_professori,
-                                                               n_vers_paral, n_studenti_iscritti)) {
+                    int vincolo=0;
+                    do
+                    {
+                        if (!_appelli[i].set_id_esame_nell_appello(n_esami_raggruppati, id_esame, id_cds, anno,
+                                                                   n_slot_necessari, id_professori,
+                                                                   n_vers_paral, n_studenti_iscritti, vincolo)) {
 //                    cout<<endl<<"Esame "<<id_esame<<" non inserito nell'appello "<<i+1<<" della sessione "<<_quale_sessione<<"!"<<endl;
-                        inserito_nell_appello[i] = false;
-
-                        // TODO: rilassamento dei vincoli
-
-                    }
+                            inserito_nell_appello[i] = false;
+                            vincolo ++;
+                        }
+                        else
+                        {
+                            inserito_nell_appello[i] = true;
+                        }
+                    } while (!inserito_nell_appello[i] && vincolo < 4);
                 }
             }
         }
@@ -177,7 +190,7 @@ Genera_esami::appello::set_id_esame_nell_appello(const int n_esami_raggruppati, 
                                                  const vector<int> &n_slot_necessari,
                                                  const vector<vector<string>> &id_professori,
                                                  const vector<int> &n_vers_paral,
-                                                 const vector<vector<int>> &n_studenti_iscritti) {
+                                                 const vector<vector<int>> &n_studenti_iscritti, int vincolo) {
 
     int inserisco_nel_giorno = 0;
 
@@ -190,7 +203,7 @@ Genera_esami::appello::set_id_esame_nell_appello(const int n_esami_raggruppati, 
         bool mettibile = true;
 
         for (int i = 0; i < n_esami_raggruppati; i++) {
-            if ((trovato_cds_anno(id_cds[i], anno[i], inserisco_nel_giorno)) ||
+            if ((trovato_cds_anno(id_cds[i], anno[i], inserisco_nel_giorno, vincolo)) ||
                 (!prof_disponibili(id_professori[i], inserisco_nel_giorno))) {
                 mettibile = false;
             }
@@ -221,42 +234,63 @@ Genera_esami::appello::trovato_cds_anno(const vector<string> &id_cds, const stri
                                         const int inserisco_nel_giorno) {
 
     bool trovato = false;
-    vector<string>::iterator it_oggi;
-    vector<string>::iterator it_ieri;
-    vector<string>::iterator it_domani;
 
-    for (int i = 0; i < id_cds.size(); i++) {
-        it_oggi = find_cds_anno(_giorni[inserisco_nel_giorno].get_id_cds_inseriti().begin(),
-                                _giorni[inserisco_nel_giorno].get_id_cds_inseriti().end(),
-                                _giorni[inserisco_nel_giorno].get_anni_inseriti().begin(),
-                                id_cds[i], anno);
+    if(vincolo == 0)
+    {
+        vector<string>::iterator it_oggi;
+        vector<string>::iterator it_ieri;
+        vector<string>::iterator it_domani;
 
-        if (inserisco_nel_giorno != 0) {
-            it_ieri = find_cds_anno(_giorni[inserisco_nel_giorno - 1].get_id_cds_inseriti().begin(),
-                                    _giorni[inserisco_nel_giorno - 1].get_id_cds_inseriti().end(),
-                                    _giorni[inserisco_nel_giorno - 1].get_anni_inseriti().begin(),
+        for (int i = 0; i < id_cds.size(); i++) {
+            it_oggi = find_cds_anno(_giorni[inserisco_nel_giorno].get_id_cds_inseriti().begin(),
+                                    _giorni[inserisco_nel_giorno].get_id_cds_inseriti().end(),
+                                    _giorni[inserisco_nel_giorno].get_anni_inseriti().begin(),
                                     id_cds[i], anno);
-        } else {
-            it_ieri = _giorni[inserisco_nel_giorno - 1].get_id_cds_inseriti().end();
+
+            if (inserisco_nel_giorno != 0) {
+                it_ieri = find_cds_anno(_giorni[inserisco_nel_giorno - 1].get_id_cds_inseriti().begin(),
+                                        _giorni[inserisco_nel_giorno - 1].get_id_cds_inseriti().end(),
+                                        _giorni[inserisco_nel_giorno - 1].get_anni_inseriti().begin(),
+                                        id_cds[i], anno);
+            } else {
+                it_ieri = _giorni[inserisco_nel_giorno - 1].get_id_cds_inseriti().end();
+            }
+
+            if (inserisco_nel_giorno != (_giorni.size() - 2)) {
+                it_domani = find_cds_anno(_giorni[inserisco_nel_giorno + 1].get_id_cds_inseriti().begin(),
+                                          _giorni[inserisco_nel_giorno + 1].get_id_cds_inseriti().end(),
+                                          _giorni[inserisco_nel_giorno + 1].get_anni_inseriti().begin(),
+                                          id_cds[i], anno);
+            } else {
+                it_domani = _giorni[inserisco_nel_giorno + 1].get_id_cds_inseriti().end();
+            }
+
+            if ((it_oggi != _giorni[inserisco_nel_giorno].get_id_cds_inseriti().end()) ||
+                (it_ieri != _giorni[inserisco_nel_giorno - 1].get_id_cds_inseriti().end()) ||
+                (it_domani != _giorni[inserisco_nel_giorno + 1].get_id_cds_inseriti().end())) {
+                trovato = true;
+            }
+        }
+    }
+    else
+    {
+        vector<string>::iterator it_oggi;
+
+        for (int i = 0; i < id_cds.size(); i++) {
+            it_oggi = find_cds_anno(_giorni[inserisco_nel_giorno].get_id_cds_inseriti().begin(),
+                                    _giorni[inserisco_nel_giorno].get_id_cds_inseriti().end(),
+                                    _giorni[inserisco_nel_giorno].get_anni_inseriti().begin(),
+                                    id_cds[i], anno);
+
         }
 
-        if (inserisco_nel_giorno != (_giorni.size() - 2)) {
-            it_domani = find_cds_anno(_giorni[inserisco_nel_giorno + 1].get_id_cds_inseriti().begin(),
-                                      _giorni[inserisco_nel_giorno + 1].get_id_cds_inseriti().end(),
-                                      _giorni[inserisco_nel_giorno + 1].get_anni_inseriti().begin(),
-                                      id_cds[i], anno);
-        } else {
-            it_domani = _giorni[inserisco_nel_giorno + 1].get_id_cds_inseriti().end();
-        }
-
-        if ((it_oggi != _giorni[inserisco_nel_giorno].get_id_cds_inseriti().end()) ||
-            (it_ieri != _giorni[inserisco_nel_giorno - 1].get_id_cds_inseriti().end()) ||
-            (it_domani != _giorni[inserisco_nel_giorno + 1].get_id_cds_inseriti().end())) {
+        if (it_oggi != _giorni[inserisco_nel_giorno].get_id_cds_inseriti().end()) {
             trovato = true;
         }
     }
     return trovato;
 }
+
 
 template<class InputIterator>
 InputIterator

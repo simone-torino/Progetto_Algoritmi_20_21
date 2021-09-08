@@ -99,9 +99,9 @@ public:
         bool set_id_esame_nell_appello(const int n_esami_raggruppati, const vector<string> &id_esame,
                                        const vector<vector<string>> &id_cds, const vector<string> &anno,
                                        const vector<int> &n_slot_necessari, const vector<vector<string>> &id_professori,
-                                       const vector<int> &n_vers_paral, const vector<vector<int>> &n_studenti_iscritti);
+                                       const vector<int> &n_vers_paral, const vector<vector<int>> &n_studenti_iscritti, int vincolo);
 
-        bool trovato_cds_anno(const vector<string> &id_cds, const string &anno, const int inserisco_nel_giorno);
+        bool trovato_cds_anno(const vector<string> &id_cds, const string &anno, const int inserisco_nel_giorno, int vincolo);
 
         bool prof_disponibili(const vector<string> &id_professori, const int inserisco_nel_giorno);
 
