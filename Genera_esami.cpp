@@ -11,8 +11,6 @@ bool Genera_esami::set_id_esame_nel_calendario(const int n_esami_raggruppati, co
                                            n_vers_paral, semestre_dell_esame, n_studenti_iscritti)) {
         //            cout<<endl<<"Qualcosa e' andato storto!"<<endl;
 
-        // TODO: rilassamento dei vincoli
-
         return false;
     }
     return true;
@@ -108,6 +106,9 @@ bool Genera_esami::sessione::set_id_esame_nella_sessione(const int n_esami_raggr
                                                            n_vers_paral, n_studenti_iscritti)) {
 //                cout<<endl<<"Esame "<<id_esame<<" non inserito nell'appello "<<i+1<<" della sessione "<<_quale_sessione<<"!"<<endl;
                     inserito_nell_appello[i] = false;
+
+                    // TODO: rilassamento dei vincoli
+
                 }
             } else {
                 if ((_quale_sessione == semestre_dell_esame) && (_quale_sessione != "s3")) {
@@ -116,6 +117,9 @@ bool Genera_esami::sessione::set_id_esame_nella_sessione(const int n_esami_raggr
                                                                n_vers_paral, n_studenti_iscritti)) {
 //                    cout<<endl<<"Esame "<<id_esame<<" non inserito nell'appello "<<i+1<<" della sessione "<<_quale_sessione<<"!"<<endl;
                         inserito_nell_appello[i] = false;
+
+                        // TODO: rilassamento dei vincoli
+
                     }
                 }
             }
@@ -418,21 +422,20 @@ bool Genera_esami::slot::set_id_esame_nello_slot(const int n_esami_raggruppati, 
                 _info_da_inserire[i]._id_cds_da_inserire = id_cds[j][k];
                 _info_da_inserire[i]._n_studenti_iscritti = n_studenti_iscritti[j][k];
                 _info_da_inserire[i]._id_aula_da_inserire.clear();
+                _info_da_inserire[i]._n_versioni_da_inserire = n_vers_paral[j];
+                _info_da_inserire[i]._versione_da_inserire = k+1;
                 i++;
             }
         }
 
 //      procedura di ordinamento degli esami da inserire per numero di studenti iscritti decrescente
 
-        for(int i=0; i < _info_da_inserire.size() - 1; i++)
-        {
-            for(int j=i+1; j < _info_da_inserire.size(); j++)
-            {
-                if(_info_da_inserire[i]._n_studenti_iscritti < _info_da_inserire[j]._n_studenti_iscritti)
-                {
-                   _info_esami_da_inserire temp = _info_da_inserire[i];
-                   _info_da_inserire[i] = _info_da_inserire[j];
-                   _info_da_inserire[j] = temp;
+        for (int i = 0; i < _info_da_inserire.size() - 1; i++) {
+            for (int j = i + 1; j < _info_da_inserire.size(); j++) {
+                if (_info_da_inserire[i]._n_studenti_iscritti < _info_da_inserire[j]._n_studenti_iscritti) {
+                    _info_esami_da_inserire temp = _info_da_inserire[i];
+                    _info_da_inserire[i] = _info_da_inserire[j];
+                    _info_da_inserire[j] = temp;
                 }
             }
         }
@@ -440,7 +443,7 @@ bool Genera_esami::slot::set_id_esame_nello_slot(const int n_esami_raggruppati, 
 //      provo ad inserire ogni esame in un'aula. Se uno non ci sta lo divido e provo a vedere se gli altri
 //      continuano a starci, altrimenti ritorno false. Se ci sono stati tutti aggiorno il vettore di _info_da_stampare
 
-        int cont ;
+        int cont;
         int indice_aula = 0;
         for (int i = 0; i < _info_da_inserire.size(); i++) {
             _info_da_inserire[i]._id_aula_da_inserire.push_back(_aula[indice_aula].getId);
@@ -452,10 +455,11 @@ bool Genera_esami::slot::set_id_esame_nello_slot(const int n_esami_raggruppati, 
                         return false;
                     }
 //                    _n_studenti_iscritti[i] = (_n_studenti_iscritti[i] - (_n_studenti_iscritti[i] % 2)) / 2;
-                    _info_da_inserire[i]._n_studenti_iscritti = _info_da_inserire[i]._n_studenti_iscritti - _aula[indice_aula+cont-1].getCapienza;
-                    _info_da_inserire[i]._id_aula_da_inserire.push_back(_aula[indice_aula+cont].getId);
-                    cont ++;
-                } while (_info_da_inserire[i]._n_studenti_iscritti > _aula[indice_aula+cont].getCapeinza);
+                    _info_da_inserire[i]._n_studenti_iscritti =
+                            _info_da_inserire[i]._n_studenti_iscritti - _aula[indice_aula + cont - 1].getCapienza;
+                    _info_da_inserire[i]._id_aula_da_inserire.push_back(_aula[indice_aula + cont].getId);
+                    cont++;
+                } while (_info_da_inserire[i]._n_studenti_iscritti > _aula[indice_aula + cont].getCapeinza);
             }
             indice_aula = indice_aula + cont;
         }
@@ -471,6 +475,8 @@ bool Genera_esami::slot::set_id_esame_nello_slot(const int n_esami_raggruppati, 
             _info_da_stampare[i]._id_esame_inserito = _info_da_inserire[i]._id_esami_da_inserire;
             _info_da_stampare[i]._id_cds_inserito = _info_da_inserire[i]._id_cds_da_inserire;
             _info_da_stampare[i]._id_aula_inserita = _info_da_inserire[i]._id_aula_da_inserire;
+            _info_da_stampare[i]._n_versioni_inserito = _info_da_inserire[i]._n_versioni_da_inserire;
+            _info_da_stampare[i]._versione_inserita = _info_da_inserire[i]._versione_da_inserire;
         }
     }
     return true;
@@ -488,13 +494,16 @@ bool Genera_esami::slot::maggior_n_studenti(int n_studenti_iscritti_1, int n_stu
 }*/
 
 void Genera_esami::slot::print_info() {
-    cout << endl << "Esami: " << endl;
+//    cout << endl << "Esami: " << endl;
     for (int i = 0; i < _info_da_stampare.size(); i++) {
-        cout << endl << "\t" << _info_da_stampare[i]._id_esame_inserito << " (" << _info_da_stampare[i]._id_cds_inserito << ") ( ";
-        for (int j=0; j < _info_da_stampare[i]._id_aula_inserita.size(); j++)
+        cout << ";" << _info_da_stampare[i]._id_esame_inserito;
+        if (_info_da_stampare[i]._n_versioni_inserito > 1)
         {
-            cout << _info_da_stampare[i]._id_aula_inserita[j] << " ";
+            cout<<"[-"<<_info_da_stampare[i]._versione_inserita<<"]";
         }
-        cout << ") ";
+        cout << "(" << _info_da_stampare[i]._id_cds_inserito << ")";
+        for (int j = 0; j < _info_da_stampare[i]._id_aula_inserita.size(); j++) {
+            cout << "|" << _info_da_stampare[i]._id_aula_inserita[j];
+        }
     }
 }

@@ -28,6 +28,8 @@ public:
             int _n_studenti_iscritti;
             string _id_cds_da_inserire;
             vector<string> _id_aula_da_inserire;
+            int _n_versioni_da_inserire;
+            int _versione_da_inserire;
         };
         vector<_info_esami_da_inserire> _info_da_inserire;
 
@@ -35,6 +37,8 @@ public:
             string _id_esame_inserito;
             string _id_cds_inserito;
             vector<string> _id_aula_inserita;
+            int _n_versioni_inserito;
+            int _versione_inserita;
         };
         vector<_info_esami_inseriti> _info_da_stampare;
 

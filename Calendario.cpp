@@ -620,18 +620,18 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
             n_versioni = anno_accademico->getNVersioniInParallelo();
 
             //Per ogni versione del corso in un anno accademico
-            for(auto versione: anno_accademico->getVersioni()){
+            for (auto versione: anno_accademico->getVersioni()) {
                 //Salvo la matricola del titolare nel vettore di professori
                 id_professori.push_back(versione->getMatricolaTitolare());
                 //Per ogni professore associato
-                for(auto profn : versione->getAltriProfN()){
+                for (auto profn: versione->getAltriProfN()) {
                     //Salvo la matricola del professore associato
                     id_professori.push_back(profn->getMatricola());
                 }
             }
 
             //Per ogni id corso raggruppato
-            for(auto id: anno_accademico->getIdCorsiRaggruppati()){
+            for (auto id: anno_accademico->getIdCorsiRaggruppati()) {
                 //Salvo l'id del corso
                 id_corsi_raggruppati.push_back(id->getIdCorso());
             }
@@ -654,8 +654,8 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
         }
 
 
-       // _gen.set_id_esame_nel_calendario(id_corsi_raggruppati.size(), corso->getIdCorso(), id_cds, anni_accademici,
-       //                                  durata, id_professori, n_versioni, semestre);
+        // _gen.set_id_esame_nel_calendario(id_corsi_raggruppati.size(), corso->getIdCorso(), id_cds, anni_accademici,
+        //                                  durata, id_professori, n_versioni, semestre);
 
 
         //TODO: la funzione genera esami penso che dovrebbe stare all'interno di questo ciclo

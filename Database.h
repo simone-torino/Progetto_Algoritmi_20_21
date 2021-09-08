@@ -206,7 +206,7 @@ public:
 
         void fstampa(ofstream &fout) const;
     };
-    
+
     class Aula {
         Regex _regaula;
     public:
