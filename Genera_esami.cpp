@@ -98,9 +98,12 @@ bool Genera_esami::sessione::set_id_esame_nella_sessione(const int n_esami_raggr
             }
         }
 
+//        TODO: Rilassare vincoli 2 e 3. Passare capienza e id delle aule nel modo corretto a set_id_esame_nello_slot.
+//              Passare tutti i parametri corretti a set_id_esame_nel_calemdario. Gestire le indisponibilità dei professori.
+
         if (!esami_gia_messi) {
+            int vincolo = 0;
             if (_appelli[i].get_quale_appello() == 2 /*vincolo!=2*/) {
-                int vincolo=0;
                 do
                 {
                     if (!_appelli[i].set_id_esame_nell_appello(n_esami_raggruppati, id_esame, id_cds, anno,
@@ -119,7 +122,6 @@ bool Genera_esami::sessione::set_id_esame_nella_sessione(const int n_esami_raggr
 
             } else {
                 if ((_quale_sessione == semestre_dell_esame) && (_quale_sessione != "s3")) {
-                    int vincolo=0;
                     do
                     {
                         if (!_appelli[i].set_id_esame_nell_appello(n_esami_raggruppati, id_esame, id_cds, anno,
