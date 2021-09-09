@@ -98,9 +98,6 @@ bool Genera_esami::sessione::set_id_esame_nella_sessione(const int n_esami_raggr
             }
         }
 
-//        TODO: Rilassare vincoli 2 e 3. Passare capienza e id delle aule nel modo corretto a set_id_esame_nello_slot.
-//              Passare tutti i parametri corretti a set_id_esame_nel_calemdario. Gestire le indisponibilità dei professori.
-
         if (!esami_gia_messi) {
             int vincolo = 0;
             if (_appelli[i].get_quale_appello() == 2) {

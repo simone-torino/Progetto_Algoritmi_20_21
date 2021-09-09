@@ -672,6 +672,7 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
             }
         }
 
+//        TODO: Passare tutti i parametri corretti
 
 //         _gen.set_id_esame_nel_calendario(id_corsi_raggruppati.size(), corso->getIdCorso(), id_cds, anni_accademici,
 //                                          n_slot_necessari, id_professori, n_versioni, corso->getSemestre());
