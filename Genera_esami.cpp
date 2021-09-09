@@ -103,7 +103,7 @@ bool Genera_esami::sessione::set_id_esame_nella_sessione(const int n_esami_raggr
 
         if (!esami_gia_messi) {
             int vincolo = 0;
-            if (_appelli[i].get_quale_appello() == 2 /*vincolo!=2*/) {
+            if (_appelli[i].get_quale_appello() == 2) {
                 do {
                     if (!_appelli[i].set_id_esame_nell_appello(n_esami_raggruppati, id_esame, id_cds, anno,
                                                                n_slot_necessari,
@@ -115,7 +115,7 @@ bool Genera_esami::sessione::set_id_esame_nella_sessione(const int n_esami_raggr
                     } else {
                         inserito_nell_appello[i] = true;
                     }
-                } while (!inserito_nell_appello[i] && vincolo < 4);
+                } while (!inserito_nell_appello[i] && vincolo < 3);
 
             } else {
                 if ((_quale_sessione == semestre_dell_esame) && (_quale_sessione != "s3")) {
@@ -129,7 +129,7 @@ bool Genera_esami::sessione::set_id_esame_nella_sessione(const int n_esami_raggr
                         } else {
                             inserito_nell_appello[i] = true;
                         }
-                    } while (!inserito_nell_appello[i] && vincolo < 4);
+                    } while (!inserito_nell_appello[i] && vincolo < 3);
                 }
             }
         }
@@ -200,7 +200,7 @@ Genera_esami::appello::set_id_esame_nell_appello(const int n_esami_raggruppati, 
 
         for (int i = 0; i < n_esami_raggruppati; i++) {
             if ((trovato_cds_anno(id_cds[i], anno[i], inserisco_nel_giorno, vincolo)) ||
-                (!prof_disponibili(id_professori[i], inserisco_nel_giorno))) {
+                (!prof_disponibili(id_professori[i], inserisco_nel_giorno, vincolo))) {
                 mettibile = false;
             }
         }
@@ -313,8 +313,12 @@ const int Genera_esami::appello::get_quale_appello() const {
     return _quale_appello;
 }
 
-bool Genera_esami::appello::prof_disponibili(const vector<string> &id_professori, const int inserisco_nel_giorno) {
+bool Genera_esami::appello::prof_disponibili(const vector<string> &id_professori, const int inserisco_nel_giorno, const int vincolo) {
 
+    if(vincolo == 2)
+    {
+        return true;
+    }
     for (int i = 0; i < id_professori.size(); i++) {
         for (int j = 0; j < _ind_agg.size(); j++) {
             if (_ind_agg.get_id_prof == id_professori[i]) {

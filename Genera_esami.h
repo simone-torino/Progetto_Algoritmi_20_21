@@ -108,7 +108,7 @@ public:
 
         bool trovato_cds_anno(const vector<string> &id_cds, const string &anno, const int inserisco_nel_giorno, int vincolo);
 
-        bool prof_disponibili(const vector<string> &id_professori, const int inserisco_nel_giorno);
+        bool prof_disponibili(const vector<string> &id_professori, const int inserisco_nel_giorno, const int vincolo);
 
         void print_appello();
 
