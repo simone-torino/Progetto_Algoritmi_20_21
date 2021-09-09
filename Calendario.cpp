@@ -653,9 +653,28 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
             }
         }
 
+//TODO: funzione che calcola numero di slot necessari per l'esame (ogni versione ha lo stesso numero di slot) (float)floor((120+15+25) / 120)
 
-        // _gen.set_id_esame_nel_calendario(id_corsi_raggruppati.size(), corso->getIdCorso(), id_cds, anni_accademici,
-        //                                  durata, id_professori, n_versioni, semestre);
+        vector<bool> sufficiente;
+        vector<int> n_slot_necessari;
+        for (int i = 0; i < id_corsi_raggruppati.size(); i++) {
+            sufficiente[i] = false;
+            n_slot_necessari[i] = 0;
+            while (!sufficiente[i] && n_slot_necessari[i] < 7) {
+                n_slot_necessari[i]++;
+                if ((durata_esame + t_ingresso + t_uscita) < (120 * n_slot_necessari[i])) {
+                    sufficiente[i] = true;
+                }
+            }
+            if (!sufficiente[i]) {
+                cout << endl << "Esame troppo lungo!" << endl;
+                //return qualcosa
+            }
+        }
+
+
+//         _gen.set_id_esame_nel_calendario(id_corsi_raggruppati.size(), corso->getIdCorso(), id_cds, anni_accademici,
+//                                          n_slot_necessari, id_professori, n_versioni, corso->getSemestre());
 
 
         //TODO: la funzione genera esami penso che dovrebbe stare all'interno di questo ciclo
@@ -670,15 +689,11 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
 
     _gen.print_calendar();
 
-    //TODO: funzione che calcola numero di slot necessari per l'esame (ogni versione ha lo stesso numero di slot) (float)floor((120+15+25) / 120)
+
 
 //    for(auto corso : _dbcal.getCorsiDb()){
 //        _gen.set_id_esame_nel_calendario(corso->getIdCorso(), );
 //    }
-
-
-
-
 
     /* Dati da salvara dal database:
      * Corso: durata esame, bool semestre di appartenenza (elenco semestri con i corso_id)
@@ -734,6 +749,10 @@ vector<string> Calendario::leggi_db_date_sessioni(const vector<string> &argoment
 Calendario::Calendario(const string &file_argomento) {
     _file_argomento = file_argomento;
 }
+
+/*vector<Calendario::Indisponibilita> Calendario::get_indisponibilita() {
+    return _ind_agg;
+}*/
 
 vector<Calendario::Periodo> Calendario::Indisponibilita::getDate() const {
     return _date;
@@ -800,3 +819,4 @@ string Calendario::Indisponibilita::getMatricolaProf() const {
 //        //            cout << "Debug: " << p_temp << endl;
 //    }
 //}
+

@@ -165,6 +165,8 @@ public:
 
     void genera_date_esami(const vector<string> &argomenti_es);
 
+    //vector<Indisponibilita> get_indisponibilita();
+
 private:
     //TODO: CONVIENE RACCOGLIERE QUA TUTTI I DATI NEL MODO IN CUI VERRANNO STAMPATI
 //    <giorno_della_sessione>

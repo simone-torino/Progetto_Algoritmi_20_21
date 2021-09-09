@@ -104,35 +104,29 @@ bool Genera_esami::sessione::set_id_esame_nella_sessione(const int n_esami_raggr
         if (!esami_gia_messi) {
             int vincolo = 0;
             if (_appelli[i].get_quale_appello() == 2 /*vincolo!=2*/) {
-                do
-                {
+                do {
                     if (!_appelli[i].set_id_esame_nell_appello(n_esami_raggruppati, id_esame, id_cds, anno,
                                                                n_slot_necessari,
                                                                id_professori,
                                                                n_vers_paral, n_studenti_iscritti, vincolo)) {
 //                cout<<endl<<"Esame "<<id_esame<<" non inserito nell'appello "<<i+1<<" della sessione "<<_quale_sessione<<"!"<<endl;
                         inserito_nell_appello[i] = false;
-                        vincolo ++;
-                    }
-                    else
-                    {
+                        vincolo++;
+                    } else {
                         inserito_nell_appello[i] = true;
                     }
-                } while(!inserito_nell_appello[i] && vincolo < 4);
+                } while (!inserito_nell_appello[i] && vincolo < 4);
 
             } else {
                 if ((_quale_sessione == semestre_dell_esame) && (_quale_sessione != "s3")) {
-                    do
-                    {
+                    do {
                         if (!_appelli[i].set_id_esame_nell_appello(n_esami_raggruppati, id_esame, id_cds, anno,
                                                                    n_slot_necessari, id_professori,
                                                                    n_vers_paral, n_studenti_iscritti, vincolo)) {
 //                    cout<<endl<<"Esame "<<id_esame<<" non inserito nell'appello "<<i+1<<" della sessione "<<_quale_sessione<<"!"<<endl;
                             inserito_nell_appello[i] = false;
-                            vincolo ++;
-                        }
-                        else
-                        {
+                            vincolo++;
+                        } else {
                             inserito_nell_appello[i] = true;
                         }
                     } while (!inserito_nell_appello[i] && vincolo < 4);
@@ -237,8 +231,7 @@ Genera_esami::appello::trovato_cds_anno(const vector<string> &id_cds, const stri
 
     bool trovato = false;
 
-    if(vincolo == 0)
-    {
+    if (vincolo == 0) {
         vector<string>::iterator it_oggi;
         vector<string>::iterator it_ieri;
         vector<string>::iterator it_domani;
@@ -273,9 +266,7 @@ Genera_esami::appello::trovato_cds_anno(const vector<string> &id_cds, const stri
                 trovato = true;
             }
         }
-    }
-    else
-    {
+    } else {
         vector<string>::iterator it_oggi;
 
         for (int i = 0; i < id_cds.size(); i++) {
@@ -324,13 +315,18 @@ const int Genera_esami::appello::get_quale_appello() const {
 
 bool Genera_esami::appello::prof_disponibili(const vector<string> &id_professori, const int inserisco_nel_giorno) {
 
-    /*for(int i=0; i < id_professori.size(); i++)
-    {
-        for(int j=0; j < id_professori[i].get_indisponibilita.size(); j++)
-        {
-            // se inserisco_nel_giorno è dentro indisponibilità allora return false
+    for (int i = 0; i < id_professori.size(); i++) {
+        for (int j = 0; j < _ind_agg.size(); j++) {
+            if (_ind_agg.get_id_prof == id_professori[i]) {
+                for (int k = 0; k < _ind_agg[j].get_date().size(); k++) {
+                    if ((inserisco_nel_giorno >= _ind_agg[j].get_date()[k].get_inizio()) &&
+                        (inserisco_nel_giorno <= _ind_agg[j].get_date()[k].get_fine())) {
+                        return false;
+                    }
+                }
+            }
         }
-    }*/
+    }
     return true;
 }
 
@@ -459,7 +455,7 @@ bool Genera_esami::slot::set_id_esame_nello_slot(const int n_esami_raggruppati, 
                 _info_da_inserire[i]._n_studenti_iscritti = n_studenti_iscritti[j][k];
                 _info_da_inserire[i]._id_aula_da_inserire.clear();
                 _info_da_inserire[i]._n_versioni_da_inserire = n_vers_paral[j];
-                _info_da_inserire[i]._versione_da_inserire = k+1;
+                _info_da_inserire[i]._versione_da_inserire = k + 1;
                 i++;
             }
         }
@@ -533,9 +529,8 @@ void Genera_esami::slot::print_info() {
 //    cout << endl << "Esami: " << endl;
     for (int i = 0; i < _info_da_stampare.size(); i++) {
         cout << ";" << _info_da_stampare[i]._id_esame_inserito;
-        if (_info_da_stampare[i]._n_versioni_inserito > 1)
-        {
-            cout<<"[-"<<_info_da_stampare[i]._versione_inserita<<"]";
+        if (_info_da_stampare[i]._n_versioni_inserito > 1) {
+            cout << "[-" << _info_da_stampare[i]._versione_inserita << "]";
         }
         cout << "(" << _info_da_stampare[i]._id_cds_inserito << ")";
         for (int j = 0; j < _info_da_stampare[i]._id_aula_inserita.size(); j++) {
