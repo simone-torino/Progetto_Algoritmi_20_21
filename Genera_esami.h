@@ -30,9 +30,8 @@ public:
             vector<string> _id_aula_da_inserire;
             int _n_versioni_da_inserire;
             int _versione_da_inserire;
+            int _vincolo_da_inserire;
 
-//            TODO: da aggiungere l'informazione sul vincolo con cui sono arrivato fino alla stampa
-//                  (0 = nessun vincolo rilassato, 1 = vincolo 1 rilassato, ecc)
         };
         vector<_info_esami_da_inserire> _info_da_inserire;
 
@@ -42,6 +41,7 @@ public:
             vector<string> _id_aula_inserita;
             int _n_versioni_inserito;
             int _versione_inserita;
+            int _vincolo_inserito;
         };
         vector<_info_esami_inseriti> _info_da_stampare;
 
@@ -52,13 +52,15 @@ public:
         bool set_id_esame_nello_slot(const int n_esami_raggruppati, const vector<string> &id_esame,
                                      const vector<vector<string>> &id_cds, const vector<vector<string>> &id_professori,
                                      vector<int> &n_vers_paral,
-                                     const vector<vector<int>> &n_studenti_iscritti);
+                                     const vector<vector<int>> &n_studenti_iscritti, int vincolo);
 
         static bool maggior_n_studenti(int n_studenti_iscritti_1, int n_studenti_iscritti_2);
 
         void print_professori();
 
         void print_info();
+
+        void print_info_warnings();
 
     };
 
@@ -77,7 +79,7 @@ public:
         bool set_id_esame_nel_giorno(const int n_esami_raggruppati, const vector<string> &id_esame,
                                      const vector<vector<string>> &id_cds, const vector<string> &anno,
                                      const vector<int> &n_slot_necessari, const vector<vector<string>> &id_professori,
-                                     const vector<int> &n_vers_paral, const vector<vector<int>> &n_studenti_iscritti);
+                                     const vector<int> &n_vers_paral, const vector<vector<int>> &n_studenti_iscritti, int vincolo);
 
         void print_giorno();
 

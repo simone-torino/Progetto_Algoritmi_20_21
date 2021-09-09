@@ -209,7 +209,7 @@ Genera_esami::appello::set_id_esame_nell_appello(const int n_esami_raggruppati, 
             if (!_giorni[inserisco_nel_giorno].set_id_esame_nel_giorno(n_esami_raggruppati, id_esame, id_cds, anno,
                                                                        n_slot_necessari,
                                                                        id_professori, n_vers_paral,
-                                                                       n_studenti_iscritti)) {
+                                                                       n_studenti_iscritti, vincolo)) {
                 inserisco_nel_giorno++;
             } else {
                 return true;
@@ -227,7 +227,7 @@ Genera_esami::appello::set_id_esame_nell_appello(const int n_esami_raggruppati, 
 
 bool
 Genera_esami::appello::trovato_cds_anno(const vector<string> &id_cds, const string &anno,
-                                        const int inserisco_nel_giorno) {
+                                        const int inserisco_nel_giorno, int vincolo) {
 
     bool trovato = false;
 
@@ -345,7 +345,7 @@ bool Genera_esami::giorno::set_id_esame_nel_giorno(const int n_esami_raggruppati
                                                    const vector<int> &n_slot_necessari,
                                                    const vector<vector<string>> &id_professori,
                                                    const vector<int> &n_vers_paral,
-                                                   const vector<vector<int>> &n_studenti_iscritti) {
+                                                   const vector<vector<int>> &n_studenti_iscritti, int vincolo) {
 
 //  ragionare a gruppo_di_esami_inserito invece che gruppo_di_esami_inserito
 //  e aggiornare _id_cds_inseriti e _anni_inseriti anche per ogni esame del gruppo
@@ -365,7 +365,7 @@ bool Genera_esami::giorno::set_id_esame_nel_giorno(const int n_esami_raggruppati
             if (!_fasce_orarie[i + inserisco_nello_slot].set_id_esame_nello_slot(n_esami_raggruppati, id_esame, id_cds,
                                                                                  id_professori,
                                                                                  const_cast<vector<int> &>(n_vers_paral),
-                                                                                 n_studenti_iscritti)) {
+                                                                                 n_studenti_iscritti, vincolo)) {
                 gruppo_di_esami_inserito = false;
             }
         }
@@ -419,7 +419,7 @@ bool Genera_esami::slot::set_id_esame_nello_slot(const int n_esami_raggruppati, 
                                                  const vector<vector<string>> &id_cds,
                                                  const vector<vector<string>> &id_professori,
                                                  vector<int> &n_vers_paral,
-                                                 const vector<vector<int>> &n_studenti_iscritti) {
+                                                 const vector<vector<int>> &n_studenti_iscritti, int vincolo) {
 
 //          (n_vers_paral * n_raggruppamenti) nel primo if e
 //          fare l' _id_esami_da_inserire.push_back per ogni esame raggruppato
@@ -456,6 +456,7 @@ bool Genera_esami::slot::set_id_esame_nello_slot(const int n_esami_raggruppati, 
                 _info_da_inserire[i]._id_aula_da_inserire.clear();
                 _info_da_inserire[i]._n_versioni_da_inserire = n_vers_paral[j];
                 _info_da_inserire[i]._versione_da_inserire = k + 1;
+                _info_da_inserire[i]._vincolo_da_inserire = vincolo;
                 i++;
             }
         }
@@ -509,6 +510,7 @@ bool Genera_esami::slot::set_id_esame_nello_slot(const int n_esami_raggruppati, 
             _info_da_stampare[i]._id_aula_inserita = _info_da_inserire[i]._id_aula_da_inserire;
             _info_da_stampare[i]._n_versioni_inserito = _info_da_inserire[i]._n_versioni_da_inserire;
             _info_da_stampare[i]._versione_inserita = _info_da_inserire[i]._versione_da_inserire;
+            _info_da_stampare[i]._vincolo_inserito = _info_da_inserire[i]._vincolo_da_inserire;
         }
     }
     return true;
@@ -535,6 +537,24 @@ void Genera_esami::slot::print_info() {
         cout << "(" << _info_da_stampare[i]._id_cds_inserito << ")";
         for (int j = 0; j < _info_da_stampare[i]._id_aula_inserita.size(); j++) {
             cout << "|" << _info_da_stampare[i]._id_aula_inserita[j];
+        }
+    }
+}
+
+void Genera_esami::slot::print_info_warnings() {
+    for (int i = 0; i < _info_da_stampare.size(); i++)
+    {
+        if(_info_da_stampare[i]._vincolo_inserito > 0)
+        {
+            // Stampo primo vincolo violato
+            cout << _info_da_stampare[i]._id_cds_inserito << ";" << _info_da_stampare[i]._id_esame_inserito << "; "
+                   "Distanza minima tra esami dello stesso anno accademico e dello stesso corso di studi a meno di due giorni l'uno dall'altro" << endl;
+        }
+        if(_info_da_stampare[i]._vincolo_inserito > 1)
+        {
+            // Stampo terzo vincolo violato
+            cout << _info_da_stampare[i]._id_cds_inserito << ";" << _info_da_stampare[i]._id_esame_inserito << "; "
+                   "Indisponibilità dei docenti non rispettata" << endl;
         }
     }
 }
