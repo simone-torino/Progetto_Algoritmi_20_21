@@ -30,6 +30,9 @@ public:
             vector<string> _id_aula_da_inserire;
             int _n_versioni_da_inserire;
             int _versione_da_inserire;
+
+//            TODO: da aggiungere l'informazione sul vincolo con cui sono arrivato fino alla stampa
+//                  (0 = nessun vincolo rilassato, 1 = vincolo 1 rilassato, ecc)
         };
         vector<_info_esami_da_inserire> _info_da_inserire;
 
