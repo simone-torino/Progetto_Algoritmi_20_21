@@ -98,9 +98,11 @@ private:
         }
 
     public:
+        void setDate(const Periodo &periodo);
         vector<Periodo> getDate() const;
         void setMatricolaProf(const string &matricola);
         string getMatricolaProf() const;
+        void debug() const;
     };
 
     class Anno_Accademico {

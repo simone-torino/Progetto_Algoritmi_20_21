@@ -27,3 +27,4 @@
 *.zip
 
 /cmake-build-debug/*db_date_sessioni.txt
+/cmake-build-debug/*db_indisponibilita.txt

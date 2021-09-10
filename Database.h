@@ -131,6 +131,7 @@ public:
         const string _rg_profn_campi = "([0-9d]+),([0-9]+),([0-9]+),([0-9]+)";
 
         //ESPRESSIONI PER DATE ESAMI
+        const string _rg_dmy = "aa";
         const string _rg_data = "([0-9]{1,2})\\-([0-9]{1,2})\\-([0-9]{4})";
         const string _rg_periodo = _rg_data + "\\|" + _rg_data;
 

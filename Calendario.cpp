@@ -288,7 +288,7 @@ void Calendario::set_indisponibilita(const vector<string> &argomenti_ind) {
     fin_in.open(argomenti_ind[4], ios::in);
 
     try {
-        controlli_file(fin_in, argomenti_ind[4]); //ora controlli_file può generare due eccezzioni
+        controlli_file(fin_in, argomenti_ind[4]);
     } catch (file_non_aperto &e) {
         cout << e.what() << endl;
         exit(4);
@@ -306,7 +306,7 @@ void Calendario::set_indisponibilita(const vector<string> &argomenti_ind) {
         update = false;
     }
 
-    //Se il file _dbcal c'è già lo aggiorno, metto in ind_db i dati _dbcal e in ind_agg i dati input
+    //Se il file indisponibilita c'è già lo aggiorno, metto in ind_db i dati db e in ind_agg i dati input
     if (update) {
         LOG("Aggiornamento file indisponibilita in corso");
         read_indisponibilita(fin_db, _ind_db);
@@ -352,7 +352,7 @@ void Calendario::fstampa_indisponibilita() {
 
     cout << "Stampando indisponibilita su file...\n";
     for (const auto &i: _ind_db) {
-        fout << 'd' << i.getMatricolaProf();
+        fout << i.getMatricolaProf();
         for (auto k: i.getDate()) {
             fout << ';' << k;
         }
@@ -394,7 +394,8 @@ void Calendario::update_indisponibilita(ifstream &fin_in) {
 void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_ind) {
     string s_temp;
     int n = 1;
-    vector<string> outstring;
+    vector<string> out_riga_indisponibilita;
+    vector<string> int_date;
 
     //Leggo i prof presenti nel database per confrontare le matricole
     _dbcal.leggi_db<Database::Professore>(_dbcal.getFileDbProfessori(), _dbcal.getProfessoriDb());
@@ -410,37 +411,51 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
             //leggo il file indisponibilita
             try {
                 //prima leggo la matricola del prof
-                _regcal.search_and_read(_regcal.target_expression(lettura::id_prof), s_temp, outstring);
+                _regcal.search_and_read(_regcal.target_expression(lettura::id_prof), s_temp, out_riga_indisponibilita);
 
                 //poi leggo i periodi
-//                _regcal.multiple_fields(_regcal.target_expression(lettura::periodo), s_temp, outstring);
+//                _regcal.multiple_fields(_regcal.target_expression(lettura::periodo), s_temp, out_riga_indisponibilita);
 
                 //poi leggo le date
-                _regcal.multiple_fields(_regcal.target_expression(lettura::data), s_temp, outstring);
+                _regcal.multiple_fields(_regcal.target_expression(lettura::data), s_temp, out_riga_indisponibilita);
+                for(int i = 2; i<out_riga_indisponibilita.size(); i++){
+                    try{
+                        _regcal.search_and_read(_regcal.target_expression(lettura::data), out_riga_indisponibilita[i], int_date);
+                    } catch (errore_formattazione &e){
+                        cout << e.what() << endl;
+                        READ_ERR("date indisponibilita");
+                        exit(3);
+                    }
+
+                }
 
             } catch (errore_formattazione &e) {
                 cout << e.what() << endl;
                 READ_ERR("delle indisponibilita");
                 exit(3);
             }
-            LOGV(outstring);
+//            LOG("Riga indispo: ")
+//            LOGV(out_riga_indisponibilita)
+//            LOG("Date int")
+//            for(int i = 0; i<int_date.size(); i++){
+//                cout << i << ": " << int_date[i] << endl;
+//            }
             //trasformo i numeri letti in interi //TODO: da risolvere conversione cifre della data in intero, leggi cifre singole
             vector<int> gmy; //Data come interi
             try {
-                transform(outstring.begin() + 2, outstring.end(), back_inserter(gmy), strToInt);
+                transform(int_date.begin() +1, int_date.end(), back_inserter(gmy), strToInt);
             } catch (std::runtime_error &e) {
                 cout << "Errore string to int: " << e.what() << endl;
             }
 
             //compongo un oggetto indisponibilita per poi salvarlo
-            Indisponibilita ind_temp;
-            int j = 1, offset = 3;
-            ind_temp.setMatricolaProf(outstring[j]); //Prendo la stringa dal vettore non convertito
+            auto *ind_temp = new Indisponibilita;
+            ind_temp->setMatricolaProf(out_riga_indisponibilita[1]); //Prendo la stringa dal vettore non convertito
             bool matricola_presente = false;
             try {
                 for (auto &i: professori_temp) {
 //                cout << i->getMatricola() << endl;
-                    if ('d' + ind_temp.getMatricolaProf() == i->getMatricola()) {
+                    if ('d' + ind_temp->getMatricolaProf() == i->getMatricola()) {
                         matricola_presente = true;
                     }
 
@@ -450,12 +465,13 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
                     throw prof_non_presente();
                 }
             } catch (prof_non_presente &e) {
-                cout << ind_temp.getMatricolaProf() << " " << e.what() << endl;
+                cout << ind_temp->getMatricolaProf() << " " << e.what() << endl;
                 exit(7);
             }
 
-            for (; j < gmy.size();) { //ciclo i periodi di una riga indisponibilita (comprende la _matricola)
-                Periodo p_temp;
+            int offset = 4;
+            for (int j = 0; j < gmy.size();) { //ciclo i periodi di una riga indisponibilita (comprende la _matricola)
+                auto *p_temp = new Periodo;
                 myDate data_inizio_temp, data_fine_temp;
                 data_inizio_temp.setData(gmy[j], gmy[j + 1], gmy[j + 2]);
 
@@ -463,10 +479,9 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
                 data_fine_temp.setData(gmy[j], gmy[j + 1], gmy[j + 2]);
 
                 j += offset;
-                p_temp.debug();
 
                 try {
-                    p_temp.setPeriodo(data_inizio_temp, data_fine_temp);
+                    p_temp->setPeriodo(data_inizio_temp, data_fine_temp);
                     check_anno_accademico(data_fine_temp.getYear());
                     check_anno_accademico(data_inizio_temp.getYear());
                 } catch (err_periodo &e) {
@@ -477,22 +492,28 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
                     exit(5);
                 }
 
-                ind_temp.getDate().push_back(p_temp);
+//                ind_temp.getDate().push_back(p_temp);
+                ind_temp->setDate(*p_temp);
+                delete p_temp;
 //            cout << "Debug: " << p_temp << endl;
+//                p_temp.debug();
             }
 
-            v_ind.push_back(ind_temp);
+            v_ind.push_back(*ind_temp);
+            ind_temp->debug();
+            delete ind_temp;
         } else {
             cout << "[Warning] Riga " << n << " vuota nel file inserito" << endl;
         }
 
 //        int k = 0;
-//        for(const auto& i: outstring){
+//        for(const auto& i: out_riga_indisponibilita){
 //            cout  << k++ << ": " << i << endl;
 //        }
 
 
-        outstring.clear();
+        out_riga_indisponibilita.clear();
+        int_date.clear();
         n++;
     }
     this->display_indisponibilita(v_ind);
@@ -500,8 +521,8 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
 
 void Calendario::check_anno_accademico(int year) const {
     if (to_string(year) != _anno_accademico.getSecondo()) {
-        cout << "Errore anno: " << year << endl;
-        throw err_check_anno_accademico(); //se entro nell'if genero l'eccezione altrimenti non fa nulla
+        cout << "Errore anno letto: " << year << " Anno inserito come argomento: " << _anno_accademico.getSecondo() << endl;
+        throw err_check_anno_accademico();
     }
 }
 
@@ -603,13 +624,13 @@ void Calendario::GiornoSessione::Esame::fstampa_esame(ofstream &fout) const {
     }
 }
 
+//argomenti -g 2020-2021 sessione_esami_2021.txt
 void Calendario::getDatiEsami(const vector<string> &argomenti_es) {
     //Gli argomenti servono a settare anno accademico e file di output
 
     //Salvo in memoria le date delle sessioni dal file aaaa-aaaadb_date_sessioni.txt
     set_date_sessioni(leggi_db_date_sessioni(argomenti_es), true);
     display_date_sessioni();
-
 
     //Accedo al database
 
@@ -632,7 +653,7 @@ void Calendario::getDatiEsami(const vector<string> &argomenti_es) {
 
     //Leggo file indisponibilità.txt
 
-    //Leggo
+
     //Per ogni esame
     //Per ogni corso
     for (auto corso: _dbcal.getCorsiDb()) {
@@ -802,6 +823,18 @@ string Calendario::Indisponibilita::getMatricolaProf() const {
 
 void Calendario::Indisponibilita::setMatricolaProf(const string &matricola) {
     _matricola = matricola;
+}
+
+void Calendario::Indisponibilita::debug() const {
+    cout << _matricola << endl;
+    for(auto data : _date){
+        cout << data << '#';
+    }
+    cout << endl;
+}
+
+void Calendario::Indisponibilita::setDate(const Periodo &periodo) {
+    _date.push_back(periodo);
 }
 
 //ci ho provato

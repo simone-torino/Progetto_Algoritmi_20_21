@@ -64,7 +64,7 @@ int main(int argc, char *argv[]) {
         //Dichiaro il database con il file da aprire come argomento, così tutti i metodi principali possono accederci direttamente
         Database db(file_argomento);
         Calendario cal(file_argomento);
-        Genera_esami gen(converti_argv(argc, argv));
+//        Genera_esami gen(converti_argv(argc, argv));
 
 //    std::cout << "argomento1: "<< argv[1] << "\ndebug: " << (char) p_var << ' ' << (char) o_var << '\n';
 //    std::cout << "argomento2: " << argv[2] << '\n';
