@@ -871,31 +871,6 @@ void Database::Corso::Anno_Accademico::setAttivo(bool attivo) {
     _attivo = attivo;
 }
 
-//Database::Corso::Anno_Accademico::Prof_per_versione::Profn *
-//Database::Corso::Anno_Accademico::Prof_per_versione::nuovo_profn(string &prof_n) {
-//    Profn *pn{new Profn(prof_n)};
-//    vector<string> out_profn;
-//
-//    try {
-//        _reg_profv.search_and_read(_reg_profv.target_expression(lettura::profn_campi), prof_n, out_profn);
-//
-//    } catch (errore_formattazione &e) {
-//        cout << e.what() << endl;
-//        exit(15);
-//    }
-//
-//    pn->setMatricolaProf(out_profn[1]);
-//    pn->setOreLezProf(stoi(out_profn[2]));
-//    pn->setOreEsercProf(stoi(out_profn[3]));
-//    pn->setOreLabProf(stoi(out_profn[4]));
-//
-//    return pn;
-//}
-
-//void Database::Corso::Anno_Accademico::Prof_per_versione::setProf_n(Profn *pn) {
-//    _altri_prof_n.push_back(pn);
-//}
-
 Database::Corso::Anno_Accademico::Prof_per_versione::Prof_per_versione(const string &versione) {
 
     //LETTURA matricola titolare {d000001,[{d000002,50,0,0},{d000003,20,10,20}]}
@@ -958,21 +933,6 @@ Database::Corso::Anno_Accademico::Prof_per_versione::Profn::Profn(const string &
 const string &Database::Corso::Anno_Accademico::Prof_per_versione::Profn::getMatricola() const {
     return _matricola;
 }
-
-//Database::Corso::Anno_Accademico::Prof_per_versione *
-//Database::Corso::Anno_Accademico::nuovo_Profversione(string &versione) {
-//    Prof_per_versione *pv_temp{new(nothrow) Prof_per_versione(versione)};
-//    cout << versione << endl;
-//
-//    pv_temp->setMatricolaTitolare(versione.substr(0, versione.find(',')));
-//
-//    vector<string> professori_n = estraimultipli(_reg_anno.target_expression(lettura::prof_singolo), versione, "}");
-//
-//    for (string professore_n: professori_n) {
-//        pv_temp->setProf_n(pv_temp->nuovo_profn(professore_n));
-//    }
-//    return pv_temp;
-//}
 
 void Database::Corso::Anno_Accademico::setEsame(Database::Corso::Anno_Accademico::Esame *e) {
     _esame = e;
