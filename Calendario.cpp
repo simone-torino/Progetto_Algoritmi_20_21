@@ -423,7 +423,7 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
             //compongo un oggetto indisponibilita per poi salvarlo
             Indisponibilita ind_temp;
             int j = 1, offset = 3;
-            ind_temp.getMatricolaProf() = outstring[j]; //Prendo la stringa dal vettore non convertito
+            ind_temp.setMatricolaProf(outstring[j]); //Prendo la stringa dal vettore non convertito
             bool matricola_presente = false;
             try {
                 for (auto &i: professori_temp) {
@@ -435,10 +435,10 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
                 }
                 if (!matricola_presente) {
 
-                    throw prof_non_presente(); //se non cìè riscontro genero eccezione
+                    throw prof_non_presente();
                 }
             } catch (prof_non_presente &e) {
-                cout << ind_temp.getMatricolaProf() << " " << e.what() << endl; //stampo messaggio
+                cout << ind_temp.getMatricolaProf() << " " << e.what() << endl;
                 exit(7);
             }
 
@@ -446,12 +446,12 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
                 Periodo p_temp;
                 myDate data_inizio_temp, data_fine_temp;
                 data_inizio_temp.setData(gmy[j], gmy[j + 1], gmy[j + 2]);
-//                p_temp._primo.setData(gmy[j], gmy[j + 1], gmy[j + 2]);
+
                 j += offset;
                 data_fine_temp.setData(gmy[j], gmy[j + 1], gmy[j + 2]);
-//                p_temp._secondo.setData(gmy[j], gmy[j + 1], gmy[j + 2]);
-                j += offset;
 
+                j += offset;
+                p_temp.debug();
 
                 try {
                     p_temp.setPeriodo(data_inizio_temp, data_fine_temp);
@@ -533,6 +533,10 @@ Calendario::myDate Calendario::Periodo::getFine() const {
     return _fine;
 }
 
+void Calendario::Periodo::debug() const{
+    cout << _inizio << ' ' << _fine << endl;
+}
+
 void Calendario::Anno_Accademico::setAnnoAccademico(const string &inizio, const string &fine) {
     if (stoi(fine) - stoi(inizio) != 1) {
         cout << "Anno accademico " << inizio << '-' << fine << " non valido" << endl;
@@ -595,11 +599,21 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
     display_date_sessioni();
 
     //Accedo al database
+
+    //Leggo file db_corsi.txt
     _dbcal.leggi_corso_db();
 //    _dbcal.target_fstampa(options::corsi, true); //debug
+
+    //Leggo file db_corsi_studio.txt
     _dbcal.leggi_db(_dbcal.getFileDbCds(), _dbcal.getCdsDb());
 //    _dbcal.target_fstampa(options::cds, true); //debug
 
+    //Leggo file db_aule.txt
+    _dbcal.leggi_db(_dbcal.getFileDbAule(), _dbcal.getAuleDb());
+
+    //Leggo file indisponibilità.txt
+
+    //Leggo
     //Per ogni esame
     //TODO: genera lista per ricavare id corsi di studio che hanno in comune l'esame
     //TODO stessa cosa  per gli anni accademici
@@ -655,6 +669,8 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
 
 //TODO: funzione che calcola numero di slot necessari per l'esame (ogni versione ha lo stesso numero di slot) (float)floor((120+15+25) / 120)
 
+    //Passo i dati dell'esame del corso
+    //struttura che associa ogni id esame agli slot necessari
         vector<bool> sufficiente;
         vector<int> n_slot_necessari;
         for (int i = 0; i < id_corsi_raggruppati.size(); i++) {
@@ -662,9 +678,9 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
             n_slot_necessari[i] = 0;
             while (!sufficiente[i] && n_slot_necessari[i] < 7) {
                 n_slot_necessari[i]++;
-                if ((durata_esame + t_ingresso + t_uscita) < (120 * n_slot_necessari[i])) {
-                    sufficiente[i] = true;
-                }
+//                if ((durata_esame + t_ingresso + t_uscita) < (120 * n_slot_necessari[i])) {
+//                    sufficiente[i] = true;
+//                }
             }
             if (!sufficiente[i]) {
                 cout << endl << "Esame troppo lungo!" << endl;
@@ -688,7 +704,7 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
 
     }
 
-    _gen.print_calendar();
+//    _gen.print_calendar();
 
 
 
@@ -763,6 +779,10 @@ string Calendario::Indisponibilita::getMatricolaProf() const {
     return _matricola;
 }
 
+void Calendario::Indisponibilita::setMatricolaProf(const string &matricola) {
+    _matricola = matricola;
+}
+
 //ci ho provato
 //Calendario::Indisponibilita::Indisponibilita(const string &row) {
 //    vector<string> outstring;
@@ -793,7 +813,8 @@ string Calendario::Indisponibilita::getMatricolaProf() const {
 //    if (!matricola_presente) {
 //
 //        cout << "Errore matricola " << _matricola << " professore non presente nel database\n";
-//        exit(7);
+//        exit(7
+//        );
 //    }
 //
 //    for (; j < gmy.size();) { //ciclo i periodi di una riga indisponibilita (comprende la _matricola)

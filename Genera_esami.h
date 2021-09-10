@@ -10,6 +10,7 @@
 #include <string>
 #include <algorithm>
 #include <iostream>
+#include "Database.h"
 
 using namespace std;
 

@@ -95,8 +95,6 @@ public:
 public:
     class Regex {
 
-        //le stringhe non const vengono modificate a runtime perchè ci sono dei campi variabili
-
         const string _rg_text = "([A-Z a-z0-9]*)";
         const string _rg_persona_in =
                 _rg_text + ';' + _rg_text + ';' + "([a-zA-Z\\@\\._]*)"; //Alessio Maria;Rossi Aliberti;am.ra@email.it
@@ -109,35 +107,36 @@ public:
         const string _rg_versioni = R"(\{[d0-9,]+,\[[{d0-9,}]+]\})";
 
         const string _rg_id_corso = "([A-Z]{3}[0-9]{3})";
-        const string corso_db_base =
+        const string _rg_corso_db_base =
                 "c;" + _rg_id_corso + ';' + _rg_text + ';' + _rg_num + ';' + _rg_num + ';' + _rg_num + ';' + _rg_num +
                 ';';
         const string _rg_n_versioni = "([0-9]);\\[";
-        const string _anno_acc = "([0-9]{4})-([0-9]{4})";
-        const string _esame_campi = "\\{" + _rg_num + "," + _rg_num + "," + _rg_num + "," + "([SOP]*),([AL])\\}";
-        string _esame_graffe;
+        const string _rg_anno_acc = "([0-9]{4})-([0-9]{4})";
+        const string _rg_esame_campi = "\\{" + _rg_num + "," + _rg_num + "," + _rg_num + "," + "([SOP]*),([AL])\\}";
+        const string _rg_esame_graffe = "\\{([0-9,SOPAL]+)\\}";
 
-//corso di studi : C120;BS;[{AXC345,BVX123},{CBV123,ASD564}]
+        //corso di studi : C120;BS;[{AXC345,BVX123},{CBV123,ASD564}]
         const string _rg_cds_row = "(BS|MS);\\[([{}A-Z0-9,]*)\\]";
         const string _rg_cds_semestri = "\\{([A-Z0-9,]+)\\}";
         const string _rg_cds_db = "(C[0-9]{3});" + _rg_cds_row;
 
 
         //LETTURA CORSI IN
-        string _corso_in_base;
-        string _profn_graffe;
-        string _profn_campi;
+        const string
+                _rg_corso_in_base =
+                _rg_anno_acc + ';' + _rg_text + ';' + _rg_num + ';' + _rg_num + ';' + _rg_num + ';' + _rg_num + ';' +
+                _rg_num;
+        const string _rg_profn_graffe = "\\{([0-9,d]+)\\}";
+        const string _rg_profn_campi = "([0-9d]+),([0-9]+),([0-9]+),([0-9]+)";
 
         //ESPRESSIONI PER DATE ESAMI
-        string _data;
-        string _periodo;
-        string _indisponibilita;
+        const string _rg_data = "([0-9]{1,2})\\-([0-9]{1,2})\\-([0-9]{4})";
+        const string _rg_periodo = _rg_data + "\\|" + _rg_data;
+        const string _rg_indisponibilita = _rg_matricola_d;
 
         std::smatch _match;
 
     public:
-
-        Regex();
 
         std::regex target_expression(lettura::reg_expressions exp);
 

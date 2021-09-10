@@ -82,6 +82,8 @@ private:
         myDate getFine() const;
 
         void setPeriodo(const myDate &inizio, const myDate &fine);
+
+        void debug() const;
     };
 
     class Indisponibilita {
@@ -98,7 +100,7 @@ private:
 
     public:
         vector<Periodo> getDate() const;
-
+        void setMatricolaProf(const string &matricola);
         string getMatricolaProf() const;
     };
 
