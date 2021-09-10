@@ -55,7 +55,7 @@ public:
                                      vector<int> &n_vers_paral,
                                      const vector<vector<int>> &n_studenti_iscritti, int vincolo);
 
-        static bool maggior_n_studenti(int n_studenti_iscritti_1, int n_studenti_iscritti_2);
+        bool maggior_n_studenti(int n_studenti_iscritti_1, int n_studenti_iscritti_2);
 
         void print_professori();
 
@@ -172,7 +172,7 @@ public:
                                      const vector<vector<string>> &id_cds, const vector<string> &anno,
                                      const vector<int> &n_slot_necessari, const vector<vector<string>> &id_professori,
                                      const vector<int> &n_vers_paral,
-                                     const string &semestre_dell_esame, const vector<vector<int>> &n_studenti_iscritti);
+                                     const int &semestre, const vector<vector<int>> &n_studenti_iscritti);
 
     void print_calendar();
 

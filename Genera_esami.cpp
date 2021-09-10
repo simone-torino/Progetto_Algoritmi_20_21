@@ -5,8 +5,13 @@ bool Genera_esami::set_id_esame_nel_calendario(const int n_esami_raggruppati, co
                                                const vector<int> &n_slot_necessari,
                                                const vector<vector<string>> &id_professori,
                                                const vector<int> &n_vers_paral,
-                                               const string &semestre_dell_esame,
+                                               const int &semestre,
                                                const vector<vector<int>> &n_studenti_iscritti) {
+    string semestre_dell_esame;
+    if(semestre==1)
+        semestre_dell_esame = "s1";
+    else
+        semestre_dell_esame = "s2";
     if (!_cal1.set_id_esame_nel_calendario(n_esami_raggruppati, id_esame, id_cds, anno, n_slot_necessari, id_professori,
                                            n_vers_paral, semestre_dell_esame, n_studenti_iscritti)) {
         //            cout<<endl<<"Qualcosa e' andato storto!"<<endl;
