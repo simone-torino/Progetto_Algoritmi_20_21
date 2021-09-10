@@ -50,7 +50,7 @@ public:
 
     public:
 
-        bool set_id_esame_nello_slot(const int n_esami_raggruppati, const vector<string> &id_esame,
+        bool set_id_esame_nello_slot(int n_esami_raggruppati, const vector<string> &id_esame,
                                      const vector<vector<string>> &id_cds, const vector<vector<string>> &id_professori,
                                      vector<int> &n_vers_paral,
                                      const vector<vector<int>> &n_studenti_iscritti, int vincolo);
@@ -77,7 +77,7 @@ public:
 
         giorno();
 
-        bool set_id_esame_nel_giorno(const int n_esami_raggruppati, const vector<string> &id_esame,
+        bool set_id_esame_nel_giorno(int n_esami_raggruppati, const vector<string> &id_esame,
                                      const vector<vector<string>> &id_cds, const vector<string> &anno,
                                      const vector<int> &n_slot_necessari, const vector<vector<string>> &id_professori,
                                      const vector<int> &n_vers_paral, const vector<vector<int>> &n_studenti_iscritti, int vincolo);
@@ -100,20 +100,20 @@ public:
 
     public:
 
-        appello(const int quale_appello);
+        explicit appello(int quale_appello);
 
-        bool set_id_esame_nell_appello(const int n_esami_raggruppati, const vector<string> &id_esame,
+        bool set_id_esame_nell_appello(int n_esami_raggruppati, const vector<string> &id_esame,
                                        const vector<vector<string>> &id_cds, const vector<string> &anno,
                                        const vector<int> &n_slot_necessari, const vector<vector<string>> &id_professori,
                                        const vector<int> &n_vers_paral, const vector<vector<int>> &n_studenti_iscritti, int vincolo);
 
-        bool trovato_cds_anno(const vector<string> &id_cds, const string &anno, const int inserisco_nel_giorno, int vincolo);
+        bool trovato_cds_anno(const vector<string> &id_cds, const string &anno, int inserisco_nel_giorno, int vincolo);
 
-        bool prof_disponibili(const vector<string> &id_professori, const int inserisco_nel_giorno, const int vincolo);
+        bool prof_disponibili(const vector<string> &id_professori, int inserisco_nel_giorno, int vincolo);
 
         void print_appello();
 
-        const int get_quale_appello() const;
+        int get_quale_appello() const;
 
         vector<string> &get_id_esami_inseriti();
 
@@ -133,9 +133,9 @@ public:
 
     public:
 
-        sessione(const string &quale_sessione);
+        explicit sessione(const string &quale_sessione);
 
-        bool set_id_esame_nella_sessione(const int n_esami_raggruppati, const vector<string> &id_esame,
+        bool set_id_esame_nella_sessione(int n_esami_raggruppati, const vector<string> &id_esame,
                                          const vector<vector<string>> &id_cds, const vector<string> &anno,
                                          const vector<int> &n_slot_necessari,
                                          const vector<vector<string>> &id_professori,
@@ -157,7 +157,7 @@ public:
 
         calendar();
 
-        bool set_id_esame_nel_calendario(const int n_esami_raggruppati, const vector<string> &id_esame,
+        bool set_id_esame_nel_calendario(int n_esami_raggruppati, const vector<string> &id_esame,
                                          const vector<vector<string>> &id_cds, const vector<string> &anno,
                                          const vector<int> &n_slot_necessari,
                                          const vector<vector<string>> &id_professori, const vector<int> &n_vers_paral,
@@ -168,11 +168,11 @@ public:
 
     };
 
-    bool set_id_esame_nel_calendario(const int n_esami_raggruppati, const vector<string> &id_esame,
+    bool set_id_esame_nel_calendario(int n_esami_raggruppati, const vector<string> &id_esame,
                                      const vector<vector<string>> &id_cds, const vector<string> &anno,
                                      const vector<int> &n_slot_necessari, const vector<vector<string>> &id_professori,
                                      const vector<int> &n_vers_paral,
-                                     const int &semestre, const vector<vector<int>> &n_studenti_iscritti);
+                                     int &semestre, const vector<vector<int>> &n_studenti_iscritti);
 
     void print_calendar();
 
