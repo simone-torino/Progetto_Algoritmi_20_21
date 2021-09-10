@@ -10,15 +10,15 @@
 #include <string>
 #include <algorithm>
 #include <iostream>
-#include "Database.h"
+#include "Calendario.h"
 
 using namespace std;
 
 class Genera_esami {
-
+    Calendario _cal;
 public:
 
-    Genera_esami() = default;
+    explicit Genera_esami(const vector<string> &argomenti);
 
     class slot {
 

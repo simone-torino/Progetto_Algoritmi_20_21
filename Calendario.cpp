@@ -390,6 +390,7 @@ void Calendario::update_indisponibilita(ifstream &fin_in) {
 //perche dovrei passargli il vettore di matricole, ma il costruttore template prende un solo parametro
 //e check_annoaccademico dovrebbe essere static e non so come passarglielo
 //file pointer to file_indisponibilita.txt
+//il vettore indisponibilità e db o agg a seconda da chi viene chiamato
 void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_ind) {
     string s_temp;
     int n = 1;
@@ -602,12 +603,13 @@ void Calendario::GiornoSessione::Esame::fstampa_esame(ofstream &fout) const {
     }
 }
 
-void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
-
+void Calendario::getDatiEsami(const vector<string> &argomenti_es) {
+    //Gli argomenti servono a settare anno accademico e file di output
 
     //Salvo in memoria le date delle sessioni dal file aaaa-aaaadb_date_sessioni.txt
     set_date_sessioni(leggi_db_date_sessioni(argomenti_es), true);
     display_date_sessioni();
+
 
     //Accedo al database
 
@@ -632,8 +634,6 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
 
     //Leggo
     //Per ogni esame
-    //TODO: genera lista per ricavare id corsi di studio che hanno in comune l'esame
-    //TODO stessa cosa  per gli anni accademici
     //Per ogni corso
     for (auto corso: _dbcal.getCorsiDb()) {
         //Vettori da usare per ogni corso
@@ -711,8 +711,6 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
             }
         }
 
-//        TODO: Passare tutti i parametri corretti
-
 //         _gen.set_id_esame_nel_calendario(id_corsi_raggruppati.size(), corso->getIdCorso(), id_cds, anni_accademici,
 //                                          n_slot_necessari, id_professori, n_versioni, semestre);
 
@@ -730,10 +728,6 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
 //    _gen.print_calendar();
 
 
-
-//    for(auto corso : _dbcal.getCorsiDb()){
-//        _gen.set_id_esame_nel_calendario(corso->getIdCorso(), );
-//    }
 
     /* Dati da salvara dal database:
      * Corso: durata esame, bool semestre di appartenenza (elenco semestri con i corso_id)
@@ -788,6 +782,10 @@ vector<string> Calendario::leggi_db_date_sessioni(const vector<string> &argoment
 
 Calendario::Calendario(const string &file_argomento) {
     _file_argomento = file_argomento;
+}
+
+Database Calendario::getDbcal() const {
+    return _dbcal;
 }
 
 /*vector<Calendario::Indisponibilita> Calendario::get_indisponibilita() {

@@ -1,5 +1,7 @@
 #include "Genera_esami.h"
 
+#include <utility>
+
 bool Genera_esami::set_id_esame_nel_calendario(const int n_esami_raggruppati, const vector<string> &id_esame,
                                                const vector<vector<string>> &id_cds, const vector<string> &anno,
                                                const vector<int> &n_slot_necessari,
@@ -22,9 +24,19 @@ bool Genera_esami::set_id_esame_nel_calendario(const int n_esami_raggruppati, co
 }
 
 void Genera_esami::print_calendar() {
+    //esempio di come accedere ai dati, da levare poi
+    _cal.getDbcal().leggi_db(_cal.getDbcal().getFileDbAule(), _cal.getDbcal().getAuleDb());
+    for(auto aula: _cal.getDbcal().getAuleDb()){
+        //ciclo tutte le aule nel database
+        int capienzaesame = aula->getCapEsame();
+    }
 
     _cal1.print_calendario();
 
+}
+
+Genera_esami::Genera_esami(const vector<string> &argomenti) {
+    _cal.getDatiEsami(argomenti);
 }
 
 Genera_esami::calendar::calendar() {
@@ -327,6 +339,7 @@ bool Genera_esami::appello::prof_disponibili(const vector<string> &id_professori
     {
         return true;
     }
+
 //    for (int i = 0; i < id_professori.size(); i++) {
 //        for (int j = 0; j < _ind_agg.size(); j++) {
 //            if (_ind_agg.get_id_prof == id_professori[i]) {
