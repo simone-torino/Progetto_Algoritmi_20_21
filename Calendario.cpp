@@ -3,6 +3,8 @@
 #include "Eccezioni.h"
 #include "Database.hpp"
 
+
+
 void Calendario::myDate::checkDate() const {
     {
         if (_day < 1 || _day > 31) {
@@ -619,7 +621,12 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
 
     //Leggo file db_aule.txt
     _dbcal.leggi_db(_dbcal.getFileDbAule(), _dbcal.getAuleDb());
-
+    vector<string> id_aule;
+    vector<int> capienza_esame;
+    for(auto aula : _dbcal.getAuleDb()){
+        id_aule.push_back(aula->getId());
+        capienza_esame.push_back(aula->getCapEsame());
+    }
 
     //Leggo file indisponibilità.txt
 
@@ -630,10 +637,11 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
     //Per ogni corso
     for (auto corso: _dbcal.getCorsiDb()) {
         //Vettori da usare per ogni corso
-        vector<string> anni_accademici;
-        vector<string> id_cds;
+        vector<string> anni_accademici; //anni_accademici del corso
+        vector<string> id_cds; //id_cds che contengono il corso
         vector<string> id_professori;
         int n_versioni = 0;
+        int semestre = 0; //1 primo semestre, 2 secondo semestre
         vector<string> id_corsi_raggruppati;
 
         //Per ogni anno accademico relativo al corso
@@ -662,14 +670,19 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
         }
 
         //Per ogni corso di studio nel database
+
         for (auto corsodistudio: _dbcal.getCdsDb()) {
             //questi due cicli servono solo perchè gli id_corso nei cds sono divisi per semestri, ma alla fine il ciclo è su tutti gli id_corso
             //Per ogni semestre nel corso di studio
+            int contasemestri = 0;
             for (const auto &id_per_semestre: corsodistudio->getCorsiSemestre()) {
+                contasemestri++;
                 //Per ogni id nel semestre
                 for (auto id_di_un_semestre: id_per_semestre) {
                     //Se l'id del corso è nell'elenco di id del semestre del corso di studio
                     if (corso->getIdCorso() == id_di_un_semestre->getIdCorso()) {
+                        semestre = contasemestri %2; //Se dispari ho il primo semestre, per i pari il secondo
+                        semestre++; //aggiungo uno così semestre=1 primo semestre e semestre=2 secondo semestre
                         //Salvo l'id del corso di studio
                         id_cds.push_back(corsodistudio->getIdCds());
                     }
