@@ -1055,6 +1055,7 @@ const vector<Database::Corso::Anno_Accademico::Prof_per_versione *> &Database::C
 
 const vector<Database::Corso_id *> &Database::Corso::Anno_Accademico::getIdCorsiRaggruppati() const {
     return _id_corsi_raggruppati;
+    return _id_corsi_raggruppati;
 }
 
 Database::Corso::Anno_Accademico::Esame *Database::Corso::Anno_Accademico::getEsame() const {

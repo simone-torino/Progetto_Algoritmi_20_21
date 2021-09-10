@@ -112,8 +112,14 @@ std::regex Database::Regex::target_expression(lettura::reg_expressions exp) {
         case lettura::anno_acc:
             return std::regex(_rg_anno_acc);
 
-        case lettura::indisp:
-            return std::regex(_rg_indisponibilita);
+        case lettura::id_prof:
+            return std::regex(_rg_matricola_d);
+
+        case lettura::data:
+            return std::regex(_rg_data);
+
+        case lettura::periodo:
+            return std::regex(_rg_periodo);
 
         case lettura::esame_campi:
             return std::regex(_rg_esame_campi);

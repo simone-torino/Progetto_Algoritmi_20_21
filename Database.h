@@ -58,19 +58,20 @@ namespace lettura {
         anno_versioni = 9,
         prof_titolare = 10,
         cds_db = 11,
-        n_versioni = 23,
-        cds_in = 12,
-        cds_semestri = 13,
-        cds_id_corso = 14,
-        sessioni = 15,
-        anno_acc = 16,
-        indisp = 17,
-        prof_singolo = 18,
-        profn_campi = 19,
-        esame_campi = 20,
-        esame_graffe = 21,
-        id_corsi = 22
-
+        n_versioni = 12,
+        cds_in = 13,
+        cds_semestri = 14,
+        cds_id_corso = 15,
+        sessioni = 16,
+        anno_acc = 17,
+        id_prof = 18,
+        prof_singolo = 19,
+        profn_campi = 20,
+        esame_campi = 21,
+        esame_graffe = 22,
+        id_corsi = 23,
+        periodo = 24,
+        data = 25
 
     };
 
@@ -132,7 +133,6 @@ public:
         //ESPRESSIONI PER DATE ESAMI
         const string _rg_data = "([0-9]{1,2})\\-([0-9]{1,2})\\-([0-9]{4})";
         const string _rg_periodo = _rg_data + "\\|" + _rg_data;
-        const string _rg_indisponibilita = _rg_matricola_d;
 
         std::smatch _match;
 

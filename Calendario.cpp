@@ -306,7 +306,7 @@ void Calendario::set_indisponibilita(const vector<string> &argomenti_ind) {
 
     //Se il file _dbcal c'è già lo aggiorno, metto in ind_db i dati _dbcal e in ind_agg i dati input
     if (update) {
-        LOG("Sto aggiornando");
+        LOG("Aggiornamento file indisponibilita in corso");
         read_indisponibilita(fin_db, _ind_db);
         update_indisponibilita(fin_in);
     } else {
@@ -406,16 +406,25 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
         if (!s_temp.empty()) {
             //leggo il file indisponibilita
             try {
-                _regcal.search_and_read(_regcal.target_expression(lettura::indisp), s_temp, outstring);
+                //prima leggo la matricola del prof
+                _regcal.search_and_read(_regcal.target_expression(lettura::id_prof), s_temp, outstring);
+
+                //poi leggo i periodi
+//                _regcal.multiple_fields(_regcal.target_expression(lettura::periodo), s_temp, outstring);
+
+                //poi leggo le date
+                _regcal.multiple_fields(_regcal.target_expression(lettura::data), s_temp, outstring);
 
             } catch (errore_formattazione &e) {
                 cout << e.what() << endl;
+                READ_ERR("delle indisponibilita");
                 exit(3);
             }
-            //trasformo i numeri letti in interi
+            LOGV(outstring);
+            //trasformo i numeri letti in interi //TODO: da risolvere conversione cifre della data in intero, leggi cifre singole
             vector<int> gmy; //Data come interi
             try {
-                transform(outstring.begin() + 1, outstring.end(), back_inserter(gmy), strToInt);
+                transform(outstring.begin() + 2, outstring.end(), back_inserter(gmy), strToInt);
             } catch (std::runtime_error &e) {
                 cout << "Errore string to int: " << e.what() << endl;
             }
@@ -611,6 +620,7 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
     //Leggo file db_aule.txt
     _dbcal.leggi_db(_dbcal.getFileDbAule(), _dbcal.getAuleDb());
 
+
     //Leggo file indisponibilità.txt
 
     //Leggo
@@ -787,7 +797,7 @@ void Calendario::Indisponibilita::setMatricolaProf(const string &matricola) {
 //Calendario::Indisponibilita::Indisponibilita(const string &row) {
 //    vector<string> outstring;
 //    //leggo il file indisponibilita
-//    if (!_regind.search_and_read(_regind.target_expression(lettura::indisp), row, outstring)) {
+//    if (!_regind.search_and_read(_regind.target_expression(lettura::id_prof), row, outstring)) {
 //        cerr << "Errore formattazione file indisponibilita\n";
 //        exit(3);
 //    }
