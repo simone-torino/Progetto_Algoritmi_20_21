@@ -2,6 +2,7 @@
 #include "Database.h"
 #include "Calendario.h"
 #include "Eccezioni.h"
+#include "Genera_esami.h"
 
 /*  AGGIUNTA
  * -a:s studenti
@@ -63,6 +64,7 @@ int main(int argc, char *argv[]) {
         //Dichiaro il database con il file da aprire come argomento, così tutti i metodi principali possono accederci direttamente
         Database db(file_argomento);
         Calendario cal(file_argomento);
+        Genera_esami gen(converti_argv(argc, argv));
 
 //    std::cout << "argomento1: "<< argv[1] << "\ndebug: " << (char) p_var << ' ' << (char) o_var << '\n';
 //    std::cout << "argomento2: " << argv[2] << '\n';
@@ -158,6 +160,7 @@ int main(int argc, char *argv[]) {
                     case (options::set_av):
                         cout << "Hai scelto: " << "impostazione periodi di indisponibilità\n";
 
+
                         cal.set_indisponibilita(converti_argv(argc, argv));
                         cal.fstampa_indisponibilita();
 
@@ -170,10 +173,8 @@ int main(int argc, char *argv[]) {
             case (options::gen_esami):
                 cout << "Hai scelto: " << "generazione _date esami\n";
 
-                //Salvo corsi da file db in memoria
-//                db.leggi_db(db.getFileDbCorsi(), db.getCorsiDb());
+                //TODO: chiamo funzione per generare date esami
 
-                cal.genera_date_esami(converti_argv(argc, argv));
 
                 break;
             default:
@@ -218,3 +219,4 @@ vector<string> converti_argv(int f_argc, char *f_argv[]) {
     return v_temp;
 }
 
+//prova branch

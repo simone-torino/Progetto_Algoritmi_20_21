@@ -67,12 +67,12 @@ std::regex Database::Regex::target_expression(lettura::reg_expressions exp) {
 
             //corsi su file database
         case lettura::corsi_db:
-            return std::regex(corso_db_base);
+            return std::regex(_rg_corso_db_base);
 
             //corsi su file di aggiunta
         case lettura::corsi_in:
-//            cout << _corso_in_base << endl;
-            return std::regex(_corso_in_base);
+//            cout << _rg_corso_in_base << endl;
+            return std::regex(_rg_corso_in_base);
 
         case lettura:: anno_versioni:
             return std::regex(_rg_versioni);
@@ -101,45 +101,34 @@ std::regex Database::Regex::target_expression(lettura::reg_expressions exp) {
 
 
         case lettura::prof_singolo:
-            return std::regex(_profn_graffe);
+            return std::regex(_rg_profn_graffe);
 
         case lettura::profn_campi:
-            return std::regex(_profn_campi);
+            return std::regex(_rg_profn_campi);
 
         case lettura::sessioni:
-            return std::regex(_periodo);
+            return std::regex(_rg_periodo);
 
         case lettura::anno_acc:
-            return std::regex(_anno_acc);
+            return std::regex(_rg_anno_acc);
 
-        case lettura::indisp:
-            return std::regex(_indisponibilita);
+        case lettura::id_prof:
+            return std::regex(_rg_matricola_d);
+
+        case lettura::data:
+            return std::regex(_rg_data);
+
+        case lettura::periodo:
+            return std::regex(_rg_periodo);
 
         case lettura::esame_campi:
-            return std::regex(_esame_campi);
+            return std::regex(_rg_esame_campi);
 
         case lettura::esame_graffe:
-            return std::regex(_esame_graffe);
+            return std::regex(_rg_esame_graffe);
 
         default:
             cout << "Errore target regexp\n";
     }
     return {};
-}
-
-Database::Regex::Regex() {
-
-    _esame_graffe = "\\{([0-9,SOPAL]+)\\}";
-    //corso di studi : C120;BS;[{AXC345,BVX123},{CBV123,ASD564}]
-
-    //LETTURA CORSI IN
-    _corso_in_base = _anno_acc + ';' + _rg_text + ';' + _rg_num + ';' + _rg_num + ';' + _rg_num + ';' + _rg_num + ';' + _rg_num;
-    _profn_graffe = "\\{([0-9,d]+)\\}";
-    _profn_campi = "([0-9d]+),([0-9]+),([0-9]+),([0-9]+)";
-
-
-    //ESPRESSIONI PER DATE ESAMI
-    _data = "([0-9]{1,2})\\-([0-9]{1,2})\\-([0-9]{4})";
-    _periodo = _data + "\\|" + _data;
-    _indisponibilita = _rg_matricola_d;
 }
