@@ -2,20 +2,14 @@
 
 #include <utility>
 
-bool Genera_esami::set_id_esame_nel_calendario(int n_esami_raggruppati, const vector<string> &id_esame,
-                                               const vector<vector<string>> &id_cds, const vector<string> &anno,
-                                               const vector<int> &n_slot_necessari,
-                                               const vector<vector<string>> &id_professori,
-                                               const vector<int> &n_vers_paral,
-                                               int &semestre,
-                                               const vector<vector<int>> &n_studenti_iscritti) {
+bool Genera_esami::set_id_esame_nel_calendario() const {
     string semestre_dell_esame;
-    if(semestre==1)
+    if(_semestre==1)
         semestre_dell_esame = "s1";
     else
         semestre_dell_esame = "s2";
-    if (!_cal1.set_id_esame_nel_calendario(n_esami_raggruppati, id_esame, id_cds, anno, n_slot_necessari, id_professori,
-                                           n_vers_paral, semestre_dell_esame, n_studenti_iscritti)) {
+    if (!_cal1.set_id_esame_nel_calendario(_n_esami_raggruppati, _id_esame, _id_cds, _anno, _n_slot_necessari, _id_professori,
+                                           _n_vers_paral, semestre_dell_esame, _n_studenti_iscritti)) {
         //            cout<<endl<<"Qualcosa e' andato storto!"<<endl;
 
         return false;
@@ -39,7 +33,7 @@ Genera_esami::Genera_esami(const vector<string> &argomenti) {
     _cal.getDatiEsami(argomenti);
 }
 
-Genera_esami::calendar::calendar() {
+calendar::calendar() {
 
     _sessioni.emplace_back("s1");
     _sessioni.emplace_back("s2");
@@ -47,7 +41,7 @@ Genera_esami::calendar::calendar() {
 
 }
 
-bool Genera_esami::calendar::set_id_esame_nel_calendario(int n_esami_raggruppati, const vector<string> &id_esame,
+bool calendar::set_id_esame_nel_calendario(int n_esami_raggruppati, const vector<string> &id_esame,
                                                          const vector<vector<string>> &id_cds,
                                                          const vector<string> &anno,
                                                          const vector<int> &n_slot_necessari,
@@ -68,7 +62,7 @@ bool Genera_esami::calendar::set_id_esame_nel_calendario(int n_esami_raggruppati
     return true;
 }
 
-void Genera_esami::calendar::print_calendario() {
+void calendar::print_calendario() {
 
     cout << endl << "Calendario: " << endl << endl;
     for (int i = 0; i < _sessioni.size(); i++) {
@@ -78,7 +72,7 @@ void Genera_esami::calendar::print_calendario() {
 
 }
 
-Genera_esami::sessione::sessione(const string &quale_sessione) {
+sessione::sessione(const string &quale_sessione) {
 
     _quale_sessione = quale_sessione;
     if (_quale_sessione != "s3") {
@@ -90,7 +84,7 @@ Genera_esami::sessione::sessione(const string &quale_sessione) {
 
 }
 
-bool Genera_esami::sessione::set_id_esame_nella_sessione(int n_esami_raggruppati, const vector<string> &id_esame,
+bool sessione::set_id_esame_nella_sessione(int n_esami_raggruppati, const vector<string> &id_esame,
                                                          const vector<vector<string>> &id_cds,
                                                          const vector<string> &anno,
                                                          const vector<int> &n_slot_necessari,
@@ -176,7 +170,7 @@ bool Genera_esami::sessione::set_id_esame_nella_sessione(int n_esami_raggruppati
     }
 }
 
-void Genera_esami::sessione::print_sessione() {
+void sessione::print_sessione() {
 
     for (int i = 0; i < _appelli.size(); i++) {
         cout << endl << "Appello " << i + 1 << ": " << endl;
@@ -187,7 +181,7 @@ void Genera_esami::sessione::print_sessione() {
 
 }
 
-Genera_esami::appello::appello(int quale_appello) {
+appello::appello(int quale_appello) {
 
     _quale_appello = quale_appello;
 //    _id_esami_da_inserire.resize(0);
@@ -200,7 +194,7 @@ Genera_esami::appello::appello(int quale_appello) {
 }
 
 bool
-Genera_esami::appello::set_id_esame_nell_appello(int n_esami_raggruppati, const vector<string> &id_esame,
+appello::set_id_esame_nell_appello(int n_esami_raggruppati, const vector<string> &id_esame,
                                                  const vector<vector<string>> &id_cds, const vector<string> &anno,
                                                  const vector<int> &n_slot_necessari,
                                                  const vector<vector<string>> &id_professori,
@@ -245,7 +239,7 @@ Genera_esami::appello::set_id_esame_nell_appello(int n_esami_raggruppati, const 
 }
 
 bool
-Genera_esami::appello::trovato_cds_anno(const vector<string> &id_cds, const string &anno,
+appello::trovato_cds_anno(const vector<string> &id_cds, const string &anno,
                                         int inserisco_nel_giorno, int vincolo) {
 
     bool trovato = false;
@@ -306,7 +300,7 @@ Genera_esami::appello::trovato_cds_anno(const vector<string> &id_cds, const stri
 
 template<class InputIterator>
 InputIterator
-Genera_esami::appello::find_cds_anno(InputIterator first_cds, InputIterator last_cds, InputIterator first_anno,
+appello::find_cds_anno(InputIterator first_cds, InputIterator last_cds, InputIterator first_anno,
                                      const string &cds,
                                      const string &anno) {
     while (first_cds != last_cds) {
@@ -317,7 +311,7 @@ Genera_esami::appello::find_cds_anno(InputIterator first_cds, InputIterator last
     return last_cds;
 }
 
-void Genera_esami::appello::print_appello() {
+void appello::print_appello() {
 
     for (int i = 0; i < _giorni.size(); i++) {
         cout << endl << "Giorno " << i + 1 << ": " << endl;
@@ -328,11 +322,11 @@ void Genera_esami::appello::print_appello() {
 
 }
 
-int Genera_esami::appello::get_quale_appello() const {
+int appello::get_quale_appello() const {
     return _quale_appello;
 }
 
-bool Genera_esami::appello::prof_disponibili(const vector<string> &id_professori, int inserisco_nel_giorno, int vincolo) {
+bool appello::prof_disponibili(const vector<string> &id_professori, int inserisco_nel_giorno, int vincolo) {
 
     //Per indisponibilità serve tutta la struttura
     if(vincolo == 2)
@@ -355,17 +349,17 @@ bool Genera_esami::appello::prof_disponibili(const vector<string> &id_professori
     return true;
 }
 
-vector<string> &Genera_esami::appello::get_id_esami_inseriti() {
+vector<string> &appello::get_id_esami_inseriti() {
     return _id_esami_inseriti;
 }
 
-Genera_esami::giorno::giorno() {
+giorno::giorno() {
 
     _fasce_orarie.resize(n_slot);
 
 }
 
-bool Genera_esami::giorno::set_id_esame_nel_giorno(int n_esami_raggruppati, const vector<string> &id_esame,
+bool giorno::set_id_esame_nel_giorno(int n_esami_raggruppati, const vector<string> &id_esame,
                                                    const vector<vector<string>> &id_cds, const vector<string> &anno,
                                                    const vector<int> &n_slot_necessari,
                                                    const vector<vector<string>> &id_professori,
@@ -414,7 +408,7 @@ bool Genera_esami::giorno::set_id_esame_nel_giorno(int n_esami_raggruppati, cons
 
 }
 
-void Genera_esami::giorno::print_giorno() {
+void giorno::print_giorno() {
 
     cout << endl << "------------------------------------------------------------------" << endl;
 
@@ -431,16 +425,16 @@ void Genera_esami::giorno::print_giorno() {
 
 }
 
-vector<string> &Genera_esami::giorno::get_id_cds_inseriti() {
+vector<string> &giorno::get_id_cds_inseriti() {
     return _id_cds_inseriti;
 }
 
-vector<string> &Genera_esami::giorno::get_anni_inseriti() {
+vector<string> &giorno::get_anni_inseriti() {
     return _anni_inseriti;
 }
 
 
-bool Genera_esami::slot::set_id_esame_nello_slot(int n_esami_raggruppati, const vector<string> &id_esame,
+bool slot::set_id_esame_nello_slot(int n_esami_raggruppati, const vector<string> &id_esame,
                                                  const vector<vector<string>> &id_cds,
                                                  const vector<vector<string>> &id_professori,
                                                  vector<int> &n_vers_paral,
@@ -542,18 +536,18 @@ bool Genera_esami::slot::set_id_esame_nello_slot(int n_esami_raggruppati, const 
     return true;
 }
 
-bool Genera_esami::slot::maggior_n_studenti(int n_studenti_iscritti_1, int n_studenti_iscritti_2) {
+bool slot::maggior_n_studenti(int n_studenti_iscritti_1, int n_studenti_iscritti_2) {
     return n_studenti_iscritti_1 > n_studenti_iscritti_2;
 }
 
-/*void Genera_esami::slot::print_professori() {
+/*void slot::print_professori() {
     cout << endl << "Professori: ";
     for (auto &i: _id_professori_inseriti) {
         cout << i << " ";
     }
 }*/
 
-void Genera_esami::slot::print_info() {
+void slot::print_info() {
 //    cout << endl << "Esami: " << endl;
     for (int i = 0; i < _info_da_stampare.size(); i++) {
         cout << ";" << _info_da_stampare[i]._id_esame_inserito;
@@ -567,7 +561,7 @@ void Genera_esami::slot::print_info() {
     }
 }
 
-void Genera_esami::slot::print_info_warnings() {
+void slot::print_info_warnings() {
     for (int i = 0; i < _info_da_stampare.size(); i++)
     {
         if(_info_da_stampare[i]._vincolo_inserito > 0)
