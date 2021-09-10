@@ -87,6 +87,10 @@ private:
 
     class Indisponibilita {
         vector<Periodo> _date;
+    public:
+
+
+    private:
         string _matricola = "d";
 
         friend std::ostream &operator<<(std::ostream &stream, const Indisponibilita &ind) {
@@ -98,7 +102,8 @@ private:
         }
 
     public:
-        void setDate(const Periodo &periodo);
+        void setDate(const vector<Periodo> &date);
+        void setPeriodo(const Periodo &periodo);
         vector<Periodo> getDate() const;
         void setMatricolaProf(const string &matricola);
         string getMatricolaProf() const;

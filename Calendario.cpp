@@ -369,11 +369,12 @@ void Calendario::update_indisponibilita(ifstream &fin_in) {
 
     //TODO: da finire manca aggiunta matricole nuove
     for (const auto &i: _ind_agg) {
+        trovato = false;
         for (auto &k: _ind_db) {
             //Se trovo una _matricola uguale nel database
             if (i.getMatricolaProf() == k.getMatricolaProf()) {
                 //Aggiorno le _date
-                k.getDate() = i.getDate();
+                k.setDate(i.getDate());
                 trovato = true;
             }
         }
@@ -493,14 +494,14 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
                 }
 
 //                ind_temp.getDate().push_back(p_temp);
-                ind_temp->setDate(*p_temp);
+                ind_temp->setPeriodo(*p_temp);
                 delete p_temp;
 //            cout << "Debug: " << p_temp << endl;
 //                p_temp.debug();
             }
 
             v_ind.push_back(*ind_temp);
-            ind_temp->debug();
+//            ind_temp->debug();
             delete ind_temp;
         } else {
             cout << "[Warning] Riga " << n << " vuota nel file inserito" << endl;
@@ -545,17 +546,13 @@ void Calendario::ordina_giorni() {
 
 
 void Calendario::Periodo::setPeriodo(const myDate &inizio, const myDate &fine) {
-    if (subtract(fine, inizio) >= 0) {
-        if (subtract(fine, inizio) == 0) {
-            // cout << "[Warning] Il periodo: " << inizio << '|' << fine << " indica un giorno solo\n";
-            throw err_periodo(); //descrizione stampata dall'ecceaione
-        }
-        _inizio = inizio;
-        _fine = fine;
-    } else {
-        //cout << "Periodo: " << inizio << '|' << fine << " non valido\n";
-        throw err_periodo(); // ora la descrizione viene stampata dall'eccezione
+    if (subtract(fine, inizio) < 0) {
+        cout << "Errore periodo: " << inizio << '|' << fine << " non valido\n";
+        throw err_periodo();
     }
+    _inizio = inizio;
+    _fine = fine;
+
 }
 
 Calendario::myDate Calendario::Periodo::getInizio() const {
@@ -833,8 +830,12 @@ void Calendario::Indisponibilita::debug() const {
     cout << endl;
 }
 
-void Calendario::Indisponibilita::setDate(const Periodo &periodo) {
+void Calendario::Indisponibilita::setPeriodo(const Periodo &periodo) {
     _date.push_back(periodo);
+}
+
+void Calendario::Indisponibilita::setDate(const vector<Periodo> &date) {
+    _date = date;
 }
 
 //ci ho provato

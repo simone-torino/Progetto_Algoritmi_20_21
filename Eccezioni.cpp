@@ -118,7 +118,7 @@ const char* err_date_nei_periodi::what() const noexcept {
     return messaggio;
 } */
 
-err_periodo::err_periodo():messaggio("Il periodo è di un giorno solo oppure la data di fine periodo è precedente alla data d'inizio") {}
+err_periodo::err_periodo():messaggio("La data di inizio e' precedente alla data di fine") {}
 const char * err_periodo::what() noexcept {
     return messaggio;
 }
