@@ -494,7 +494,7 @@ bool slot::set_id_esame_nello_slot(int n_esami_raggruppati, const vector<string>
             }
         }
 
-//      procedura di ordinamento degli esami da inserire per numero di studenti iscritti decrescente
+//      ordinamento degli esami da inserire per numero di studenti iscritti decrescente
 
         for (i = 0; i < _info_da_inserire.size() - 1; i++) {
             for (int j = i + 1; j < _info_da_inserire.size(); j++) {
