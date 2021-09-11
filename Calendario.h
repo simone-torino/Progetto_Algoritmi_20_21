@@ -26,7 +26,7 @@ class Calendario {
 public:
     Database getDbcal() const;
 //    explicit Calendario(const string &file_argomento);
-//    Calendario() = default;
+    Calendario() = default;
 
     class myDate {
 
@@ -61,8 +61,8 @@ public:
 
 
     };
-private:
 
+private:
     class Periodo {
         myDate _inizio;
         myDate _fine;

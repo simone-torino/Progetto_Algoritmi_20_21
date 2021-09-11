@@ -146,7 +146,7 @@ int main(int argc, char *argv[]) {
             case (options::inserimento):
                 cout << "Hai scelto: " << "inserimento corsi\n";
                 //controlla inserimento corsi duplicati
-
+                db.inserimento_corsi();
 
                 break;
             case (options::set_esami):

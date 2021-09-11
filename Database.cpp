@@ -442,7 +442,7 @@ void Database::aggiorna_aule() {
                     k->setDenominazione(i->getDenominazione());
                     cout << "Aggiornato denominazione: " << k->getDenominazione() << endl;
                 }
-                if (i->getCapienza()) {
+                if (i->getCapienza() != 0) {
                     k->setCapienza(i->getCapienza());
                     cout << "Aggiornato capienza: " << k->getCapienza() << endl;
                 }
@@ -681,6 +681,8 @@ const string &Database::getFileDbCds() const {
 }
 
 void Database::inserimento_corsi() {
+
+
 
 }
 

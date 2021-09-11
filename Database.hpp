@@ -123,13 +123,13 @@ void Database::leggi_db(const string &nome_file, vector<T *> &_classedati_xx) {
 }
 
 //Ci ho provato
-template<typename T>
-void Database::aggiorna_campo(const T (*get)(), void (*set)(const T &)) {
-    if (!get().empty()) {
-        set(get());
-        cout << "Aggiornato campo: " << get() << endl;
-    }
-}
+//template<typename T>
+//void Database::aggiorna_campo(const T (*get)(), void (*set)(const T &)) {
+//    if (!get().empty()) {
+//        set(get());
+//        cout << "Aggiornato campo: " << get() << endl;
+//    }
+//}
 
 //Per studenti e professori
 template<typename T>
@@ -152,9 +152,9 @@ void Database::t_aggiorna(vector<T *> &_classedati_db, vector<T *> &_classedati_
             }
         }
         for (auto k: _classedati_db) {
-            //            se trovo la _matricola da aggiornare nel vettore
+            //se trovo la _matricola da aggiornare nel vettore
             if (i->getMatricola() == k->getMatricola()) {
-                //                se il campo dal vettore aggiornamento non è vuoto, aggiorno
+                //se il campo dal vettore aggiornamento non è vuoto, aggiorno
                 cout << "Matricola " << i->getMatricola() << " -> " << endl;
                 if (!i->getNome().empty()) {
                     k->setNome(i->getNome());

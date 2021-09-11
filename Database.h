@@ -102,7 +102,7 @@ public:
         const string _rg_matricola_s = "s([0-9]{6});"; //s123456;
         const string _rg_matricola_d = "(d[0-9]{6})"; //d123456;
         const string _rg_num = "([0-9]*)";
-        const string _rg_aula_in = "[AL]);([a-z A-Z0-9]+);" + _rg_num + ';' + _rg_num; //A;Aula 5;120;60
+        const string _rg_aula_in = "([AL]);([a-z A-Z0-9]*);" + _rg_num + ';' + _rg_num; //A;Aula 5;120;60
         const string _rg_id_aula = "([0-9][A-Z][A-Z][0-9]);"; //4AD4;
 
         const string _rg_versioni = R"(\{[d0-9,]+,\[[{d0-9,}]+]\})";
@@ -131,7 +131,7 @@ public:
         const string _rg_profn_campi = "([0-9d]+),([0-9]+),([0-9]+),([0-9]+)";
 
         //ESPRESSIONI PER DATE ESAMI
-        const string _rg_dmy = "aa";
+//        const string _rg_dmy = "aa";
         const string _rg_data = "([0-9]{1,2})\\-([0-9]{1,2})\\-([0-9]{4})";
         const string _rg_periodo = _rg_data + "\\|" + _rg_data;
 
