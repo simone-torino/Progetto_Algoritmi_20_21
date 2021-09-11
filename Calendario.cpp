@@ -659,8 +659,8 @@ void Calendario::getDatiEsami(const vector<string> &argomenti_es) {
     for (auto corso: _dbcal.getCorsiDb()) {
         //Vettori da usare per ogni corso
         vector<string> anni_accademici; //anni_accademici del corso
-        vector<string> id_cds; //id_cds che contengono il corso
-        vector<string> id_professori;
+        vector<vector<string>> id_cds; //id_cds che contengono il corso
+        vector<vector<string>> id_professori;
         int n_versioni = 0;
         int semestre = 0; //1 primo semestre, 2 secondo semestre
         vector<string> id_corsi_raggruppati;
@@ -674,20 +674,20 @@ void Calendario::getDatiEsami(const vector<string> &argomenti_es) {
 
             //Per ogni versione del corso in un anno accademico
             for (auto versione: anno_accademico->getVersioni()) {
-                //Salvo la matricola del titolare nel vettore di professori
-                id_professori.push_back(versione->getMatricolaTitolare());
-                //Per ogni professore associato
-                for (auto profn: versione->getAltriProfN()) {
-                    //Salvo la matricola del professore associato
-                    id_professori.push_back(profn->getMatricola());
+                for(auto id_professori_raggruppati : id_professori) {
+                    //Salvo la matricola del titolare nel vettore di professori
+                    id_professori_raggruppati.push_back(versione->getMatricolaTitolare());
+                    //Per ogni professore associato
+                    for (auto profn: versione->getAltriProfN()) {
+                        //Salvo la matricola del professore associato
+                        id_professori_raggruppati.push_back(profn->getMatricola());
+                    }
+
+                    //non so se serve
+//                    id_professori.push_back(id_professori_raggruppati);
                 }
             }
 
-            //Per ogni id corso raggruppato
-            for (auto id: anno_accademico->getIdCorsiRaggruppati()) {
-                //Salvo l'id del corso
-                id_corsi_raggruppati.push_back(id->getIdCorso());
-            }
         }
 
         //Per ogni corso di studio nel database
@@ -702,12 +702,29 @@ void Calendario::getDatiEsami(const vector<string> &argomenti_es) {
                 for (auto id_di_un_semestre: id_per_semestre) {
                     //Se l'id del corso è nell'elenco di id del semestre del corso di studio
                     if (corso->getIdCorso() == id_di_un_semestre->getIdCorso()) {
-                        //TODO: ciclo sugli esami raggruppati 
+                        //TODO: ciclo sugli esami raggruppati
 //                        for(auto corso_raggruppato : corso.get)
                         semestre = contasemestri %2; //Se dispari ho il primo semestre, per i pari il secondo
                         semestre++; //aggiungo uno così semestre=1 primo semestre e semestre=2 secondo semestre
-                        //Salvo l'id del corso di studio
-                        id_cds.push_back(corsodistudio->getIdCds());
+
+                        //Per ogni anno accademico relativo al corso
+                        for (auto anno_accademico: corso->getAnniAccademici()) {
+                            //Per ogni id corso raggruppato
+                            for (auto id: anno_accademico->getIdCorsiRaggruppati()) {
+                                //Per ogni corso di studio relativo ad un corso raggruppato
+                                for(auto id_cds_raggruppato : id_cds){
+                                    //Salvo l'id del corso
+                                    id_corsi_raggruppati.push_back(id->getIdCorso());
+                                    //Se l'id del corso raggruppato è uguale all'id del corso del semestre del cds
+                                    if(id->getIdCorso() == id_di_un_semestre->getIdCorso()){
+                                        id_cds_raggruppato.push_back(id_di_un_semestre->getIdCorso());
+                                    }
+                                }
+
+                            }
+                            //Salvo l'id del corso di studio
+//                            id_cds.push_back(corsodistudio->getIdCds());
+                        }
                     }
                 }
             }
