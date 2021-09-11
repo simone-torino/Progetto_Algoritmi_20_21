@@ -8,7 +8,7 @@
 #include <string>
 #include <algorithm>
 #include "Database.h"
-//#include "Genera_esami.h"
+#include "Genera_esami.h"
 
 //Dò per scontato che le _date siano da lunedì a domenica, quindi si conta un giorno in meno
 #define SEI_SETTIMANE 6*7-1
@@ -21,13 +21,11 @@ using namespace std;
 class Calendario {
     string _file_argomento;
     Database _dbcal;
-
-
-//    Genera_esami _gen;
+    Genera_esami _gen;
 
 public:
     Database getDbcal() const;
-    explicit Calendario(const string &file_argomento);
+//    explicit Calendario(const string &file_argomento);
     Calendario() = default;
 
     class myDate {

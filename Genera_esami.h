@@ -10,60 +10,28 @@
 #include <string>
 #include <algorithm>
 #include <iostream>
-#include "Calendario.h"
+//#include "Calendario.h"
 
 using namespace std;
 
+class slot;
+
 class Genera_esami {
-    Calendario _cal;
+//    Calendario _cal;
+protected:
+    vector<string> id_aule;
+    vector<int> capienza_esame;
+
 public:
+    void setIdAule(const vector<string> &idAule);
 
-    explicit Genera_esami(const vector<string> &argomenti);
+    void setCapienzaEsame(const vector<int> &capienzaEsame);
 
-    class slot {
 
-    private:
+//    explicit Genera_esami(const vector<string> &argomenti);
+    Genera_esami();
 
-        struct _info_esami_da_inserire {
-            string _id_esami_da_inserire;
-            int _n_studenti_iscritti;
-            string _id_cds_da_inserire;
-            vector<string> _id_aula_da_inserire;
-            int _n_versioni_da_inserire;
-            int _versione_da_inserire;
-            int _vincolo_da_inserire;
 
-        };
-        vector<_info_esami_da_inserire> _info_da_inserire;
-
-        struct _info_esami_inseriti {
-            string _id_esame_inserito;
-            string _id_cds_inserito;
-            vector<string> _id_aula_inserita;
-            int _n_versioni_inserito;
-            int _versione_inserita;
-            int _vincolo_inserito;
-        };
-        vector<_info_esami_inseriti> _info_da_stampare;
-
-        vector<string> _id_professori_inseriti;
-
-    public:
-
-        bool set_id_esame_nello_slot(int n_esami_raggruppati, const vector<string> &id_esame,
-                                     const vector<vector<string>> &id_cds, const vector<vector<string>> &id_professori,
-                                     vector<int> &n_vers_paral,
-                                     const vector<vector<int>> &n_studenti_iscritti, int vincolo);
-
-        bool maggior_n_studenti(int n_studenti_iscritti_1, int n_studenti_iscritti_2);
-
-        void print_professori();
-
-        void print_info();
-
-        void print_info_warnings();
-
-    };
 
     class giorno {
 
@@ -180,6 +148,49 @@ private:
 
     calendar _cal1;
 };
+class slot : public Genera_esami{
 
+private:
+
+    struct _info_esami_da_inserire {
+        string _id_esami_da_inserire;
+        int _n_studenti_iscritti;
+        string _id_cds_da_inserire;
+        vector<string> _id_aula_da_inserire;
+        int _n_versioni_da_inserire;
+        int _versione_da_inserire;
+        int _vincolo_da_inserire;
+
+    };
+    vector<_info_esami_da_inserire> _info_da_inserire;
+
+    struct _info_esami_inseriti {
+        string _id_esame_inserito;
+        string _id_cds_inserito;
+        vector<string> _id_aula_inserita;
+        int _n_versioni_inserito;
+        int _versione_inserita;
+        int _vincolo_inserito;
+    };
+    vector<_info_esami_inseriti> _info_da_stampare;
+
+    vector<string> _id_professori_inseriti;
+
+public:
+
+    bool set_id_esame_nello_slot(int n_esami_raggruppati, const vector<string> &id_esame,
+                                 const vector<vector<string>> &id_cds, const vector<vector<string>> &id_professori,
+                                 vector<int> &n_vers_paral,
+                                 const vector<vector<int>> &n_studenti_iscritti, int vincolo);
+
+    bool maggior_n_studenti(int n_studenti_iscritti_1, int n_studenti_iscritti_2);
+
+    void print_professori();
+
+    void print_info();
+
+    void print_info_warnings();
+
+};
 
 #endif //MAIN_CPP_GENERA_ESAMI_H

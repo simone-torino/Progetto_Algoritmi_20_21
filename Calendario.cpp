@@ -648,6 +648,9 @@ void Calendario::getDatiEsami(const vector<string> &argomenti_es) {
         capienza_esame.push_back(aula->getCapEsame());
     }
 
+    _gen.setIdAule(id_aule);
+//    _gen.setCapienzaEsame(capienza_esame);
+
     //Leggo file indisponibilità.txt
 
 
@@ -699,6 +702,8 @@ void Calendario::getDatiEsami(const vector<string> &argomenti_es) {
                 for (auto id_di_un_semestre: id_per_semestre) {
                     //Se l'id del corso è nell'elenco di id del semestre del corso di studio
                     if (corso->getIdCorso() == id_di_un_semestre->getIdCorso()) {
+                        //TODO: ciclo sugli esami raggruppati 
+//                        for(auto corso_raggruppato : corso.get)
                         semestre = contasemestri %2; //Se dispari ho il primo semestre, per i pari il secondo
                         semestre++; //aggiungo uno così semestre=1 primo semestre e semestre=2 secondo semestre
                         //Salvo l'id del corso di studio
@@ -729,8 +734,8 @@ void Calendario::getDatiEsami(const vector<string> &argomenti_es) {
             }
         }
 
-//         _gen.set_id_esame_nel_calendario(id_corsi_raggruppati.size(), corso->getIdCorso(), id_cds, anni_accademici,
-//                                          n_slot_necessari, id_professori, n_versioni, semestre);
+         _gen.set_id_esame_nel_calendario(id_corsi_raggruppati.size(), corso->getIdCorso(), id_cds, anni_accademici,
+                                          n_slot_necessari, id_professori, n_versioni, semestre, );
 
 
         //TODO: la funzione genera esami penso che dovrebbe stare all'interno di questo ciclo
@@ -798,9 +803,9 @@ vector<string> Calendario::leggi_db_date_sessioni(const vector<string> &argoment
     return outstring;
 }
 
-Calendario::Calendario(const string &file_argomento) {
-    _file_argomento = file_argomento;
-}
+//Calendario::Calendario(const string &file_argomento) {
+//    _file_argomento = file_argomento;
+//}
 
 Database Calendario::getDbcal() const {
     return _dbcal;

@@ -25,18 +25,26 @@ bool Genera_esami::set_id_esame_nel_calendario(int n_esami_raggruppati, const ve
 
 void Genera_esami::print_calendar() {
     //esempio di come accedere ai dati, da levare poi
-    _cal.getDbcal().leggi_db(_cal.getDbcal().getFileDbAule(), _cal.getDbcal().getAuleDb());
-    for(auto aula: _cal.getDbcal().getAuleDb()){
-        //ciclo tutte le aule nel database
-        int capienzaesame = aula->getCapEsame();
-    }
+//    _cal.getDbcal().leggi_db(_cal.getDbcal().getFileDbAule(), _cal.getDbcal().getAuleDb());
+//    for(auto aula: _cal.getDbcal().getAuleDb()){
+//        //ciclo tutte le aule nel database
+//        int capienzaesame = aula->getCapEsame();
+//    }
 
     _cal1.print_calendario();
 
 }
 
-Genera_esami::Genera_esami(const vector<string> &argomenti) {
-    _cal.getDatiEsami(argomenti);
+//Genera_esami::Genera_esami(const vector<string> &argomenti) {
+//    _cal.getDatiEsami(argomenti);
+//}
+
+void Genera_esami::setIdAule(const vector<string> &idAule) {
+    id_aule = idAule;
+}
+
+void Genera_esami::setCapienzaEsame(const vector<int> &capienzaEsame) {
+    capienza_esame = capienzaEsame;
 }
 
 Genera_esami::calendar::calendar() {
@@ -440,7 +448,7 @@ vector<string> &Genera_esami::giorno::get_anni_inseriti() {
 }
 
 
-bool Genera_esami::slot::set_id_esame_nello_slot(int n_esami_raggruppati, const vector<string> &id_esame,
+bool slot::set_id_esame_nello_slot(int n_esami_raggruppati, const vector<string> &id_esame,
                                                  const vector<vector<string>> &id_cds,
                                                  const vector<vector<string>> &id_professori,
                                                  vector<int> &n_vers_paral,
@@ -504,24 +512,24 @@ bool Genera_esami::slot::set_id_esame_nello_slot(int n_esami_raggruppati, const 
 // Per le aule serve solo id e capienza esame
         int cont;
         int indice_aula = 0;
-//        for (i = 0; i < _info_da_inserire.size(); i++) {
-//            _info_da_inserire[i]._id_aula_da_inserire.push_back(_aula[indice_aula].getId);
-//            cont = 1;
-//            if (_info_da_inserire[i]._n_studenti_iscritti > _aula[indice_aula].getCapeinza) {
-//                do {
-//                    if ((n_aule_necessarie + _info_da_stampare.size()) + cont > n_aule) {
-////                    Il gruppo di esami non ci sta in questo slot
-//                        return false;
-//                    }
-////                    _n_studenti_iscritti[i] = (_n_studenti_iscritti[i] - (_n_studenti_iscritti[i] % 2)) / 2;
-//                    _info_da_inserire[i]._n_studenti_iscritti =
-//                            _info_da_inserire[i]._n_studenti_iscritti - _aula[indice_aula + cont - 1].getCapienza;
-//                    _info_da_inserire[i]._id_aula_da_inserire.push_back(_aula[indice_aula + cont].getId);
-//                    cont++;
-//                } while (_info_da_inserire[i]._n_studenti_iscritti > _aula[indice_aula + cont].getCapeinza);
-//            }
-//            indice_aula = indice_aula + cont;
-//        }
+        for (i = 0; i < _info_da_inserire.size(); i++) {
+            _info_da_inserire[i]._id_aula_da_inserire.push_back(id_aule[indice_aula]);
+            cont = 1;
+            if (_info_da_inserire[i]._n_studenti_iscritti > capienza_esame[indice_aula]) {
+                do {
+                    if ((n_aule_necessarie + _info_da_stampare.size()) + cont > n_aule) {
+//                    Il gruppo di esami non ci sta in questo slot
+                        return false;
+                    }
+//                    _n_studenti_iscritti[i] = (_n_studenti_iscritti[i] - (_n_studenti_iscritti[i] % 2)) / 2;
+                    _info_da_inserire[i]._n_studenti_iscritti =
+                            _info_da_inserire[i]._n_studenti_iscritti - capienza_esame[indice_aula + cont - 1];
+                    _info_da_inserire[i]._id_aula_da_inserire.push_back(id_aule[indice_aula + cont]);
+                    cont++;
+                } while (_info_da_inserire[i]._n_studenti_iscritti > capienza_esame[indice_aula + cont]);
+            }
+            indice_aula = indice_aula + cont;
+        }
 
         for (int j = 0; j < id_professori.size(); j++) {
             for (int k = 0; k < id_professori[j].size(); k++) {
@@ -542,18 +550,18 @@ bool Genera_esami::slot::set_id_esame_nello_slot(int n_esami_raggruppati, const 
     return true;
 }
 
-bool Genera_esami::slot::maggior_n_studenti(int n_studenti_iscritti_1, int n_studenti_iscritti_2) {
+/*bool slot::maggior_n_studenti(int n_studenti_iscritti_1, int n_studenti_iscritti_2) {
     return n_studenti_iscritti_1 > n_studenti_iscritti_2;
 }
 
-/*void Genera_esami::slot::print_professori() {
+/*void slot::print_professori() {
     cout << endl << "Professori: ";
     for (auto &i: _id_professori_inseriti) {
         cout << i << " ";
     }
 }*/
 
-void Genera_esami::slot::print_info() {
+void slot::print_info() {
 //    cout << endl << "Esami: " << endl;
     for (int i = 0; i < _info_da_stampare.size(); i++) {
         cout << ";" << _info_da_stampare[i]._id_esame_inserito;
@@ -567,7 +575,7 @@ void Genera_esami::slot::print_info() {
     }
 }
 
-void Genera_esami::slot::print_info_warnings() {
+void slot::print_info_warnings() {
     for (int i = 0; i < _info_da_stampare.size(); i++)
     {
         if(_info_da_stampare[i]._vincolo_inserito > 0)
