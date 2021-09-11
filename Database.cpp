@@ -1119,36 +1119,6 @@ unsigned short Database::Corso::Anno_Accademico::Esame::getTUscita() const {
     return _t_uscita;
 }
 
-//{90,30,30,S,A};  {<durata_esame>,<t_ingresso>,<t_uscita>,<modalità>,<luogo(A/L)>}
-//Database::Corso::Anno_Accademico::Esame *Database::Corso::Anno_Accademico::nuovo_esame(const string &s_esame) {
-//    Esame *e{new Esame(s_esame)};
-//    vector<string> out_esame;
-//    try {
-//        _reg_anno.search_and_read(_reg_anno.target_expression(lettura::esame_campi), s_esame, out_esame);
-//
-//    } catch (errore_formattazione &e) {
-//        cout << e.what() << endl;        // qui non c'era l'exit l'ho messo comunque da verificare che sia corretto
-//        exit(15);
-//    }
-//
-//    vector<int> esame_int;
-//    esame_int.reserve(3);
-//    transform(out_esame.begin() + 1, out_esame.begin() + 3, esame_int.begin(), strToInt);
-//
-//    e->setDurataEsame(esame_int[0]);
-//    e->setTimeIn(esame_int[1]);
-//    e->setTimeOut(esame_int[2]);
-//    e->setMod(out_esame[3]);
-//    e->setLuogo(out_esame[4]);
-//
-//    return e;
-//}
-
-//void Database::Corso::Anno_Accademico::setProfversione(Prof_per_versione *pv) {
-//    _versioni.push_back(pv);
-//}
-
-
 void Database::Corso::setAnnoAccademico(Corso::Anno_Accademico *anno) {
     _anni_accademici.push_back(anno);
 }

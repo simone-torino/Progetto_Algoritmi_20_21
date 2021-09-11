@@ -175,7 +175,11 @@ public:
 
     class Dati_esame{ //Vettori da usare per ogni corso
     public:
-        string anno_appartenenza; //anni_accademici del corso
+        string anno_appartenenza;
+
+        friend ostream &operator<<(ostream &os, const Dati_esame &esame);
+
+        //anni_accademici del corso
         vector<string> id_cds; //id_cds che contengono il corso
         vector<string> id_professori;
         int n_versioni{};

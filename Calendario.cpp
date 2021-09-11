@@ -633,7 +633,7 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
         READ_ERR("anno accademico argomento");
         exit(15);
     }
-    string anno_acc = out_anno_acc[1]; //salvo anno accademico di riferimento per cercarlo dopo
+    string anno_acc = out_anno_acc[1] + "-" + out_anno_acc[2]; //salvo anno accademico di riferimento per cercarlo dopo
 
     //Salvo in memoria le date delle sessioni dal file aaaa-aaaadb_date_sessioni.txt
     set_date_sessioni(leggi_db_date_sessioni(argomenti_es), true);
@@ -663,8 +663,9 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
 
     //Leggo file indisponibilità.txt
 
-
-
+    bool trovato = false;
+    bool trovato_ragrupp = false;
+    vector<string> corsi_acquisiti;
     //Per ogni esame
     //Per ogni corso
     for (auto corso: _dbcal.getCorsiDb()) {
@@ -672,10 +673,17 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
 
         //Per ogni anno accademico relativo al corso
         for (auto anno_accademico: corso->getAnniAccademici()) {
+            trovato = false;
             //controllo di essere nell'anno accademico giusto
             if (anno_accademico->getAnnoAccademico() == anno_acc) {
 
-                setDatiEsame(anno_accademico, corso->getIdCorso(), datiEsame);
+                __gnu_cxx::__normal_iterator<basic_string<char> *, vector<basic_string<char>>> it = find(corsi_acquisiti.begin(), corsi_acquisiti.end(), corso->getIdCorso());
+                    if (!it->empty()) {
+                        setDatiEsame(anno_accademico, corso->getIdCorso(), datiEsame);
+                        trovato = true;
+                    }else {
+                        cout << "Corso " << corso->getIdCorso() << " già acquisito\n";
+                    }
 
                 //Per ogni id_esame RAGGRUPPATO
 
@@ -683,21 +691,49 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
                     for (auto corso_raggruppato: _dbcal.getCorsiDb()) {
                         //Per ogni anno accademico relativo al corso
                         for (auto anno_accademico_raggruppato: corso->getAnniAccademici()) {
+                            trovato_ragrupp = false;
                             //controllo di essere nell'anno accademico giusto
                             if (anno_accademico_raggruppato->getAnnoAccademico() == anno_acc) {
-                                setDatiEsame(anno_accademico_raggruppato, id_esame_raggruppato->getIdCorso(), datiEsame);
+
+                                //Controllo di non salvare due volte gli stessi esami
+                                auto it = find(corsi_acquisiti.begin(), corsi_acquisiti.end(), id_esame_raggruppato->getIdCorso());
+                                //Se non trovo il corso nel vettore di corsi acquisiti
+                                    if (!it->empty()) {
+                                        trovato_ragrupp = true;
+                                        setDatiEsame(anno_accademico_raggruppato, id_esame_raggruppato->getIdCorso(),
+                                                     datiEsame);
+//                                cout << "Debug dati esame: " << datiEsame.back() << endl;
+                                        corsi_acquisiti.push_back(id_esame_raggruppato->getIdCorso());
+                                    } else {
+                                        cout << "Corso " << id_esame_raggruppato->getIdCorso() << " già acquisito\n";
+                                    }
+
                             }
                         }
+                        if (!trovato_ragrupp) {
+//                            cout << "L'esame raggruppato " << id_esame_raggruppato->getIdCorso()
+//                                 << " non ha l'anno accademico " << anno_acc << " salvato nel database\n";
+                            //TODO: throw exception?
+//                            exit(-2);
+                        }
+
                     }
                 }
             }
+
+        }
+        if (!trovato) {
+//            cout << "L'esame " << corso->getIdCorso() << " non ha l'anno accademico " << anno_acc
+//                 << " salvato nel database\n";
+            //TODO: throw exception?
+//            exit(-2);
         }
 
 //TODO: funzione che calcola numero di slot necessari per l'esame (ogni versione ha lo stesso numero di slot) (float)floor((120+15+25) / 120)
 
         for (int i = 0; i < datiEsame.size(); i++) {
             for (int j = 0; j < datiEsame[i].n_versioni; j++) {
-                datiEsame[i].n_iscritti[j] = rand() % 25 + 50;
+                datiEsame[i].n_iscritti.push_back(rand() % 25 + 50);
             }
         }
 
@@ -708,27 +744,35 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
         vector<int> slot;
         vector<int> parall;
         vector<vector<int>> iscritti;
-        int sem = datiEsame[0].semestre;
+
+        int sem = datiEsame.front().semestre;
         esami.push_back(corso->getIdCorso());
         for (int i = 0; i < datiEsame.size(); i++) {
+            cout << "Trasferendo datiesame " << i << endl;
             anni.push_back(datiEsame[i].anno_appartenenza);
             slot.push_back(datiEsame[i].n_slot_necessari);
             parall.push_back(datiEsame[i].n_versioni);
+            iscritti.resize(datiEsame[i].n_iscritti.size());
+            cds.resize(datiEsame[i].id_cds.size());
+            prof.resize(datiEsame[i].id_professori.size());
             for (int j = 0; j < datiEsame[i].n_iscritti.size(); j++) {
-                iscritti[i].push_back(datiEsame[i].n_iscritti[j]);
+//                iscritti[i].push_back(datiEsame[i].n_iscritti[j]);
             }
             for (int j = 0; j < datiEsame[i].id_corsi_raggruppati.size(); j++) {
-                esami.push_back(datiEsame[i].id_corsi_raggruppati[j]);
+//                esami.push_back(datiEsame[i].id_corsi_raggruppati[j]);
             }
             for (int j = 0; j < datiEsame[i].id_cds.size(); j++) {
-                cds[i].push_back(datiEsame[i].id_cds[j]);
+//                cout << "size cds: " << cds.size() << " indice " << j << " size id_cds " << datiEsame[i].id_cds.size() << endl;
+//                cout << datiEsame[i].id_cds[1] << endl;
+
+//                cds[i].push_back(datiEsame[i].id_cds[j]);
             }
             for (int j = 0; j < datiEsame[i].id_professori.size(); j++) {
-                prof[i].push_back(datiEsame[i].id_professori[j]);
+//                prof[i].push_back(datiEsame[i].id_professori[j]);
             }
         }
 
-        _gen.set_id_esame_nel_calendario((int)datiEsame.size(), esami, cds,
+        _gen.set_id_esame_nel_calendario((int) datiEsame.size(), esami, cds,
                                          anni,
                                          slot, prof, parall, sem, iscritti);
 
@@ -750,7 +794,8 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
 }
 
 //Vale sia per esame raggruppato che per esame corrente
-void Calendario::setDatiEsame(Database::Corso::Anno_Accademico *dati_anno,const string &id_esame , vector<Calendario::Dati_esame> &dati_esami) {
+void Calendario::setDatiEsame(Database::Corso::Anno_Accademico *dati_anno, const string &id_esame,
+                              vector<Calendario::Dati_esame> &dati_esami) {
     Dati_esame esame_temp;
     esame_temp.n_versioni = dati_anno->getNVersioniInParallelo();
 
@@ -954,3 +999,12 @@ void Calendario::Indisponibilita::setDate(const vector<Periodo> &date) {
 //    }
 //}
 
+
+ostream &operator<<(ostream &os, const Calendario::Dati_esame &esame) {
+    os << "anno_appartenenza: " << esame.anno_appartenenza << " id_cds: " << esame.id_cds.size() << " id_professori: "
+       << esame.id_professori.size() << " n_versioni: " << esame.n_versioni << " n_iscritti: "
+       << esame.n_iscritti.size()
+       << " semestre: " << esame.semestre << " id_corsi_raggruppati: " << esame.id_corsi_raggruppati.size()
+       << " n_slot_necessari: " << esame.n_slot_necessari;
+    return os;
+}
