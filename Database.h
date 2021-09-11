@@ -289,6 +289,12 @@ public:
 
                 void fstampa_esame(ofstream &fout) const;
 
+                unsigned short getDurataEsame() const;
+
+                unsigned short getTIngresso() const;
+
+                unsigned short getTUscita() const;
+
                 void debug();
 
             };

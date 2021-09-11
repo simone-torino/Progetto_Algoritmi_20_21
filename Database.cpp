@@ -612,7 +612,7 @@ void Database::leggi_corso_db() {
                 letto_corso = true;
             } else if (row_db.front() == 'a') {
                 if (!letto_corso) {
-                    cout << "Erroe formattazione nel file " << _file_db_corsi
+                    cout << "Errore formattazione nel file " << _file_db_corsi
                          << " trovato anno accademico senza corso di riferimento";
                     //TODO: throw exception
                 }
@@ -669,6 +669,10 @@ const string &Database::getFileDbCorsi() const {
 
 const string &Database::getFileDbCds() const {
     return _file_db_cds;
+}
+
+void Database::inserimento_corsi() {
+
 }
 
 void Database::Studente::fstampa(ofstream &fout) const {
@@ -940,7 +944,7 @@ void Database::Corso::Anno_Accademico::setEsame(Database::Corso::Anno_Accademico
 
 //2019-2020;Informatica;3;8;35;15;3;[{d000010,[{d000011,15,28,7},{d000012,15,28,7}]},{d000013,[{d000014,15,28,7},{d000015,15,28,7}]},{d000016,[{d000017,15,28,7},{d000018,15,28,7}]}];{90,30,30,S,A};{ABC129,ABC138,ABC143,ABC148}
 //a;2021-2022;attivo;1;[{d000110,[{d000111,25,8,0},{d000112,10,8,0}]}];{90,15,0,25,S};{ABC126,ABC131,ABC133,ABC135,ABC145,ABC150}
-Database::Corso::Anno_Accademico::Anno_Accademico(const string &row) {
+Database::Corso::Anno_Accademico:: Anno_Accademico(const string &row) {
 //TODO: i processi di lettura potrebbero essere dei template
 
     //LETTURA aaaa-aaaa 2020-2021
@@ -1089,6 +1093,18 @@ Database::Corso::Anno_Accademico::Esame::Esame(const string &str_esame) {
 void Database::Corso::Anno_Accademico::Esame::debug() {
     cout << '{' << _durata_esame << ',' << _t_ingresso << ',' << _t_uscita << ',' << _modalita << ',' << _luogo << '}'
          << endl;
+}
+
+unsigned short Database::Corso::Anno_Accademico::Esame::getDurataEsame() const {
+    return _durata_esame;
+}
+
+unsigned short Database::Corso::Anno_Accademico::Esame::getTIngresso() const {
+    return _t_ingresso;
+}
+
+unsigned short Database::Corso::Anno_Accademico::Esame::getTUscita() const {
+    return _t_uscita;
 }
 
 //{90,30,30,S,A};  {<durata_esame>,<t_ingresso>,<t_uscita>,<modalità>,<luogo(A/L)>}

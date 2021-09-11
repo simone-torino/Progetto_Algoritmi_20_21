@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
 
         //Dichiaro il database con il file da aprire come argomento, così tutti i metodi principali possono accederci direttamente
         Database db(file_argomento);
-        Calendario cal(file_argomento);
+        Calendario cal;
 //        Genera_esami gen(converti_argv(argc, argv));
 
 //    std::cout << "argomento1: "<< argv[1] << "\ndebug: " << (char) p_var << ' ' << (char) o_var << '\n';
@@ -147,6 +147,7 @@ int main(int argc, char *argv[]) {
                 cout << "Hai scelto: " << "inserimento corsi\n";
                 //controlla inserimento corsi duplicati
 
+
                 break;
             case (options::set_esami):
                 switch (o_var) {
@@ -174,7 +175,7 @@ int main(int argc, char *argv[]) {
                 cout << "Hai scelto: " << "generazione _date esami\n";
 
                 //TODO: chiamo funzione per generare date esami
-
+                db.inserimento_corsi();
 
                 break;
             default:

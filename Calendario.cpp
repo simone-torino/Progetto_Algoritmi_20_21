@@ -624,6 +624,15 @@ void Calendario::GiornoSessione::Esame::fstampa_esame(ofstream &fout) const {
 //argomenti -g 2020-2021 sessione_esami_2021.txt
 void Calendario::getDatiEsami(const vector<string> &argomenti_es) {
     //Gli argomenti servono a settare anno accademico e file di output
+    vector<string> out_anno_acc;
+    try{
+        _regcal.search_and_read(_regcal.target_expression(lettura::anno_acc), argomenti_es[2], out_anno_acc);
+    }catch (errore_formattazione &e){
+        cout << e.what() << endl;
+        READ_ERR("anno accademico argomento");
+        exit(15);
+    }
+    string anno_acc = out_anno_acc[1]; //salvo anno accademico di riferimento per cercarlo dopo
 
     //Salvo in memoria le date delle sessioni dal file aaaa-aaaadb_date_sessioni.txt
     set_date_sessioni(leggi_db_date_sessioni(argomenti_es), true);
@@ -667,24 +676,46 @@ void Calendario::getDatiEsami(const vector<string> &argomenti_es) {
 
         //Per ogni anno accademico relativo al corso
         for (auto anno_accademico: corso->getAnniAccademici()) {
-            //inserisco una stringa anno accademico relativa al corso nel vettore di stringhe di anni accademici relativi al corso
-            anni_accademici.push_back(anno_accademico->getAnnoAccademico());
-            //salvo il numero di versioni del corso
-            n_versioni = anno_accademico->getNVersioniInParallelo();
+            //controllo di essere nell'anno accademico giusto
+            if(anno_accademico->getAnnoAccademico() == anno_acc) {
+                //inserisco una stringa anno accademico relativa al corso nel vettore di stringhe di anni accademici relativi al corso
+                anni_accademici.push_back(anno_accademico->getAnnoAccademico());
+                //salvo il numero di versioni del corso
+                n_versioni = anno_accademico->getNVersioniInParallelo();
 
-            //Per ogni versione del corso in un anno accademico
-            for (auto versione: anno_accademico->getVersioni()) {
-                for(auto id_professori_raggruppati : id_professori) {
-                    //Salvo la matricola del titolare nel vettore di professori
-                    id_professori_raggruppati.push_back(versione->getMatricolaTitolare());
-                    //Per ogni professore associato
-                    for (auto profn: versione->getAltriProfN()) {
-                        //Salvo la matricola del professore associato
-                        id_professori_raggruppati.push_back(profn->getMatricola());
-                    }
+                //Per ogni versione del corso in un anno accademico
+                for (auto versione: anno_accademico->getVersioni()) {
+                    for (auto id_professori_raggruppati: id_professori) {
+                        //Salvo la matricola del titolare nel vettore di professori
+                        id_professori_raggruppati.push_back(versione->getMatricolaTitolare());
+                        //Per ogni professore associato
+                        for (auto profn: versione->getAltriProfN()) {
+                            //Salvo la matricola del professore associato
+                            id_professori_raggruppati.push_back(profn->getMatricola());
+                        }
 
-                    //non so se serve
+                        //non so se serve
 //                    id_professori.push_back(id_professori_raggruppati);
+                    }
+                }
+
+                //Passo i dati dell'esame del corso
+                //struttura che associa ogni id esame agli slot necessari
+                vector<bool> sufficiente;
+                vector<int> n_slot_necessari;
+                for (int i = 0; i < id_corsi_raggruppati.size(); i++) {
+                    sufficiente[i] = false;
+                    n_slot_necessari[i] = 0;
+                    while (!sufficiente[i] && n_slot_necessari[i] < 7) {
+                        n_slot_necessari[i]++;
+                        if ((anno_accademico->getEsame()->getDurataEsame() + anno_accademico->getEsame()->getTIngresso() + anno_accademico->getEsame()->getTUscita()) < (120 * n_slot_necessari[i])) {
+                            sufficiente[i] = true;
+                        }
+                    }
+                    if (!sufficiente[i]) {
+                        cout << endl << "Esame troppo lungo!" << endl;
+                        //return qualcosa
+                    }
                 }
             }
 
@@ -732,27 +763,10 @@ void Calendario::getDatiEsami(const vector<string> &argomenti_es) {
 
 //TODO: funzione che calcola numero di slot necessari per l'esame (ogni versione ha lo stesso numero di slot) (float)floor((120+15+25) / 120)
 
-    //Passo i dati dell'esame del corso
-    //struttura che associa ogni id esame agli slot necessari
-        vector<bool> sufficiente;
-        vector<int> n_slot_necessari;
-        for (int i = 0; i < id_corsi_raggruppati.size(); i++) {
-            sufficiente[i] = false;
-            n_slot_necessari[i] = 0;
-            while (!sufficiente[i] && n_slot_necessari[i] < 7) {
-                n_slot_necessari[i]++;
-//                if ((durata_esame + t_ingresso + t_uscita) < (120 * n_slot_necessari[i])) {
-//                    sufficiente[i] = true;
-//                }
-            }
-            if (!sufficiente[i]) {
-                cout << endl << "Esame troppo lungo!" << endl;
-                //return qualcosa
-            }
-        }
 
-         _gen.set_id_esame_nel_calendario(id_corsi_raggruppati.size(), corso->getIdCorso(), id_cds, anni_accademici,
-                                          n_slot_necessari, id_professori, n_versioni, semestre, );
+//
+//         _gen.set_id_esame_nel_calendario(id_corsi_raggruppati.size(), corso->getIdCorso(), id_cds, anni_accademici,
+//                                          n_slot_necessari, id_professori, n_versioni, semestre, );
 
 
         //TODO: la funzione genera esami penso che dovrebbe stare all'interno di questo ciclo
