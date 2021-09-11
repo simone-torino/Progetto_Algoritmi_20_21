@@ -21,6 +21,7 @@ class Genera_esami {
 protected:
     vector<string> id_aule;
     vector<int> capienza_esame;
+    int puntatore_giorno;
 
 public:
     void setIdAule(const vector<string> &idAule);

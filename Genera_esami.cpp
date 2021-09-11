@@ -509,6 +509,8 @@ bool slot::set_id_esame_nello_slot(int n_esami_raggruppati, const vector<string>
 //      provo ad inserire ogni esame in un'aula. Se uno non ci sta lo divido e provo a vedere se gli altri
 //      continuano a starci, altrimenti ritorno false. Se ci sono stati tutti aggiorno il vettore di _info_da_stampare
 
+//      TODO: funzione che ordina le aule per capienza decrescente
+
 // Per le aule serve solo id e capienza esame
         int cont;
         int indice_aula = 0;
@@ -552,7 +554,7 @@ bool slot::set_id_esame_nello_slot(int n_esami_raggruppati, const vector<string>
 
 /*bool slot::maggior_n_studenti(int n_studenti_iscritti_1, int n_studenti_iscritti_2) {
     return n_studenti_iscritti_1 > n_studenti_iscritti_2;
-}
+}*/
 
 /*void slot::print_professori() {
     cout << endl << "Professori: ";

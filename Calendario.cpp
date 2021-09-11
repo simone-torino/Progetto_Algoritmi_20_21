@@ -695,10 +695,42 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
 
 //TODO: funzione che calcola numero di slot necessari per l'esame (ogni versione ha lo stesso numero di slot) (float)floor((120+15+25) / 120)
 
+        for (int i = 0; i < datiEsame.size(); i++) {
+            for (int j = 0; j < datiEsame[i].n_versioni; j++) {
+                datiEsame[i].n_iscritti[j] = rand() % 25 + 50;
+            }
+        }
 
-//
-//         _gen.set_id_esame_nel_calendario(id_corsi_raggruppati.size(), corso->getIdCorso(), id_cds, anni_accademici,
-//                                          n_slot_necessari, id_professori, n_versioni, semestre, );
+        vector<string> esami;
+        vector<vector<string>> cds;
+        vector<vector<string>> prof;
+        vector<string> anni;
+        vector<int> slot;
+        vector<int> parall;
+        vector<vector<int>> iscritti;
+        int sem = datiEsame[0].semestre;
+        esami.push_back(corso->getIdCorso());
+        for (int i = 0; i < datiEsame.size(); i++) {
+            anni.push_back(datiEsame[i].anno_appartenenza);
+            slot.push_back(datiEsame[i].n_slot_necessari);
+            parall.push_back(datiEsame[i].n_versioni);
+            for (int j = 0; j < datiEsame[i].n_iscritti.size(); j++) {
+                iscritti[i].push_back(datiEsame[i].n_iscritti[j]);
+            }
+            for (int j = 0; j < datiEsame[i].id_corsi_raggruppati.size(); j++) {
+                esami.push_back(datiEsame[i].id_corsi_raggruppati[j]);
+            }
+            for (int j = 0; j < datiEsame[i].id_cds.size(); j++) {
+                cds[i].push_back(datiEsame[i].id_cds[j]);
+            }
+            for (int j = 0; j < datiEsame[i].id_professori.size(); j++) {
+                prof[i].push_back(datiEsame[i].id_professori[j]);
+            }
+        }
+
+        _gen.set_id_esame_nel_calendario((int)datiEsame.size(), esami, cds,
+                                         anni,
+                                         slot, prof, parall, sem, iscritti);
 
 
         //TODO: la funzione genera esami penso che dovrebbe stare all'interno di questo ciclo
