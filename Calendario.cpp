@@ -677,13 +677,14 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
             //controllo di essere nell'anno accademico giusto
             if (anno_accademico->getAnnoAccademico() == anno_acc) {
 
-                __gnu_cxx::__normal_iterator<basic_string<char> *, vector<basic_string<char>>> it = find(corsi_acquisiti.begin(), corsi_acquisiti.end(), corso->getIdCorso());
-                    if (!it->empty()) {
-                        setDatiEsame(anno_accademico, corso->getIdCorso(), datiEsame);
-                        trovato = true;
-                    }else {
-                        cout << "Corso " << corso->getIdCorso() << " già acquisito\n";
-                    }
+                //find ritorna end quando non trova elementi
+                if (find(corsi_acquisiti.begin(), corsi_acquisiti.end(), corso->getIdCorso()) ==
+                    corsi_acquisiti.end()) {
+                    setDatiEsame(anno_accademico, corso->getIdCorso(), datiEsame);
+                    trovato = true;
+                } else {
+//                    cout << "Corso " << corso->getIdCorso() << " già acquisito\n";
+                }
 
                 //Per ogni id_esame RAGGRUPPATO
 
@@ -696,17 +697,18 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
                             if (anno_accademico_raggruppato->getAnnoAccademico() == anno_acc) {
 
                                 //Controllo di non salvare due volte gli stessi esami
-                                auto it = find(corsi_acquisiti.begin(), corsi_acquisiti.end(), id_esame_raggruppato->getIdCorso());
+
                                 //Se non trovo il corso nel vettore di corsi acquisiti
-                                    if (!it->empty()) {
-                                        trovato_ragrupp = true;
-                                        setDatiEsame(anno_accademico_raggruppato, id_esame_raggruppato->getIdCorso(),
-                                                     datiEsame);
+                                if (find(corsi_acquisiti.begin(), corsi_acquisiti.end(),
+                                         id_esame_raggruppato->getIdCorso()) == corsi_acquisiti.end()) {
+                                    trovato_ragrupp = true;
+                                    setDatiEsame(anno_accademico_raggruppato, id_esame_raggruppato->getIdCorso(),
+                                                 datiEsame);
 //                                cout << "Debug dati esame: " << datiEsame.back() << endl;
-                                        corsi_acquisiti.push_back(id_esame_raggruppato->getIdCorso());
-                                    } else {
-                                        cout << "Corso " << id_esame_raggruppato->getIdCorso() << " già acquisito\n";
-                                    }
+                                    corsi_acquisiti.push_back(id_esame_raggruppato->getIdCorso());
+                                } else {
+//                                    cout << "Corso raggruppato " << id_esame_raggruppato->getIdCorso() << " già acquisito\n";
+                                }
 
                             }
                         }
@@ -736,7 +738,7 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
                 datiEsame[i].n_iscritti.push_back(rand() % 25 + 50);
             }
         }
-
+        cout << "Dimensione datiesame: " << datiEsame.size() << endl;
         vector<string> esami;
         vector<vector<string>> cds;
         vector<vector<string>> prof;
