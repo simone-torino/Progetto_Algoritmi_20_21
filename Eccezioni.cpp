@@ -36,13 +36,13 @@ errore_data::errore_data():messaggio("formattazione data errata") {}
 
 const char * errore_data::what() const noexcept {
     return messaggio;
-}
+}*/
 
-errore_anno_accademico::errore_anno_accademico():messaggio("formattazione anno accademico errata") {}
+errore_anno_accademico::errore_anno_accademico():messaggio("Errore anno accademico non valido, inserire due anni contigui") {}
 
 const char * errore_anno_accademico::what() const noexcept {
     return messaggio;
-} */
+}
 
 
 errore_matricola::errore_matricola():messaggio("formattazione matricola errata") {}
@@ -108,10 +108,7 @@ const char * err_mese::what() const noexcept {
     return messaggio;
 }
 
-err_anno::err_anno():messaggio("anno non valido") {}
-const char * err_anno::what() const noexcept {
-    return messaggio;
-}
+
 
 err_date_nei_periodi::err_date_nei_periodi():messaggio("la data non è conforme al periodo") {}
 const char* err_date_nei_periodi::what() const noexcept {
@@ -119,14 +116,15 @@ const char* err_date_nei_periodi::what() const noexcept {
 } */
 
 err_periodo::err_periodo():messaggio("La data di inizio e' precedente alla data di fine") {}
-const char * err_periodo::what() noexcept {
+const char * err_periodo::what() const noexcept {
     return messaggio;
 }
 
 prof_non_presente::prof_non_presente():messaggio("matricola del professore non presente nell'elenco del file database") {}
-const char * prof_non_presente::what() noexcept {
+const char * prof_non_presente::what() const noexcept {
     return messaggio;
 }
+
 
 /* err_data_per_anno::err_data_per_anno():messaggio("almeno una data non è presente nell'anno") {}
 const char * err_data_per_anno::what() noexcept {
@@ -139,7 +137,7 @@ const char * err_prof_indisponibili::what() noexcept {
 } */
 
 err_parametri_linea_di_comando::err_parametri_linea_di_comando():messaggio("Parametri passati da linea di comando non conformi alle richieste") {}
-const char * err_parametri_linea_di_comando::what() noexcept {
+const char * err_parametri_linea_di_comando::what() const noexcept {
     return messaggio;
 }
 
@@ -152,8 +150,7 @@ err_inserimento_parametri::err_inserimento_parametri():messaggio("Errore inserim
 const char * err_inserimento_parametri::what() noexcept {return messaggio;
 } */
 
-errore_riga_vuota::errore_riga_vuota():messaggio("riga nel file vuota") {}
-const char * errore_riga_vuota::what() noexcept {return messaggio;}
+
 
 /* err_versioni_corso::err_versioni_corso():messaggio("numero di versioni non congruente con la ruga del file") {}
 const char * err_versioni_corso::what() noexcept {return messaggio;
@@ -164,11 +161,20 @@ const char * errore_cfu::what() const noexcept {return messaggio;
 } */
 
 errore_incongruenza_file::errore_incongruenza_file():messaggio("i file non sono gli stessi non è possibile svolgere le operazioni") {}
-const char * errore_incongruenza_file::what() noexcept {return messaggio;
-}
+const char * errore_incongruenza_file::what() const noexcept {return messaggio;}
 
 err_check_anno_accademico::err_check_anno_accademico():messaggio("Almeno una data non corrisponde all'anno accademico di riferimento"){}
-const char* err_check_anno_accademico::what() noexcept {return messaggio;
+const char* err_check_anno_accademico::what() const noexcept {return messaggio;}
+
+
+errore_riga_vuota::errore_riga_vuota():messaggio("riga nel file vuota") {}
+const char * errore_riga_vuota::what() const noexcept {return messaggio;}
+
+
+errore_formattazione_id_corsi::errore_formattazione_id_corsi():messaggio("le righe devono iniziare per 'c' o 'a';") {}
+const char * errore_formattazione_id_corsi::what()const noexcept {return messaggio;}
+
+err_anno_senza_corso::err_anno_senza_corso():messaggio(" trovato anno accademico senza corso di riferimento") {}
+const char * err_anno_senza_corso::what() const noexcept {
+    return messaggio;
 }
-
-

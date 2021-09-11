@@ -3,6 +3,8 @@
 #include "Eccezioni.h"
 #include "Database.hpp"
 
+//using namespace std;
+
 //METODI CORSI E CDS
 
 //c;AXC345;Corso del professore Odiatissimo;6;50;10;20;
@@ -570,7 +572,7 @@ Database::Database(const string &file_argomento) {
 
 }
 
-void Database::leggi_corso_db() {
+void Database::leggi_corso_db() { //TODO: mettere i try and catch dove viene utilizzata
     ifstream fin;
     fin.open(_file_db_corsi);
 
@@ -612,16 +614,23 @@ void Database::leggi_corso_db() {
                 letto_corso = true;
             } else if (row_db.front() == 'a') {
                 if (!letto_corso) {
-                    cout << "Errore formattazione nel file " << _file_db_corsi
-                         << " trovato anno accademico senza corso di riferimento";
-                    //TODO: throw exception
+                    cout << "Errore formattazione nel file " << _file_db_corsi;
+                    //<< " trovato anno accademico senza corso di riferimento";
+                    throw err_anno_senza_corso();
                 }
-                auto *a = new Corso::Anno_Accademico(row_db);
-                _corsi_db.back()->setAnnoAccademico(a);
+                try{
+                    auto *a = new Corso::Anno_Accademico(row_db);
+                    _corsi_db.back()->setAnnoAccademico(a);
+                } catch (errore_anno_accademico &e){
+                    cout << e.what() << endl;
+                    exit(26);
+                }
+
                 letto_anno = true;
             } else {
-                cout << "Errore formattazione nel file " << _file_db_corsi << " le righe devono iniziare per c; o a;\n";
-                //TODO: throw exception
+                cout << "Errore formattazione nel file " << _file_db_corsi;
+                throw errore_formattazione_id_corsi();
+
             }
 
         } else {
@@ -957,9 +966,10 @@ Database::Corso::Anno_Accademico:: Anno_Accademico(const string &row) {
         exit(15);
     }
     if (strToInt(out_anno_acc[2]) - strToInt(out_anno_acc[1]) != 1) {
-        cout << "Errore anno accademico non valido, inserire due anni contigui\n";
+        //cout << "Errore anno accademico non valido, inserire due anni contigui\n";
+        throw errore_anno_accademico();
         //TODO: throw exception
-        exit(29);
+        //exit(29);
     }
     _anno_accademico = out_anno_acc[1] + '-' + out_anno_acc[2];
 
@@ -1169,8 +1179,16 @@ Database::Corso::Corso(const string &row, const string &ultimo_id) {
     _ore_esercitazione = corso_temp_int[2];
     _ore_laboratorio = corso_temp_int[3];
 
-    auto *a = new Anno_Accademico(row);
-    _anni_accademici.push_back(a);
+    try {
+        auto *a = new Anno_Accademico(row);
+        _anni_accademici.push_back(a);
+    } catch (errore_anno_accademico &e) {
+        cout << e.what() << endl;
+        exit(26);
+    }
+
+
+
 
 }
 

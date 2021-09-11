@@ -64,7 +64,7 @@ public:
     const char* what() const noexcept;
     errore_data();
 };
-
+*/
 
 class errore_anno_accademico: public std::exception{
 private:
@@ -72,7 +72,7 @@ private:
 public:
     const char* what() const noexcept;
     errore_anno_accademico();
-}; */
+};
 
 
 class errore_matricola: public std::exception{
@@ -142,14 +142,22 @@ public:
     err_mese();
 }; */
 
-/* class err_anno: public std::exception{
+ class err_anno_senza_corso: public std::exception{
 private:
     const char* messaggio;
 public:
-    const char* what()const noexcept;
-    err_anno();
+    const char* what() const noexcept;
+    err_anno_senza_corso();
 };
 
+class errore_formattazione_id_corsi: public std::exception{
+private:
+    const char* messaggio;
+public:
+    const char* what() const noexcept;
+    errore_formattazione_id_corsi();
+};
+/*
 class err_periodi_esami: public std::exception{
 private:
     const char* messaggio;
@@ -191,14 +199,16 @@ public:const char* what() noexcept;
 class err_periodo: public std::exception{
 private:
     const char* messaggio;
-public:const char* what() noexcept;
+public:
+    const char* what() const noexcept;
     err_periodo();
 };
 
 class prof_non_presente: public std::exception{
 private:
     const char* messaggio;
-public:const char* what() noexcept;
+public:
+    const char* what() const noexcept;
     prof_non_presente();
 };
 
@@ -222,7 +232,7 @@ class err_parametri_linea_di_comando: public std::exception{
 private:
     const char* messaggio;
 public:
-    const char* what() noexcept;
+    const char* what() const noexcept;
     err_parametri_linea_di_comando();
 
 };
@@ -248,7 +258,7 @@ class errore_riga_vuota:public std::exception{
 private:
     const char* messaggio;
 public:
-    const char* what() noexcept;
+    const char* what() const noexcept;
     errore_riga_vuota();
 };
 
@@ -264,7 +274,7 @@ class errore_incongruenza_file:public std::exception{
 private:
     const char* messaggio;
 public:
-    const char* what() noexcept;
+    const char* what() const noexcept;
     errore_incongruenza_file();
 };
 
@@ -272,7 +282,7 @@ class err_check_anno_accademico:public std::exception{
 private:
     const char* messaggio;
 public:
-    const char* what() noexcept;
+    const char* what() const noexcept;
     err_check_anno_accademico();
 };
 
