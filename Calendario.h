@@ -26,7 +26,7 @@ class Calendario {
 public:
     Database getDbcal() const;
 //    explicit Calendario(const string &file_argomento);
-    Calendario() = default;
+//    Calendario() = default;
 
     class myDate {
 
@@ -169,9 +169,26 @@ public:
 
     void ordina_giorni();
 
-    void getDatiEsami(const vector<string> &argomenti_es);
+    void genera_date_esami(const vector<string> &argomenti_es);
 
     //vector<Indisponibilita> get_indisponibilita();
+
+    class Dati_esame{ //Vettori da usare per ogni corso
+    public:
+        string anno_appartenenza; //anni_accademici del corso
+        vector<string> id_cds; //id_cds che contengono il corso
+        vector<string> id_professori;
+        int n_versioni{};
+        vector<int> n_iscritti;
+        int semestre = 0; //1 primo semestre, 2 secondo semestre
+        vector<string> id_corsi_raggruppati;
+        int n_slot_necessari{}; //slot necessari a
+
+        Dati_esame() = default;
+
+         };
+
+    void setDatiEsame(Database::Corso::Anno_Accademico *dati_anno, const string &id_esame , vector<Calendario::Dati_esame> &dati_esami);
 
 private:
     //TODO: CONVIENE RACCOGLIERE QUA TUTTI I DATI NEL MODO IN CUI VERRANNO STAMPATI

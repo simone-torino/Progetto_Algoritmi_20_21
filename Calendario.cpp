@@ -4,7 +4,6 @@
 #include "Database.hpp"
 
 
-
 void Calendario::myDate::checkDate() const {
     {
         if (_day < 1 || _day > 31) {
@@ -419,10 +418,11 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
 
                 //poi leggo le date
                 _regcal.multiple_fields(_regcal.target_expression(lettura::data), s_temp, out_riga_indisponibilita);
-                for(int i = 2; i<out_riga_indisponibilita.size(); i++){
-                    try{
-                        _regcal.search_and_read(_regcal.target_expression(lettura::data), out_riga_indisponibilita[i], int_date);
-                    } catch (errore_formattazione &e){
+                for (int i = 2; i < out_riga_indisponibilita.size(); i++) {
+                    try {
+                        _regcal.search_and_read(_regcal.target_expression(lettura::data), out_riga_indisponibilita[i],
+                                                int_date);
+                    } catch (errore_formattazione &e) {
                         cout << e.what() << endl;
                         READ_ERR("date indisponibilita");
                         exit(3);
@@ -444,7 +444,7 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
             //trasformo i numeri letti in interi //TODO: da risolvere conversione cifre della data in intero, leggi cifre singole
             vector<int> gmy; //Data come interi
             try {
-                transform(int_date.begin() +1, int_date.end(), back_inserter(gmy), strToInt);
+                transform(int_date.begin() + 1, int_date.end(), back_inserter(gmy), strToInt);
             } catch (std::runtime_error &e) {
                 cout << "Errore string to int: " << e.what() << endl;
             }
@@ -522,7 +522,8 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
 
 void Calendario::check_anno_accademico(int year) const {
     if (to_string(year) != _anno_accademico.getSecondo()) {
-        cout << "Errore anno letto: " << year << " Anno inserito come argomento: " << _anno_accademico.getSecondo() << endl;
+        cout << "Errore anno letto: " << year << " Anno inserito come argomento: " << _anno_accademico.getSecondo()
+             << endl;
         throw err_check_anno_accademico();
     }
 }
@@ -563,7 +564,7 @@ Calendario::myDate Calendario::Periodo::getFine() const {
     return _fine;
 }
 
-void Calendario::Periodo::debug() const{
+void Calendario::Periodo::debug() const {
     cout << _inizio << ' ' << _fine << endl;
 }
 
@@ -622,12 +623,12 @@ void Calendario::GiornoSessione::Esame::fstampa_esame(ofstream &fout) const {
 }
 
 //argomenti -g 2020-2021 sessione_esami_2021.txt
-void Calendario::getDatiEsami(const vector<string> &argomenti_es) {
+void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
     //Gli argomenti servono a settare anno accademico e file di output
     vector<string> out_anno_acc;
-    try{
+    try {
         _regcal.search_and_read(_regcal.target_expression(lettura::anno_acc), argomenti_es[2], out_anno_acc);
-    }catch (errore_formattazione &e){
+    } catch (errore_formattazione &e) {
         cout << e.what() << endl;
         READ_ERR("anno accademico argomento");
         exit(15);
@@ -652,7 +653,7 @@ void Calendario::getDatiEsami(const vector<string> &argomenti_es) {
     _dbcal.leggi_db(_dbcal.getFileDbAule(), _dbcal.getAuleDb());
     vector<string> id_aule;
     vector<int> capienza_esame;
-    for(auto aula : _dbcal.getAuleDb()){
+    for (auto aula: _dbcal.getAuleDb()) {
         id_aule.push_back(aula->getId());
         capienza_esame.push_back(aula->getCapEsame());
     }
@@ -663,98 +664,29 @@ void Calendario::getDatiEsami(const vector<string> &argomenti_es) {
     //Leggo file indisponibilità.txt
 
 
+
     //Per ogni esame
     //Per ogni corso
     for (auto corso: _dbcal.getCorsiDb()) {
-        //Vettori da usare per ogni corso
-        vector<string> anni_accademici; //anni_accademici del corso
-        vector<vector<string>> id_cds; //id_cds che contengono il corso
-        vector<vector<string>> id_professori;
-        int n_versioni = 0;
-        int semestre = 0; //1 primo semestre, 2 secondo semestre
-        vector<string> id_corsi_raggruppati;
+        vector<Dati_esame> datiEsame;
 
         //Per ogni anno accademico relativo al corso
         for (auto anno_accademico: corso->getAnniAccademici()) {
             //controllo di essere nell'anno accademico giusto
-            if(anno_accademico->getAnnoAccademico() == anno_acc) {
-                //inserisco una stringa anno accademico relativa al corso nel vettore di stringhe di anni accademici relativi al corso
-                anni_accademici.push_back(anno_accademico->getAnnoAccademico());
-                //salvo il numero di versioni del corso
-                n_versioni = anno_accademico->getNVersioniInParallelo();
+            if (anno_accademico->getAnnoAccademico() == anno_acc) {
 
-                //Per ogni versione del corso in un anno accademico
-                for (auto versione: anno_accademico->getVersioni()) {
-                    for (auto id_professori_raggruppati: id_professori) {
-                        //Salvo la matricola del titolare nel vettore di professori
-                        id_professori_raggruppati.push_back(versione->getMatricolaTitolare());
-                        //Per ogni professore associato
-                        for (auto profn: versione->getAltriProfN()) {
-                            //Salvo la matricola del professore associato
-                            id_professori_raggruppati.push_back(profn->getMatricola());
-                        }
+                setDatiEsame(anno_accademico, corso->getIdCorso(), datiEsame);
 
-                        //non so se serve
-//                    id_professori.push_back(id_professori_raggruppati);
-                    }
-                }
+                //Per ogni id_esame RAGGRUPPATO
 
-                //Passo i dati dell'esame del corso
-                //struttura che associa ogni id esame agli slot necessari
-                vector<bool> sufficiente;
-                vector<int> n_slot_necessari;
-                for (int i = 0; i < id_corsi_raggruppati.size(); i++) {
-                    sufficiente[i] = false;
-                    n_slot_necessari[i] = 0;
-                    while (!sufficiente[i] && n_slot_necessari[i] < 7) {
-                        n_slot_necessari[i]++;
-                        if ((anno_accademico->getEsame()->getDurataEsame() + anno_accademico->getEsame()->getTIngresso() + anno_accademico->getEsame()->getTUscita()) < (120 * n_slot_necessari[i])) {
-                            sufficiente[i] = true;
-                        }
-                    }
-                    if (!sufficiente[i]) {
-                        cout << endl << "Esame troppo lungo!" << endl;
-                        //return qualcosa
-                    }
-                }
-            }
-
-        }
-
-        //Per ogni corso di studio nel database
-
-        for (auto corsodistudio: _dbcal.getCdsDb()) {
-            //questi due cicli servono solo perchè gli id_corso nei cds sono divisi per semestri, ma alla fine il ciclo è su tutti gli id_corso
-            //Per ogni semestre nel corso di studio
-            int contasemestri = 0;
-            for (const auto &id_per_semestre: corsodistudio->getCorsiSemestre()) {
-                contasemestri++;
-                //Per ogni id nel semestre
-                for (auto id_di_un_semestre: id_per_semestre) {
-                    //Se l'id del corso è nell'elenco di id del semestre del corso di studio
-                    if (corso->getIdCorso() == id_di_un_semestre->getIdCorso()) {
-                        //TODO: ciclo sugli esami raggruppati
-//                        for(auto corso_raggruppato : corso.get)
-                        semestre = contasemestri %2; //Se dispari ho il primo semestre, per i pari il secondo
-                        semestre++; //aggiungo uno così semestre=1 primo semestre e semestre=2 secondo semestre
-
+                for (auto id_esame_raggruppato: anno_accademico->getIdCorsiRaggruppati()) {
+                    for (auto corso_raggruppato: _dbcal.getCorsiDb()) {
                         //Per ogni anno accademico relativo al corso
-                        for (auto anno_accademico: corso->getAnniAccademici()) {
-                            //Per ogni id corso raggruppato
-                            for (auto id: anno_accademico->getIdCorsiRaggruppati()) {
-                                //Per ogni corso di studio relativo ad un corso raggruppato
-                                for(auto id_cds_raggruppato : id_cds){
-                                    //Salvo l'id del corso
-                                    id_corsi_raggruppati.push_back(id->getIdCorso());
-                                    //Se l'id del corso raggruppato è uguale all'id del corso del semestre del cds
-                                    if(id->getIdCorso() == id_di_un_semestre->getIdCorso()){
-                                        id_cds_raggruppato.push_back(id_di_un_semestre->getIdCorso());
-                                    }
-                                }
-
+                        for (auto anno_accademico_raggruppato: corso->getAnniAccademici()) {
+                            //controllo di essere nell'anno accademico giusto
+                            if (anno_accademico_raggruppato->getAnnoAccademico() == anno_acc) {
+                                setDatiEsame(anno_accademico_raggruppato, id_esame_raggruppato->getIdCorso(), datiEsame);
                             }
-                            //Salvo l'id del corso di studio
-//                            id_cds.push_back(corsodistudio->getIdCds());
                         }
                     }
                 }
@@ -771,22 +703,79 @@ void Calendario::getDatiEsami(const vector<string> &argomenti_es) {
 
         //TODO: la funzione genera esami penso che dovrebbe stare all'interno di questo ciclo
 
-        anni_accademici.clear();
-        id_cds.clear();
-        id_professori.clear();
-        id_corsi_raggruppati.clear();
-        n_versioni = 0;
-
+        datiEsame.clear();
     }
+
 
 //    _gen.print_calendar();
 
 
 
-    /* Dati da salvara dal database:
-     * Corso: durata esame, bool semestre di appartenenza (elenco semestri con i corso_id)
-     * Id corso di studi
-     * Versioni esami, raggruppamenti*/
+/* Dati da salvare dal database:
+ * Corso: durata esame, bool semestre di appartenenza (elenco semestri con i corso_id)
+ * Id corso di studi
+ * Versioni esami, raggruppamenti*/
+}
+
+//Vale sia per esame raggruppato che per esame corrente
+void Calendario::setDatiEsame(Database::Corso::Anno_Accademico *dati_anno,const string &id_esame , vector<Calendario::Dati_esame> &dati_esami) {
+    Dati_esame esame_temp;
+    esame_temp.n_versioni = dati_anno->getNVersioniInParallelo();
+
+
+    //Per ogni versione del corso in un anno accademico
+    for (auto versione_raggruppato: dati_anno->getVersioni()) {
+        //Salvo la matricola del titolare nel vettore di professori
+        esame_temp.id_professori.push_back(versione_raggruppato->getMatricolaTitolare());
+        //Per ogni professore associato
+        for (auto profn: versione_raggruppato->getAltriProfN()) {
+            //Salvo la matricola del professore associato
+            esame_temp.id_professori.push_back(profn->getMatricola());
+        }
+    }
+
+    //struttura che associa ogni id esame agli slot necessari
+    bool sufficiente;
+    int n_slot_necessari;
+    sufficiente = false;
+    n_slot_necessari = 0;
+    while (!sufficiente && n_slot_necessari < 7) {
+        n_slot_necessari++;
+        if ((dati_anno->getEsame()->getDurataEsame() +
+             dati_anno->getEsame()->getTIngresso() +
+             dati_anno->getEsame()->getTUscita()) < (120 * n_slot_necessari)) {
+            sufficiente = true;
+        }
+    }
+    if (!sufficiente) {
+        cout << endl << "Esame troppo lungo!" << endl;
+        n_slot_necessari = 6;
+        //return qualcosa
+    }
+    esame_temp.n_slot_necessari = n_slot_necessari;
+
+    //Per ogni corso di studio
+    for (auto corsodistudio: _dbcal.getCdsDb()) {
+        //Per ogni semestre nel corso di studio
+        int contasemestri = 0;
+        for (const auto &id_per_semestre: corsodistudio->getCorsiSemestre()) {
+            contasemestri++;
+            //Per ogni id nel semestre
+            for (auto id_di_un_semestre: id_per_semestre) {
+                if (id_di_un_semestre->getIdCorso() == id_esame) {
+                    esame_temp.semestre = contasemestri %
+                                          2;  //semestre di appartenenza Se dispari ho il primo semestre, per i pari il secondo
+                    //aggiungo uno così semestre=1 primo semestre e semestre=2 secondo semestre
+                    esame_temp.semestre++;
+                    //indice da convertire per ricavare l'anno di appartenenza
+                    esame_temp.anno_appartenenza = to_string(contasemestri);
+                    //Salva id cds, da ricontrollare se funziona
+                    esame_temp.id_cds.push_back(corsodistudio->getIdCds());
+                }
+            }
+        }
+    }
+    dati_esami.push_back(esame_temp);
 }
 
 vector<string> Calendario::leggi_db_date_sessioni(const vector<string> &argomenti_es) {
@@ -860,7 +849,7 @@ void Calendario::Indisponibilita::setMatricolaProf(const string &matricola) {
 
 void Calendario::Indisponibilita::debug() const {
     cout << _matricola << endl;
-    for(auto data : _date){
+    for (auto data: _date) {
         cout << data << '#';
     }
     cout << endl;

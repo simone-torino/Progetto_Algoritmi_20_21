@@ -29,7 +29,7 @@ public:
 
 
 //    explicit Genera_esami(const vector<string> &argomenti);
-    Genera_esami() = default;
+//    Genera_esami() = default;
 
     class giorno {
 

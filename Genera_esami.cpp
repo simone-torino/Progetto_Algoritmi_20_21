@@ -36,7 +36,7 @@ void Genera_esami::print_calendar() {
 }
 
 //Genera_esami::Genera_esami(const vector<string> &argomenti) {
-//    _cal.getDatiEsami(argomenti);
+//    _cal.genera_date_esami(argomenti);
 //}
 
 void Genera_esami::setIdAule(const vector<string> &idAule) {

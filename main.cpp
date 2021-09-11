@@ -175,7 +175,7 @@ int main(int argc, char *argv[]) {
                 cout << "Hai scelto: " << "generazione _date esami\n";
 
                 //TODO: chiamo funzione per generare date esami
-                db.inserimento_corsi();
+                cal.genera_date_esami(converti_argv(argc, argv));
 
                 break;
             default:
