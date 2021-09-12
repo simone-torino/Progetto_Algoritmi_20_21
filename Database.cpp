@@ -940,11 +940,14 @@ void Database::Corso::Anno_Accademico::setEsame(Database::Corso::Anno_Accademico
 //INSERIMENTO: ABC124;2019-2020;non_attivo;3;[{d000010,[{d000011,15,28,7},{d000012,15,28,7}]},{d000013,[{d000014,15,28,7},{d000015,15,28,7}]},{d000016,[{d000017,15,28,7},{d000018,15,28,7}]}];{90,30,30,S,A};{ABC129,ABC138,ABC143,ABC148}
 Database::Corso::Anno_Accademico::Anno_Accademico(const string &row) {
 //TODO: i processi di lettura potrebbero essere dei template
-
+//    LOG(row)
 //Controllo se row è stata letta dal file inserimento
     bool inserimento = false;
-    if (regex_match(row, _reg_anno.target_expression(lettura::corsi_inserimento))) {
+    if (regex_match(row.substr(0, 6), std::regex("([A-Z]{3}[0-9]{3});"))) {
+        cout << "Inserimento true\n";
         inserimento = true;
+    }else{
+//        LOG("niente inserimento")
     }
 
     //LETTURA aaaa-aaaa 2020-2021 va bene anche per inserimento
