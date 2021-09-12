@@ -789,8 +789,8 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
 //            iscritti[0].resize(1);
 //            iscritti[0][0] = 90;
 
-            cds[0].push_back("C102");
-            cds[0].push_back("C103");
+//            cds[0].push_back("C102");
+//            cds[0].push_back("C103");
 
 //            _gen.set_id_esame_nel_calendario(1, esami, cds, anni, slot, prof, parall, sem, iscritti);
 
@@ -874,6 +874,17 @@ void Calendario::setDatiEsame(Database::Corso::Anno_Accademico *dati_anno, const
                         //Salva id cds, da ricontrollare se funziona
                         esame_temp.id_cds.push_back(corsodistudio->getIdCds());
                         trovato_semestre = true;
+                        cout << "Aggiunto cds " << corsodistudio->getIdCds() << " dell'esame " << id_esame << endl;
+                        for(auto altri_cds : _dbcal.getCdsDb()){
+                            for(const auto& altri_semestri : altri_cds->getCorsiSemestre()){
+                                for(auto altri_id_corso : altri_semestri){
+                                    if(id_esame == altri_id_corso->getIdCorso()){
+                                        esame_temp.id_cds.push_back(altri_cds->getIdCds());
+                                        cout << "Aggiunto cds " << altri_cds->getIdCds() << " dell'esame " << id_esame << endl;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
