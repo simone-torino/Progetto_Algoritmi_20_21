@@ -156,9 +156,14 @@ void Calendario::set_date_sessioni(const vector<string> &argomenti_sessioni, boo
         }
     }
 
-    //Conversione da stringa a intero per poter memorizzare i dati con il formato della classe myDate
+    //Conversione da strytringa a intero per poter memorizzare i dati con il formato della classe myDate
     vector<int> date;
-    transform(outstring.begin(), outstring.end(), back_inserter(date), strToInt);
+    try {
+        transform(outstring.begin(), outstring.end(), back_inserter(date), strToInt);
+    } catch (errore_stringa_non_convert_in_int &e){
+        cout << e.what() << endl;
+        exit (33);
+    }
 
     //TODO: setperiodo
     int i = 0;
@@ -445,8 +450,9 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
             vector<int> gmy; //Data come interi
             try {
                 transform(int_date.begin() + 1, int_date.end(), back_inserter(gmy), strToInt);
-            } catch (std::runtime_error &e) {
-                cout << "Errore string to int: " << e.what() << endl;
+            } catch (errore_stringa_non_convert_in_int &e) {
+                cout << e.what() << endl;
+                exit (33);
             }
 
             //compongo un oggetto indisponibilita per poi salvarlo
@@ -649,6 +655,9 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
        exit(26);
    } catch (errore_formattazione_id_corsi &e){
        cout << e.what() << endl;
+   } catch (err_corso_senza_anno &e){
+       cout << e.what() << endl;
+       exit(26);
    }
 //    _dbcal.target_fstampa(options::corsi, true); //debug
 
@@ -719,22 +728,22 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
 
                             }
                         }
-                        if (!trovato_ragrupp) {
+                        //if (!trovato_ragrupp) {
 //                            cout << "L'esame raggruppato " << id_esame_raggruppato->getIdCorso()
 //                                 << " non ha l'anno accademico " << anno_acc << " salvato nel database\n";
                             //TODO: throw exception?
 //                            exit(-2);
-                        }
+                      //  }
                     }
                 }
             }
         }
-        if (!trovato) {
+      //  if (!trovato) {
 //            cout << "L'esame " << corso->getIdCorso() << " non ha l'anno accademico " << anno_acc
 //                 << " salvato nel database\n";
             //TODO: throw exception?
 //            exit(-2);
-        }
+      //  }
 
 //TODO: funzione che calcola numero di slot necessari per l'esame (ogni versione ha lo stesso numero di slot) (float)floor((120+15+25) / 120)
 
