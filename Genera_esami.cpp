@@ -10,7 +10,7 @@ bool Genera_esami::set_id_esame_nel_calendario(int n_esami_raggruppati, const ve
                                                int &semestre,
                                                const vector<vector<int>> &n_studenti_iscritti) {
     string semestre_dell_esame;
-    if(semestre==1)
+    if (semestre == 1)
         semestre_dell_esame = "s1";
     else
         semestre_dell_esame = "s2";
@@ -21,7 +21,6 @@ bool Genera_esami::set_id_esame_nel_calendario(int n_esami_raggruppati, const ve
 
         return false;
     }
-    cout << "Esame inserito correttamente" << endl;
     return true;
 }
 
@@ -49,15 +48,6 @@ void Genera_esami::setCapienzaEsame(const vector<int> &capienzaEsame) {
     capienza_esame = capienzaEsame;
 }
 
-/*vector<string> Genera_esami::get_id_aule() {
-    return id_aule;
-}
-
-vector<int> Genera_esami::get_capienza() {
-    return capienza_esame;
-}*/
-
-
 Genera_esami::calendar::calendar() {
 
     sessione sessione_s1("s1");
@@ -82,11 +72,19 @@ bool Genera_esami::calendar::set_id_esame_nel_calendario(int n_esami_raggruppati
                                                          const vector<vector<int>> &n_studenti_iscritti,
                                                          const vector<string> &id_aule, const vector<int> &capienze) {
 
+    int punct;
     for (int i = 0; i < _sessioni.size(); i++) {
-        if (!_sessioni[i].set_id_esame_nella_sessione(n_esami_raggruppati, id_esame, id_cds, anno, n_slot_necessari,
+        if (i == 0)
+            punct = _puntatore_inizio_s1;
+        if (i == 1)
+            punct = _puntatore_inizio_s2;
+        if (i == 2)
+            punct = _puntatore_inizio_s3;
+        if (!_sessioni[i].set_id_esame_nella_sessione(n_esami_raggruppati, id_esame, id_cds, anno,
+                                                      n_slot_necessari,
                                                       id_professori,
                                                       n_vers_paral,
-                                                      semestre_dell_esame, n_studenti_iscritti, id_aule, capienze)) {
+                                                      semestre_dell_esame, n_studenti_iscritti, id_aule, capienze, punct)) {
 //            cout<<endl<<"Esame "<<id_esame<<" non inserito nella sessione "<<i+1<<"!"<<endl;
             return false;
         }
@@ -96,13 +94,44 @@ bool Genera_esami::calendar::set_id_esame_nel_calendario(int n_esami_raggruppati
 
 void Genera_esami::calendar::print_calendario() {
 
+    int punct;
     cout << endl << "Calendario: " << endl << endl;
     for (int i = 0; i < _sessioni.size(); i++) {
         cout << endl << "\tSessione " << i + 1 << ": " << endl << endl;
-        _sessioni[i].print_sessione();
+        if (i == 0)
+            punct = _puntatore_inizio_s1;
+        if (i == 1)
+            punct = _puntatore_inizio_s2;
+        if (i == 2)
+            punct = _puntatore_inizio_s3;
+        _sessioni[i].print_sessione(punct);
     }
 
 }
+
+void Genera_esami::calendar::set_puntatore_inizio_s1(int punct) {
+    _puntatore_inizio_s1 = punct;
+}
+
+void Genera_esami::calendar::set_puntatore_inizio_s2(int punct) {
+    _puntatore_inizio_s2 = punct;
+}
+
+void Genera_esami::calendar::set_puntatore_inizio_s3(int punct) {
+    _puntatore_inizio_s3 = punct;
+}
+
+/*int Genera_esami::calendar::get_puntatore_inizio_s1() {
+    return _puntatore_inizio_s1;
+}
+
+int Genera_esami::calendar::get_puntatore_inizio_s2() {
+    return _puntatore_inizio_s2;
+}
+
+int Genera_esami::calendar::get_puntatore_inizio_s3() {
+    return _puntatore_inizio_s3;
+}*/
 
 Genera_esami::sessione::sessione(const string &quale_sessione) {
 
@@ -128,7 +157,10 @@ bool Genera_esami::sessione::set_id_esame_nella_sessione(int n_esami_raggruppati
                                                          const vector<int> &n_vers_paral,
                                                          const string &semestre_dell_esame,
                                                          const vector<vector<int>> &n_studenti_iscritti,
-                                                         const vector<string> &id_aule, const vector<int> &capienze) {
+                                                         const vector<string> &id_aule, const vector<int> &capienze,
+                                                         int puntatore_sessione) {
+    int punct = 0;
+
     //Imposto vettore di appelli a vero
     vector<bool> inserito_nell_appello(_appelli.size());
     for (auto &&j: inserito_nell_appello) {
@@ -154,12 +186,16 @@ bool Genera_esami::sessione::set_id_esame_nella_sessione(int n_esami_raggruppati
         if (!esami_gia_messi) {
             int vincolo = 0;
             if (_appelli[i].get_quale_appello() == 2) {
+                if (_quale_sessione != "s3")
+                    punct = 14;
+                else
+                    punct = 0;
                 do {
                     if (!_appelli[i].set_id_esame_nell_appello(n_esami_raggruppati, id_esame, id_cds, anno,
                                                                n_slot_necessari,
                                                                id_professori,
                                                                n_vers_paral, n_studenti_iscritti, vincolo, id_aule,
-                                                               capienze)) {
+                                                               capienze, puntatore_sessione, punct)) {
 //                cout<<endl<<"Esame "<<id_esame<<" non inserito nell'appello "<<i+1<<" della sessione "<<_quale_sessione<<"!"<<endl;
                         inserito_nell_appello[i] = false;
                         vincolo++;
@@ -170,11 +206,12 @@ bool Genera_esami::sessione::set_id_esame_nella_sessione(int n_esami_raggruppati
 
             } else {
                 if ((_quale_sessione == semestre_dell_esame) && (_quale_sessione != "s3")) {
+                    punct = 0;
                     do {
                         if (!_appelli[i].set_id_esame_nell_appello(n_esami_raggruppati, id_esame, id_cds, anno,
                                                                    n_slot_necessari, id_professori,
                                                                    n_vers_paral, n_studenti_iscritti, vincolo, id_aule,
-                                                                   capienze)) {
+                                                                   capienze, puntatore_sessione, punct)) {
 //                    cout<<endl<<"Esame "<<id_esame<<" non inserito nell'appello "<<i+1<<" della sessione "<<_quale_sessione<<"!"<<endl;
                             inserito_nell_appello[i] = false;
                             vincolo++;
@@ -209,12 +246,17 @@ bool Genera_esami::sessione::set_id_esame_nella_sessione(int n_esami_raggruppati
     }
 }
 
-void Genera_esami::sessione::print_sessione() {
+void Genera_esami::sessione::print_sessione(int puntatore_sessione) {
 
+    int punct;
     for (int i = 0; i < _appelli.size(); i++) {
         cout << endl << "Appello " << i + 1 << ": " << endl;
         cout << "\t";
-        _appelli[i].print_appello();
+        if (_appelli[i].get_quale_appello() == 2 && _quale_sessione != "s3")
+            punct = 14;
+        else
+            punct = 0;
+        _appelli[i].print_appello(puntatore_sessione, punct);
         cout << endl;
     }
 
@@ -234,9 +276,10 @@ Genera_esami::appello::set_id_esame_nell_appello(int n_esami_raggruppati, const 
                                                  const vector<vector<string>> &id_professori,
                                                  const vector<int> &n_vers_paral,
                                                  const vector<vector<int>> &n_studenti_iscritti, int vincolo,
-                                                 const vector<string> &id_aule, const vector<int> &capienze) {
+                                                 const vector<string> &id_aule, const vector<int> &capienze,
+                                                 int puntatore_sessione, int puntatore_appello) {
 
-    int inserisco_nel_giorno = 0;
+    int inserisco_nel_giorno = puntatore_sessione + puntatore_appello;
 
     if (_quale_appello == 1) {
         _giorni.resize(14);
@@ -244,7 +287,7 @@ Genera_esami::appello::set_id_esame_nell_appello(int n_esami_raggruppati, const 
         _giorni.resize(28);
     }
 
-    while (inserisco_nel_giorno < _giorni.size()) {
+    while (inserisco_nel_giorno < puntatore_sessione + puntatore_appello + _giorni.size()) {
 
 //         Per ogni esame del gruppo faccio i controlli, se li passo...
 //         ... per ogni esame del gruppo provo ad inserirli nel giorno[inserisco_nel_giorno]...
@@ -254,7 +297,8 @@ Genera_esami::appello::set_id_esame_nell_appello(int n_esami_raggruppati, const 
 
         for (int i = 0; i < n_esami_raggruppati; i++) {
             if ((trovato_cds_anno(id_cds[i], anno[i], inserisco_nel_giorno, vincolo)) ||
-                (!prof_disponibili(id_professori[i], inserisco_nel_giorno, vincolo))) {
+                (!prof_disponibili(id_professori[i], inserisco_nel_giorno, vincolo)) ||
+                ((inserisco_nel_giorno - puntatore_sessione) % 7 == 0)) {
                 mettibile = false;
             }
         }
@@ -353,13 +397,16 @@ Genera_esami::appello::find_cds_anno(InputIterator first_cds, InputIterator last
     return last_cds;
 }
 
-void Genera_esami::appello::print_appello() {
+void Genera_esami::appello::print_appello(int puntatore_sessione, int puntatore_appello) {
 
     for (int i = 0; i < _giorni.size(); i++) {
-        cout << endl << "Giorno " << i + 1 << ": " << endl;
-        cout << "\t";
-        _giorni[i].print_giorno();
-        cout << endl;
+        if((puntatore_appello + i) % 7 != 0)
+        {
+            cout << endl << "Giorno " << puntatore_sessione + puntatore_appello << ": " << endl;
+            cout << "\t";
+            _giorni[i].print_giorno();
+            cout << endl;
+        }
     }
 
 }
@@ -368,11 +415,11 @@ int Genera_esami::appello::get_quale_appello() const {
     return _quale_appello;
 }
 
-bool Genera_esami::appello::prof_disponibili(const vector<string> &id_professori, int inserisco_nel_giorno, int vincolo) {
+bool
+Genera_esami::appello::prof_disponibili(const vector<string> &id_professori, int inserisco_nel_giorno, int vincolo) {
 
     //Per indisponibilità serve tutta la struttura
-    if(vincolo == 2)
-    {
+    if (vincolo == 2) {
         return true;
     }
 
@@ -628,33 +675,18 @@ void Genera_esami::slot::print_info() {
 }
 
 void slot::print_info_warnings() {
-    for (int i = 0; i < _info_da_stampare.size(); i++)
-    {
-        if(_info_da_stampare[i]._vincolo_inserito > 0)
-        {
+    for (int i = 0; i < _info_da_stampare.size(); i++) {
+        if (_info_da_stampare[i]._vincolo_inserito > 0) {
             // Stampo primo vincolo violato
             cout << _info_da_stampare[i]._id_cds_inserito << ";" << _info_da_stampare[i]._id_esame_inserito << "; "
-                   "Distanza minima tra esami dello stesso anno accademico e dello stesso corso di studi a meno di due giorni l'uno dall'altro" << endl;
+                                                                                                               "Distanza minima tra esami dello stesso anno accademico e dello stesso corso di studi a meno di due giorni l'uno dall'altro"
+                 << endl;
         }
-        if(_info_da_stampare[i]._vincolo_inserito > 1)
-        {
+        if (_info_da_stampare[i]._vincolo_inserito > 1) {
             // Stampo terzo vincolo violato
             cout << _info_da_stampare[i]._id_cds_inserito << ";" << _info_da_stampare[i]._id_esame_inserito << "; "
-                   "Indisponibilità dei docenti non rispettata" << endl;
+                                                                                                               "Indisponibilità dei docenti non rispettata"
+                 << endl;
         }
     }
-}
-
-/*void Genera_esami::slot::set_id_aule(const vector<string> &id_aule) {
-    _id_aule = id_aule;
-}
-
-void Genera_esami::slot::set_capienza(const vector<int> &capienze) {
-    _capienze = capienze;
-}*/
-
-void Genera_esami::sessione::set_quale_sessione(const string &quale_sessione) {
-
-    _quale_sessione = quale_sessione;
-
 }

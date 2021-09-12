@@ -1,10 +1,10 @@
 #ifndef MAIN_CPP_GENERA_ESAMI_H
 #define MAIN_CPP_GENERA_ESAMI_H
 
-#define n_aule 25
+#define n_aule 4
 #define n_slot 6
-#define n_giorni_appello_1 12
-#define n_giorni_appello_2 24
+#define n_giorni_appello_1 14
+#define n_giorni_appello_2 28
 
 #include <vector>
 #include <string>
@@ -21,16 +21,12 @@ class Genera_esami {
 protected:
     vector<string> id_aule;
     vector<int> capienza_esame;
-    int puntatore_giorno;
 
 public:
+
     void setIdAule(const vector<string> &idAule);
 
     void setCapienzaEsame(const vector<int> &capienzaEsame);
-
-//    vector<string> get_id_aule();
-
-//    vector<int> get_capienza();
 
 
 //    explicit Genera_esami(const vector<string> &argomenti);
@@ -132,13 +128,14 @@ public:
                                        const vector<vector<string>> &id_cds, const vector<string> &anno,
                                        const vector<int> &n_slot_necessari, const vector<vector<string>> &id_professori,
                                        const vector<int> &n_vers_paral, const vector<vector<int>> &n_studenti_iscritti,
-                                       int vincolo, const vector<string> &id_aule, const vector<int> &capienze);
+                                       int vincolo, const vector<string> &id_aule, const vector<int> &capienze,
+                                       int puntatore_sessione, int puntatore_appello);
 
         bool trovato_cds_anno(const vector<string> &id_cds, const string &anno, int inserisco_nel_giorno, int vincolo);
 
         bool prof_disponibili(const vector<string> &id_professori, int inserisco_nel_giorno, int vincolo);
 
-        void print_appello();
+        void print_appello(int puntatore_sessione, int puntatore_appello);
 
         int get_quale_appello() const;
 
@@ -169,9 +166,9 @@ public:
                                          const vector<int> &n_vers_paral,
                                          const string &semestre_dell_esame,
                                          const vector<vector<int>> &n_studenti_iscritti, const vector<string> &id_aule,
-                                         const vector<int> &capienze);
+                                         const vector<int> &capienze, int puntatore_sessione);
 
-        void print_sessione();
+        void print_sessione(int puntatore_sessione);
 
         void set_quale_sessione(const string &quale_sessione);
 
@@ -182,6 +179,9 @@ public:
     private:
 
         vector<sessione> _sessioni;
+        int _puntatore_inizio_s1; //Contiene la data già convertita ad intero dell'inizio della prima sessione
+        int _puntatore_inizio_s2; //Contiene la data già convertita ad intero dell'inizio della seconda sessione
+        int _puntatore_inizio_s3; //Contiene la data già convertita ad intero dell'inizio della terza sessione
 
     public:
 
@@ -197,6 +197,18 @@ public:
 
         void print_calendario();
 
+//        int get_puntatore_inizio_s1();
+
+        void set_puntatore_inizio_s1(int punct);
+
+//        int get_puntatore_inizio_s2();
+
+        void set_puntatore_inizio_s2(int punct);
+
+//        int get_puntatore_inizio_s3();
+
+        void set_puntatore_inizio_s3(int punct);
+
     };
 
     bool set_id_esame_nel_calendario(int n_esami_raggruppati, const vector<string> &id_esame,
@@ -211,7 +223,8 @@ private:
 
     calendar _cal1;
 };
-class slot : public Genera_esami{
+
+class slot : public Genera_esami {
 
 private:
 
