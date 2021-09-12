@@ -20,12 +20,10 @@ const char * file_non_chiuso::what() const noexcept {
 file_failed::file_failed():messaggio("nel file sono presenti degli error state flag ") {}
 const char * file_failed::what() const noexcept {return messaggio;}
 
-/* errore_stringa::errore_stringa():messaggio("stringa scritta in maniera sbgliata (con spazi o '\t'") {}
-const char * errore_stringa::what() const noexcept {
-    return messaggio;
-}
+errore_stringa_non_convert_in_int::errore_stringa_non_convert_in_int(): messaggio("Stringa non valida non puo essere convertita in int.") {}
+const char * errore_stringa_non_convert_in_int::what() const noexcept {return messaggio;}
 
-errore_intero::errore_intero():messaggio("non è un numero intero") {}
+/*errore_intero::errore_intero():messaggio("non è un numero intero") {}
 
 const char * errore_intero::what() const noexcept {
     return messaggio;
@@ -175,9 +173,16 @@ errore_formattazione_id_corsi::errore_formattazione_id_corsi():messaggio("le rig
 const char * errore_formattazione_id_corsi::what()const noexcept {return messaggio;}
 
 err_anno_senza_corso::err_anno_senza_corso():messaggio(" trovato anno accademico senza corso di riferimento") {}
-const char * err_anno_senza_corso::what() const noexcept {
-    return messaggio;
-}
+const char * err_anno_senza_corso::what() const noexcept {return messaggio;}
 
 file_vuoto::file_vuoto():messaggio("Il file è vuoto") {}
 const char* file_vuoto::what() const noexcept {return messaggio;}
+
+err_corso_senza_anno::err_corso_senza_anno():messaggio(" trovato corso senza informazioni sugli anni accademici") {}
+const char * err_corso_senza_anno::what() const noexcept {return messaggio;}
+
+err_formattazione_attivo_non_attivo::err_formattazione_attivo_non_attivo():messaggio("Errore formattazione del parametro 'Attivo/Non attivo'.") {}
+const char * err_formattazione_attivo_non_attivo::what() const noexcept {return messaggio;}
+
+err_numero_versioni_parallele::err_numero_versioni_parallele():messaggio("Il numero di ID degli esami paralleli differisce dalla quantità atteso") {}
+const char * err_numero_versioni_parallele::what() const noexcept {return messaggio;}

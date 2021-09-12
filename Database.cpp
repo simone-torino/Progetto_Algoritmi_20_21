@@ -151,15 +151,19 @@ void Database::target_aggiungi(options::opzione o) {
         case options::cds: {
             cout << "Aggiunta corsi di studio in corso...\n";
             //leggo anche i corsi per confrontare gli id con quelli inseriti da cds
-            try {leggi_corso_db();
-
+            try {
+                leggi_corso_db();
             }catch (err_anno_senza_corso &e){
                 cout << e.what() << endl;
                 exit (26);
             } catch (errore_formattazione_id_corsi &e){
                 cout << e.what() << endl;
                 exit (26);
+            } catch (err_corso_senza_anno &e){
+                cout << e.what() << endl;
+                exit(26);
             }
+
 
             leggi_in(_file_db_cds, _cds_db);
 
@@ -472,7 +476,7 @@ void Database::isempty(std::ifstream &fptr) {
 //    fptr.peek() == std::ifstream::traits_type::eof()
     fptr.get();
     if (fptr.eof()) {
-        throw file_vuoto(); //TODO: eccezione errore_file_vuoto
+        throw file_vuoto();
     }
     //rimetto il puntatore all'inizio in modo da non saltare il primo carattere se il file non è vuoto
     fptr.seekg(ios::beg);
@@ -580,7 +584,7 @@ Database::Database(const string &file_argomento) {
 
 }
 
-void Database::leggi_corso_db() { //TODO: mettere i try and catch dove viene utilizzata
+void Database::leggi_corso_db() {
     ifstream fin;
     fin.open(_file_db_corsi);
 
@@ -612,10 +616,10 @@ void Database::leggi_corso_db() { //TODO: mettere i try and catch dove viene uti
         if (!row_db.empty()) {
             if (row_db.front() == 'c') {
                 if (letto_corso && !letto_anno) {
-                    cout << "Errore formattazione: nel file " << _file_db_corsi
-                         << " trovato corso senza informazioni sugli anni accademici\n";
-                    //TODO: throw exception
+                    cout << "Errore formattazione: nel file " << _file_db_corsi;
+                    throw err_corso_senza_anno();
                 }
+
                 //Crea corso con le informazioni base, gli anni accademici verranno aggiunti dopo
                 auto *c = new Corso(row_db);
                 _corsi_db.push_back(c);
@@ -632,6 +636,12 @@ void Database::leggi_corso_db() { //TODO: mettere i try and catch dove viene uti
                 } catch (errore_anno_accademico &e){
                     cout << e.what() << endl;
                     exit(26);
+                } catch (err_formattazione_attivo_non_attivo &e){
+                    cout << e.what() << endl;
+                    exit (26);
+                } catch (err_numero_versioni_parallele &e){
+                    cout << e.what() << endl;
+                    exit (26);
                 }
 
                 letto_anno = true;
@@ -976,11 +986,10 @@ Database::Corso::Anno_Accademico:: Anno_Accademico(const string &row) {
         exit(15);
     }
     if (strToInt(out_anno_acc[2]) - strToInt(out_anno_acc[1]) != 1) {
-        //cout << "Errore anno accademico non valido, inserire due anni contigui\n";
+
         throw errore_anno_accademico();
-        //TODO: throw exception
-        //exit(29);
     }
+
     _anno_accademico = out_anno_acc[1] + '-' + out_anno_acc[2];
 
 
@@ -990,7 +999,7 @@ Database::Corso::Anno_Accademico:: Anno_Accademico(const string &row) {
         } else if (regex_match(row, std::regex("non_attivo"))) {
             _attivo = false;
         } else {
-            //TODO: eccezione attivo/non_attivo non trovato
+            throw err_formattazione_attivo_non_attivo();
         }
     } else {
         _attivo = true; //in questo caso sto leggendo file di input
@@ -1022,7 +1031,7 @@ Database::Corso::Anno_Accademico:: Anno_Accademico(const string &row) {
 //    cout << "Stampo versioni del corso:\n";
 //    LOGV(versioni);
     if (versioni.size() != _n_versioni_in_parallelo) {
-        //TODO: throw exception
+        throw err_numero_versioni_parallele();
         cout << "Errore numero versioni per il corso " << row << endl;
         cout << "Versioni acquisite: " << versioni.size() << " Versioni attese: " << _n_versioni_in_parallelo << endl;
     }
@@ -1165,9 +1174,13 @@ Database::Corso::Corso(const string &row, const string &ultimo_id) {
     } catch (errore_anno_accademico &e) {
         cout << e.what() << endl;
         exit(26);
+    } catch (err_formattazione_attivo_non_attivo &e){
+        cout << e.what() << endl;
+        exit (26);
+    } catch (err_numero_versioni_parallele &e){
+        cout << e.what() << endl;
+        exit (26);
     }
-
-
 
 
 }
@@ -1257,8 +1270,8 @@ void Database::Corso_di_studio::setLaurea(const string &laurea) {
 int strToInt(std::string const &s) {
     std::istringstream iss(s);
     int value;
-    //TODO: eccezione da mettere in eccezioni.h
-    if (!(iss >> value)) throw std::runtime_error("stringa non valida non puo essere convertita in int");
+
+    if (!(iss >> value)) throw errore_stringa_non_convert_in_int();
 
     return value;
 }

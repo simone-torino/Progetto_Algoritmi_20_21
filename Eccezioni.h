@@ -39,15 +39,15 @@ public:
     file_vuoto();
 };
 
-/* class errore_stringa: public std::exception{
+class errore_stringa_non_convert_in_int: public std::exception{
 private:
     const char* messaggio;
 public:
     const char* what() const noexcept;
-    errore_stringa();
+    errore_stringa_non_convert_in_int();
 };
 
-
+/*
 class errore_intero: public std::exception{
 private:
     const char* messaggio;
@@ -155,6 +155,22 @@ private:
 public:
     const char* what() const noexcept;
     err_anno_senza_corso();
+};
+
+class err_corso_senza_anno: public std::exception{
+private:
+    const char* messaggio;
+public:
+    const char* what() const noexcept;
+    err_corso_senza_anno();
+};
+
+class err_formattazione_attivo_non_attivo: public std::exception{
+private:
+    const char* messaggio;
+public:
+    const char* what() const noexcept;
+    err_formattazione_attivo_non_attivo();
 };
 
 class errore_formattazione_id_corsi: public std::exception{
@@ -293,6 +309,13 @@ public:
     err_check_anno_accademico();
 };
 
+class err_numero_versioni_parallele:public std::exception{
+private:
+    const char* messaggio;
+public:
+    const char* what() const noexcept;
+    err_numero_versioni_parallele();
+};
 
 
 #endif //PROGETTO_ALGORITMI_20_21_ECCEZIONI_H

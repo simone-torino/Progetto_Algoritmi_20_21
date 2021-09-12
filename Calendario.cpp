@@ -156,7 +156,7 @@ void Calendario::set_date_sessioni(const vector<string> &argomenti_sessioni, boo
         }
     }
 
-    //Conversione da stringa a intero per poter memorizzare i dati con il formato della classe myDate
+    //Conversione da strytringa a intero per poter memorizzare i dati con il formato della classe myDate
     vector<int> date;
     transform(outstring.begin(), outstring.end(), back_inserter(date), strToInt);
 
@@ -649,6 +649,9 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
        exit(26);
    } catch (errore_formattazione_id_corsi &e){
        cout << e.what() << endl;
+   } catch (err_corso_senza_anno &e){
+       cout << e.what() << endl;
+       exit(26);
    }
 //    _dbcal.target_fstampa(options::corsi, true); //debug
 
