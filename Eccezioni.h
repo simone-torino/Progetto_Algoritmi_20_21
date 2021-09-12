@@ -31,6 +31,13 @@ public:
     file_failed();
 };
 
+class file_vuoto: public std::exception{
+private:
+    const char* messaggio;
+public:
+    const char* what() const noexcept;
+    file_vuoto();
+};
 
 /* class errore_stringa: public std::exception{
 private:

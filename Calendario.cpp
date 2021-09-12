@@ -642,7 +642,14 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
     //Accedo al database
 
     //Leggo file db_corsi.txt
-    _dbcal.leggi_corso_db();
+   try{
+       _dbcal.leggi_corso_db();
+   } catch (err_anno_senza_corso &e){
+       cout << e.what() << endl;
+       exit(26);
+   } catch (errore_formattazione_id_corsi &e){
+       cout << e.what() << endl;
+   }
 //    _dbcal.target_fstampa(options::corsi, true); //debug
 
     //Leggo file db_corsi_studio.txt

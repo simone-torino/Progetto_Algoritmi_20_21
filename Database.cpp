@@ -151,7 +151,15 @@ void Database::target_aggiungi(options::opzione o) {
         case options::cds: {
             cout << "Aggiunta corsi di studio in corso...\n";
             //leggo anche i corsi per confrontare gli id con quelli inseriti da cds
-            leggi_corso_db();
+            try {leggi_corso_db();
+
+            }catch (err_anno_senza_corso &e){
+                cout << e.what() << endl;
+                exit (26);
+            } catch (errore_formattazione_id_corsi &e){
+                cout << e.what() << endl;
+                exit (26);
+            }
 
             leggi_in(_file_db_cds, _cds_db);
 
@@ -464,7 +472,7 @@ void Database::isempty(std::ifstream &fptr) {
 //    fptr.peek() == std::ifstream::traits_type::eof()
     fptr.get();
     if (fptr.eof()) {
-        throw runtime_error("File is empty"); //TODO: eccezione errore_file_vuoto
+        throw file_vuoto(); //TODO: eccezione errore_file_vuoto
     }
     //rimetto il puntatore all'inizio in modo da non saltare il primo carattere se il file non è vuoto
     fptr.seekg(ios::beg);
@@ -530,7 +538,7 @@ string Database::leggi_id_maggiore(const string &file_db) {
 
     try {
         isempty(fin);
-    } catch (runtime_error &e) {
+    } catch (file_vuoto &e) {
         cout << e.what() << endl;
         exit(5);
     }
@@ -588,7 +596,7 @@ void Database::leggi_corso_db() { //TODO: mettere i try and catch dove viene uti
 
     try {
         isempty(fin);
-    } catch (runtime_error &e) {
+    } catch (file_vuoto &e) {
         cout << e.what() << endl;
         exit(5);
     }

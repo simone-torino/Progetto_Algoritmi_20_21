@@ -57,7 +57,7 @@ void Database::leggi_in(const string &file_db, vector<T *> &_classedati_db) {
 
     try {
         isempty(fin);
-    } catch (runtime_error &e) {
+    } catch (file_vuoto &e) {
         cout << e.what() << endl;
         exit(5);
     }
@@ -99,7 +99,7 @@ void Database::leggi_db(const string &nome_file, vector<T *> &_classedati_xx) {
 
     try {
         isempty(fin);
-    } catch (runtime_error &e) {
+    } catch (file_vuoto &e) {
         cout << e.what() << endl;
         exit(5);
     }
