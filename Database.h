@@ -38,7 +38,7 @@ namespace options {
         aule = 'a',
         corsi = 'c',
         cds = 'f',
-        current_a = 'c', //conflitto ?
+        current_a = 'z',
         set_av = 's'
     };
 }
@@ -69,14 +69,12 @@ namespace lettura {
         profn_campi = 20,
         esame_campi = 21,
         esame_graffe = 22,
-        id_corsi = 23,
-        periodo = 24,
-        data = 25
+        periodo = 23,
+        data = 24
 
     };
 
 }
-
 
 class Database {
     //elenco separatori const? separatore spazi, elenco, elenco prof, elenco corsi ecc..

@@ -71,7 +71,6 @@ std::regex Database::Regex::target_expression(lettura::reg_expressions exp) {
 
             //corsi su file di aggiunta
         case lettura::corsi_in:
-//            cout << _rg_corso_in_base << endl;
             return std::regex(_rg_corso_in_base);
 
         case lettura:: anno_versioni:
@@ -98,7 +97,6 @@ std::regex Database::Regex::target_expression(lettura::reg_expressions exp) {
             //id corso singoli
         case lettura::cds_id_corso:
             return std::regex(_rg_id_corso);
-
 
         case lettura::prof_singolo:
             return std::regex(_rg_profn_graffe);

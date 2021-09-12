@@ -7,7 +7,7 @@ execute(){
 
   i=$((i+1))
 
-  ./Progetto_Algoritmi_20_21 $2
+  ./Progetto_Aliungoritmi_20_21 $2
 
   sleep 1s
 }
