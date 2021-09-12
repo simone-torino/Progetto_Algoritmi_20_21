@@ -178,3 +178,6 @@ err_anno_senza_corso::err_anno_senza_corso():messaggio(" trovato anno accademico
 const char * err_anno_senza_corso::what() const noexcept {
     return messaggio;
 }
+
+file_vuoto::file_vuoto():messaggio("Il file è vuoto") {}
+const char* file_vuoto::what() const noexcept {return messaggio;}
