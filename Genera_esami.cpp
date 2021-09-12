@@ -432,3 +432,72 @@ void Genera_esami::slot::print_id_esami() {
     }
 
 }
+
+void Genera_esami::fprint_calendar() {
+    _cal1.fprint_calendario();
+}
+
+void Genera_esami::calendar::fprint_calendario() const {
+
+    string nome_file = "sessione";
+    std::ofstream f1, f2, f3;
+    f1.open(nome_file + "_s1", ios::out);
+    f2.open(nome_file + "_s2", ios::out);
+    f3.open(nome_file + "_s3", ios::out);
+
+    cout << endl << "Calendario: " << endl << endl;
+    _sessioni[0].fprint_sessione(f1);
+    _sessioni[1].fprint_sessione(f2);
+    _sessioni[2].fprint_sessione(f3);
+}
+
+void Genera_esami::sessione::fprint_sessione(ofstream &fout) const {
+    for (int i = 0; i < _appelli.size(); i++) {
+        fout << endl << "Appello " << i + 1 << ": " << endl;
+        fout << "\t";
+        _appelli[i].fprint_appello(fout);
+        fout << endl;
+    }
+}
+
+void Genera_esami::appello::fprint_appello(ofstream &fout) const{
+
+    for (int i = 0; i < _giorni.size(); i++) {
+        fout << endl << "Giorno " << i + 1 << ": " << endl;
+        fout << "\t";
+        _giorni[i].fprint_giorno(fout);
+        fout << endl;
+    }
+
+}
+
+void Genera_esami::giorno::fprint_giorno(ofstream &fout) const {
+
+    fout << endl << "------------------------------------------------------------------" << endl;
+
+    for (int i = 0; i < n_slot; i++) {
+        fout << endl << "Slot " << i + 1 << ": " << endl;
+        fout << "\t";
+        _fasce_orarie[i].fprint_id_esami(fout);
+        fout << "\t";
+        _fasce_orarie[i].fprint_professori(fout);
+        fout << endl;
+    }
+
+    fout << endl << "------------------------------------------------------------------" << endl;
+
+}
+
+void Genera_esami::slot::fprint_id_esami(ofstream &fout) const{
+    fout << endl << "ID esami: ";
+    for (auto &i: _id_esami_inseriti) {
+        fout << i << " ";
+    }
+}
+
+void Genera_esami::slot::fprint_professori(ofstream &fout) const {
+    fout << endl << "Professori: ";
+    for (auto &i: _id_professori_inseriti) {
+        fout << i << " ";
+    }
+}

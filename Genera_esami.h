@@ -1,8 +1,8 @@
 #ifndef MAIN_CPP_GENERA_ESAMI_H
 #define MAIN_CPP_GENERA_ESAMI_H
 
-#define n_aule 4
-#define n_slot 3
+#define n_aule 100
+#define n_slot 6
 #define n_giorni_appello_1 12
 #define n_giorni_appello_2 24
 
@@ -10,6 +10,7 @@
 #include <string>
 #include <algorithm>
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -35,6 +36,9 @@ public:
 
         void print_id_esami();
 
+        void fprint_professori(ofstream &fout) const;
+
+        void fprint_id_esami(ofstream &fout) const;
     };
 
     class giorno {
@@ -60,6 +64,7 @@ public:
 
         vector<string> &get_anni_inseriti();
 
+        void fprint_giorno(ofstream &fout) const;
     };
 
     class appello {
@@ -94,6 +99,7 @@ public:
         find_cds_anno(InputIterator first_cds, InputIterator last_cds, InputIterator first_anno, const string &cds,
                       const string &anno);
 
+        void fprint_appello(ofstream &fout) const;
     };
 
     class sessione {
@@ -116,6 +122,7 @@ public:
 
         void print_sessione();
 
+        void fprint_sessione(ofstream &fout) const;
     };
 
     class calendar {
@@ -136,6 +143,7 @@ public:
 
         void print_calendario();
 
+        void fprint_calendario() const;
     };
 
     bool set_id_esame_nel_calendario(const int n_esami_raggruppati, const vector<string> &id_esame,

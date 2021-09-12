@@ -809,6 +809,7 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
 
 
     _gen.print_calendar();
+    _gen.fprint_calendar();
 
 }
 
