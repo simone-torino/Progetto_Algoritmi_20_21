@@ -638,6 +638,13 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
     //Salvo in memoria le date delle sessioni dal file aaaa-aaaadb_date_sessioni.txt
     set_date_sessioni(leggi_db_date_sessioni(argomenti_es), true);
     display_date_sessioni();
+    int anno = stoi(out_anno_acc[2]);
+
+    //Da usare nei setter dei puntatori
+    subtract( myDate(1,1,anno),_inverno1.getInizio());
+    subtract( myDate(1,1,anno),_estate2.getInizio());
+    subtract( myDate(1,1,anno),_autunno3.getInizio());
+
 
     //Accedo al database
 
