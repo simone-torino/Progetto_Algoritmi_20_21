@@ -549,15 +549,14 @@ bool Genera_esami::slot::set_id_esame_nello_slot(int n_esami_raggruppati, const 
         n_aule_necessarie = n_aule_necessarie + n_vers_paral[i];
     }
 
-//    slot s;
 
-    if ((n_aule_necessarie + /*s.get_info_esami_size()*/_info_da_stampare.size()) > id_aule.size()) {
+    if ((n_aule_necessarie/* + _info_da_stampare.size()*/) > id_aule.size()) {
 //        cout<<endl<<"Massima capienza dello slot raggiunta! (esame "<<id_esame<<")"<<endl;
         return false;
 
     } else {
 
-        for (int j = 0; j < id_professori.size(); j++) {
+        /*for (int j = 0; j < id_professori.size(); j++) {
             for (int k = 0; k < id_professori[j].size(); k++) {
                 it = find(_id_professori_inseriti.begin(), _id_professori_inseriti.end(), id_professori[j][k]);
                 if (it != _id_professori_inseriti.end()) {
@@ -565,9 +564,9 @@ bool Genera_esami::slot::set_id_esame_nello_slot(int n_esami_raggruppati, const 
                     return false;
                 }
             }
-        }
+        }*/
 
-        _info_da_inserire.clear();
+//        _info_da_inserire.clear();
         int i = 0;
 
         /*for (int j = 0; j < n_esami_raggruppati; j++) {
