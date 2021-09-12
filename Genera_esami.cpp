@@ -674,7 +674,7 @@ void Genera_esami::slot::print_info() {
     }
 }
 
-void slot::print_info_warnings() {
+void Genera_esami::slot::print_info_warnings() {
     for (int i = 0; i < _info_da_stampare.size(); i++) {
         if (_info_da_stampare[i]._vincolo_inserito > 0) {
             // Stampo primo vincolo violato
