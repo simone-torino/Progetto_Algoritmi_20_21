@@ -167,7 +167,15 @@ void Database::target_aggiungi(options::opzione o) {
 
             leggi_in(_file_db_cds, _cds_db);
 
-            this->checkIdCorso_in_Cds();
+            try{
+                this->checkIdCorso_in_Cds();
+            } catch (err_corso_non_trovato_nel_cds &e){
+                cout << e.what() << endl;
+                exit (25);
+            } catch (err_corso_spento_non_trovato_nel_cds &e){
+                cout << e.what() << endl;
+                exit (25);
+            }
             break;
         }
         default:
@@ -1342,10 +1350,10 @@ void Database::checkIdCorso_in_Cds() {
                     }
                 }
                 if (!trovato) {
-                    cout << "Errore corso " << idcorso_cds->getIdCorso() << " non trovato\n";
-                    //TODO: throw exception
-                    exit(43);
+                    cout << "Errore corso " << idcorso_cds->getIdCorso(); //<< " non trovato\n";
+                    throw err_corso_non_trovato_nel_cds();
                 }
+
                 trovato = false;
             }
         }
@@ -1356,8 +1364,8 @@ void Database::checkIdCorso_in_Cds() {
                 }
             }
             if (!trovato) {
-                cout << "Errore corso spento " << id_spento->getIdCorso() << " non trovato\n";
-                //TODO: throw exception
+                cout << "Errore corso spento " << id_spento->getIdCorso();// << " non trovato\n";
+               throw err_corso_spento_non_trovato_nel_cds();
                 exit(43);
             }
             trovato = false;

@@ -728,22 +728,22 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
 
                             }
                         }
-                        if (!trovato_ragrupp) {
+                        //if (!trovato_ragrupp) {
 //                            cout << "L'esame raggruppato " << id_esame_raggruppato->getIdCorso()
 //                                 << " non ha l'anno accademico " << anno_acc << " salvato nel database\n";
                             //TODO: throw exception?
 //                            exit(-2);
-                        }
+                      //  }
                     }
                 }
             }
         }
-        if (!trovato) {
+      //  if (!trovato) {
 //            cout << "L'esame " << corso->getIdCorso() << " non ha l'anno accademico " << anno_acc
 //                 << " salvato nel database\n";
             //TODO: throw exception?
 //            exit(-2);
-        }
+      //  }
 
 //TODO: funzione che calcola numero di slot necessari per l'esame (ogni versione ha lo stesso numero di slot) (float)floor((120+15+25) / 120)
 

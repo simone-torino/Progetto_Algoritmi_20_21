@@ -186,3 +186,9 @@ const char * err_formattazione_attivo_non_attivo::what() const noexcept {return 
 
 err_numero_versioni_parallele::err_numero_versioni_parallele():messaggio("Il numero di ID degli esami paralleli differisce dalla quantità atteso") {}
 const char * err_numero_versioni_parallele::what() const noexcept {return messaggio;}
+
+err_corso_non_trovato_nel_cds::err_corso_non_trovato_nel_cds():messaggio("Id del corso non trovato all'interno del corso di studio."){}
+const char* err_corso_non_trovato_nel_cds::what() const noexcept {return messaggio;}
+
+err_corso_spento_non_trovato_nel_cds::err_corso_spento_non_trovato_nel_cds():messaggio("Id del corso spento non trovato all'interno del corso di studio."){}
+const char* err_corso_spento_non_trovato_nel_cds::what() const noexcept {return messaggio;}

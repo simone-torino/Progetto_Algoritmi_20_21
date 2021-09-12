@@ -317,5 +317,20 @@ public:
     err_numero_versioni_parallele();
 };
 
+class err_corso_non_trovato_nel_cds: public std::exception{
+private:
+    const char* messaggio;
+public:
+    const char* what() const noexcept;
+    err_corso_non_trovato_nel_cds();
+};
+
+class err_corso_spento_non_trovato_nel_cds: public std::exception{
+private:
+    const char* messaggio;
+public:
+    const char* what() const noexcept;
+    err_corso_spento_non_trovato_nel_cds();
+};
 
 #endif //PROGETTO_ALGORITMI_20_21_ECCEZIONI_H
