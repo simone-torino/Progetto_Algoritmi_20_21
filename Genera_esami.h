@@ -1,8 +1,8 @@
 #ifndef MAIN_CPP_GENERA_ESAMI_H
 #define MAIN_CPP_GENERA_ESAMI_H
 
-#define n_aule 4
-#define n_slot 3
+#define n_aule 25
+#define n_slot 6
 #define n_giorni_appello_1 12
 #define n_giorni_appello_2 24
 
@@ -28,9 +28,67 @@ public:
 
     void setCapienzaEsame(const vector<int> &capienzaEsame);
 
+//    vector<string> get_id_aule();
+
+//    vector<int> get_capienza();
+
 
 //    explicit Genera_esami(const vector<string> &argomenti);
-//    Genera_esami() = default;
+    Genera_esami() = default;
+
+    class slot {
+
+
+    private:
+
+        struct _info_esami_da_inserire {
+            string _id_esami_da_inserire;
+            int _n_studenti_iscritti;
+            string _id_cds_da_inserire;
+            vector<string> _id_aula_da_inserire;
+            int _n_versioni_da_inserire;
+            int _versione_da_inserire;
+            int _vincolo_da_inserire;
+
+        };
+        vector<_info_esami_da_inserire> _info_da_inserire;
+
+        struct _info_esami_inseriti {
+            string _id_esame_inserito;
+            string _id_cds_inserito;
+            vector<string> _id_aula_inserita;
+            int _n_versioni_inserito;
+            int _versione_inserita;
+            int _vincolo_inserito;
+        };
+        vector<_info_esami_inseriti> _info_da_stampare;
+
+        vector<string> _id_professori_inseriti;
+
+//        vector<string> _id_aule;
+//        vector<int> _capienze;
+
+    public:
+
+        bool set_id_esame_nello_slot(int n_esami_raggruppati, const vector<string> &id_esame,
+                                     const vector<vector<string>> &id_cds, const vector<vector<string>> &id_professori,
+                                     vector<int> &n_vers_paral,
+                                     const vector<vector<int>> &n_studenti_iscritti, int vincolo,
+                                     const vector<string> &id_aule, const vector<int> &capienze);
+
+        bool maggior_n_studenti(int n_studenti_iscritti_1, int n_studenti_iscritti_2);
+
+        void print_professori();
+
+//        void set_id_aule(const vector<string> &id_aule);
+
+//        void set_capienza(const vector<int> &capienze);
+
+        void print_info();
+
+        void print_info_warnings();
+
+    };
 
     class giorno {
 
@@ -47,7 +105,8 @@ public:
         bool set_id_esame_nel_giorno(int n_esami_raggruppati, const vector<string> &id_esame,
                                      const vector<vector<string>> &id_cds, const vector<string> &anno,
                                      const vector<int> &n_slot_necessari, const vector<vector<string>> &id_professori,
-                                     const vector<int> &n_vers_paral, const vector<vector<int>> &n_studenti_iscritti, int vincolo);
+                                     const vector<int> &n_vers_paral, const vector<vector<int>> &n_studenti_iscritti,
+                                     int vincolo, const vector<string> &id_aule, const vector<int> &capienze);
 
         void print_giorno();
 
@@ -72,7 +131,8 @@ public:
         bool set_id_esame_nell_appello(int n_esami_raggruppati, const vector<string> &id_esame,
                                        const vector<vector<string>> &id_cds, const vector<string> &anno,
                                        const vector<int> &n_slot_necessari, const vector<vector<string>> &id_professori,
-                                       const vector<int> &n_vers_paral, const vector<vector<int>> &n_studenti_iscritti, int vincolo);
+                                       const vector<int> &n_vers_paral, const vector<vector<int>> &n_studenti_iscritti,
+                                       int vincolo, const vector<string> &id_aule, const vector<int> &capienze);
 
         bool trovato_cds_anno(const vector<string> &id_cds, const string &anno, int inserisco_nel_giorno, int vincolo);
 
@@ -108,7 +168,8 @@ public:
                                          const vector<vector<string>> &id_professori,
                                          const vector<int> &n_vers_paral,
                                          const string &semestre_dell_esame,
-                                         const vector<vector<int>> &n_studenti_iscritti);
+                                         const vector<vector<int>> &n_studenti_iscritti, const vector<string> &id_aule,
+                                         const vector<int> &capienze);
 
         void print_sessione();
 
@@ -131,7 +192,8 @@ public:
                                          const vector<int> &n_slot_necessari,
                                          const vector<vector<string>> &id_professori, const vector<int> &n_vers_paral,
                                          const string &semestre_dell_esame,
-                                         const vector<vector<int>> &n_studenti_iscritti);
+                                         const vector<vector<int>> &n_studenti_iscritti, const vector<string> &id_aule,
+                                         const vector<int> &capienze);
 
         void print_calendario();
 

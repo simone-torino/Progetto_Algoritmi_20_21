@@ -156,14 +156,9 @@ void Calendario::set_date_sessioni(const vector<string> &argomenti_sessioni, boo
         }
     }
 
-    //Conversione da strytringa a intero per poter memorizzare i dati con il formato della classe myDate
+    //Conversione da stringa a intero per poter memorizzare i dati con il formato della classe myDate
     vector<int> date;
-    try {
-        transform(outstring.begin(), outstring.end(), back_inserter(date), strToInt);
-    } catch (errore_stringa_non_convert_in_int &e){
-        cout << e.what() << endl;
-        exit (33);
-    }
+    transform(outstring.begin(), outstring.end(), back_inserter(date), strToInt);
 
     //TODO: setperiodo
     int i = 0;
@@ -450,9 +445,8 @@ void Calendario::read_indisponibilita(ifstream &fin, vector<Indisponibilita> &v_
             vector<int> gmy; //Data come interi
             try {
                 transform(int_date.begin() + 1, int_date.end(), back_inserter(gmy), strToInt);
-            } catch (errore_stringa_non_convert_in_int &e) {
-                cout << e.what() << endl;
-                exit (33);
+            } catch (std::runtime_error &e) {
+                cout << "Errore string to int: " << e.what() << endl;
             }
 
             //compongo un oggetto indisponibilita per poi salvarlo
@@ -655,9 +649,6 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
        exit(26);
    } catch (errore_formattazione_id_corsi &e){
        cout << e.what() << endl;
-   } catch (err_corso_senza_anno &e){
-       cout << e.what() << endl;
-       exit(26);
    }
 //    _dbcal.target_fstampa(options::corsi, true); //debug
 
@@ -675,7 +666,7 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
     }
 
     _gen.setIdAule(id_aule);
-//    _gen.setCapienzaEsame(capienza_esame);
+    _gen.setCapienzaEsame(capienza_esame);
 
     //Leggo file indisponibilità.txt
 
@@ -728,22 +719,22 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
 
                             }
                         }
-                        //if (!trovato_ragrupp) {
+                        if (!trovato_ragrupp) {
 //                            cout << "L'esame raggruppato " << id_esame_raggruppato->getIdCorso()
 //                                 << " non ha l'anno accademico " << anno_acc << " salvato nel database\n";
                             //TODO: throw exception?
 //                            exit(-2);
-                      //  }
+                        }
                     }
                 }
             }
         }
-      //  if (!trovato) {
+        if (!trovato) {
 //            cout << "L'esame " << corso->getIdCorso() << " non ha l'anno accademico " << anno_acc
 //                 << " salvato nel database\n";
             //TODO: throw exception?
 //            exit(-2);
-      //  }
+        }
 
 //TODO: funzione che calcola numero di slot necessari per l'esame (ogni versione ha lo stesso numero di slot) (float)floor((120+15+25) / 120)
 
@@ -794,8 +785,32 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
 //            }
             }
 
-            _gen.set_id_esame_nel_calendario((int) datiEsame.size(), esami, cds, anni,
-                                             slot, prof, parall, sem, iscritti);
+            esami.resize(1);
+            esami[0] = "ABC123";
+            cds.clear();
+            cds.resize(1);
+            cds[0].resize(1);
+            cds[0][0] = "CDS01";
+            anni.resize(1);
+            anni[0] = "2";
+            slot.resize(1);
+            slot[0] = 3;
+            prof.clear();
+            prof.resize(1);
+            prof[0].resize(1);
+            prof[0][0] = "dprova";
+            parall.resize(1);
+            parall[0] = 1;
+            sem = 1;
+            iscritti.clear();
+            iscritti.resize(1);
+            iscritti[0].resize(1);
+            iscritti[0][0] = 90;
+
+            _gen.set_id_esame_nel_calendario(1, esami, cds, anni, slot, prof, parall, sem, iscritti);
+
+//           _gen.set_id_esame_nel_calendario((int) datiEsame.size(), corsi_acquisiti, cds, anni,
+//                                             slot, prof, parall, sem, iscritti);
 
 
             //TODO: la funzione genera esami penso che dovrebbe stare all'interno di questo ciclo
@@ -928,9 +943,9 @@ vector<string> Calendario::leggi_db_date_sessioni(const vector<string> &argoment
     return outstring;
 }
 
-//Calendario::Calendario(const string &file_argomento) {
-//    _file_argomento = file_argomento;
-//}
+/*Calendario::Calendario(const string &file_argomento) {
+    _file_argomento = file_argomento;
+}*/
 
 Database Calendario::getDbcal() const {
     return _dbcal;
@@ -1032,7 +1047,7 @@ ostream &operator<<(ostream &os, const Calendario::Dati_esame &esame) {
     os << "anno_appartenenza: " << esame.anno_appartenenza << " id_cds: " << esame.id_cds.size() << " id_professori: "
        << esame.id_professori.size() << " n_versioni: " << esame.n_versioni << " n_iscritti: "
        << esame.n_iscritti.size()
-       << " semestre: " << esame.semestre << " id_corsi_raggruppati: " << esame.id_corsi_raggruppati.size()
+       << " semestre: " << esame.semestre << " id_corso: " << esame.id_corso
        << " n_slot_necessari: " << esame.n_slot_necessari;
     return os;
 }

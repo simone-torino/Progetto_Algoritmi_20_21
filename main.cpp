@@ -2,7 +2,6 @@
 #include "Database.h"
 #include "Calendario.h"
 #include "Eccezioni.h"
-#include "Genera_esami.h"
 
 /*  AGGIUNTA
  * -a:s studenti
@@ -172,7 +171,7 @@ int main(int argc, char *argv[]) {
 
                         break;
                     default:
-                        LOG("Errore argomento impostazione esami\n");
+                        LOG("Errore argomento impostazione esami\n")
                         throw err_parametri_linea_di_comando();
                 }
                 break;
