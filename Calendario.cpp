@@ -722,7 +722,6 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
                     }
                 }
             }
-
         }
         if (!trovato) {
 //            cout << "L'esame " << corso->getIdCorso() << " non ha l'anno accademico " << anno_acc
