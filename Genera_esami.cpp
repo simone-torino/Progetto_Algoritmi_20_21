@@ -478,7 +478,7 @@ vector<string> &Genera_esami::giorno::get_anni_inseriti() {
 }
 
 
-bool slot::set_id_esame_nello_slot(int n_esami_raggruppati, const vector<string> &id_esame,
+bool Genera_esami::slot::set_id_esame_nello_slot(int n_esami_raggruppati, const vector<string> &id_esame,
                                                  const vector<vector<string>> &id_cds,
                                                  const vector<vector<string>> &id_professori,
                                                  vector<int> &n_vers_paral,
@@ -562,7 +562,7 @@ bool slot::set_id_esame_nello_slot(int n_esami_raggruppati, const vector<string>
         for (i = 0; i < _info_da_inserire.size(); i++) {
             temp = _info_da_inserire[i];
 //            cout << "Dimensione aule: " << id_aule.size() << endl;
-            temp._id_aula_da_inserire.push_back(temp_id_aule[indice_aula]);
+            temp._id_aula_da_inserire.push_back(id_aule[indice_aula]);
             cont = 1;
             if (temp._n_studenti_iscritti > capienze[indice_aula]) {
                 do {
@@ -573,7 +573,7 @@ bool slot::set_id_esame_nello_slot(int n_esami_raggruppati, const vector<string>
 //                    _n_studenti_iscritti[i] = (_n_studenti_iscritti[i] - (_n_studenti_iscritti[i] % 2)) / 2;
                     temp._n_studenti_iscritti =
                             temp._n_studenti_iscritti - capienze[indice_aula + cont - 1];
-                    temp._id_aula_da_inserire.push_back(temp_id_aule[indice_aula + cont]);
+                    temp._id_aula_da_inserire.push_back(id_aule[indice_aula + cont]);
                     cont++;
                 } while (temp._n_studenti_iscritti > capienze[indice_aula + cont]);
             }

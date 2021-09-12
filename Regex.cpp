@@ -96,6 +96,7 @@ std::regex Database::Regex::target_expression(lettura::reg_expressions exp) {
 
             //corsi da inserire
         case lettura::corsi_inserimento:
+            cout << "rg:" << _rg_corso_ins << endl;
             return std::regex(_rg_corso_ins);
 
             //id corso singoli
