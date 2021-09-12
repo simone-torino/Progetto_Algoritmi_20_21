@@ -112,6 +112,8 @@ public:
 
         void print_sessione();
 
+        void set_quale_sessione(const string &quale_sessione);
+
     };
 
     class calendar {

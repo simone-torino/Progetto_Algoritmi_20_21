@@ -738,59 +738,67 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
 
 //TODO: funzione che calcola numero di slot necessari per l'esame (ogni versione ha lo stesso numero di slot) (float)floor((120+15+25) / 120)
 
-        for (int i = 0; i < datiEsame.size(); i++) {
-            for (int j = 0; j < datiEsame[i].n_versioni; j++) {
-                datiEsame[i].n_iscritti.push_back(rand() % 25 + 50);
-            }
-        }
         cout << "Dimensione datiesame: " << datiEsame.size() << endl;
-        vector<string> esami;
-        vector<vector<string>> cds;
-        vector<vector<string>> prof;
-        vector<string> anni;
-        vector<int> slot;
-        vector<int> parall;
-        vector<vector<int>> iscritti;
+        if(!datiEsame.empty()) {
+            for (int i = 0; i < datiEsame.size(); i++) {
+                for (int j = 0; j < datiEsame[i].n_versioni; j++) {
+                    datiEsame[i].n_iscritti.push_back(rand() % 25 + 50);
+                }
+            }
 
-        int sem = datiEsame.front().semestre;
-        esami.push_back(corso->getIdCorso());
-        for (int i = 0; i < datiEsame.size(); i++) {
-            cout << "Trasferendo datiesame " << i << endl;
-            anni.push_back(datiEsame[i].anno_appartenenza);
-            slot.push_back(datiEsame[i].n_slot_necessari);
-            parall.push_back(datiEsame[i].n_versioni);
-            iscritti.resize(datiEsame[i].n_iscritti.size());
-            cds.resize(datiEsame[i].id_cds.size());
-            prof.resize(datiEsame[i].id_professori.size());
-            for (int j = 0; j < datiEsame[i].n_iscritti.size(); j++) {
-//                iscritti[i].push_back(datiEsame[i].n_iscritti[j]);
-            }
-            for (int j = 0; j < datiEsame[i].id_corsi_raggruppati.size(); j++) {
-//                esami.push_back(datiEsame[i].id_corsi_raggruppati[j]);
-            }
-            for (int j = 0; j < datiEsame[i].id_cds.size(); j++) {
+            vector<string> esami;
+            vector<vector<string>> cds;
+            vector<vector<string>> prof;
+            vector<string> anni;
+            vector<int> slot;
+            vector<int> parall;
+            vector<vector<int>> iscritti;
+            int sem;
+//        esami.push_back(corso->getIdCorso());
+            iscritti.resize(datiEsame.size());
+            prof.resize(datiEsame.size());
+            cds.resize(datiEsame.size());
+            for (int i = 0; i < datiEsame.size(); i++) {
+                cout << "Trasferendo datiesame " << i << endl;
+                anni.push_back(datiEsame[i].anno_appartenenza);
+                slot.push_back(datiEsame[i].n_slot_necessari);
+                parall.push_back(datiEsame[i].n_versioni);
+                sem = datiEsame[i].semestre;
+                iscritti[i].insert(iscritti[i].end(), datiEsame[i].n_iscritti.begin(), datiEsame[i].n_iscritti.end());
+//            for (int j = 0; j < datiEsame[i].n_iscritti.size(); j++) {
+//
+//            }
+                esami.push_back(datiEsame[i].id_corso);
+//            for (int j = 0; j < datiEsame[i].id_corsi_raggruppati.size(); j++) {
+//
+//            }
+                cds[i].insert(cds[i].end(), datiEsame[i].id_cds.begin(), datiEsame[i].id_cds.end());
+//            for (int j = 0; j < datiEsame[i].id_cds.size(); j++) {
 //                cout << "size cds: " << cds.size() << " indice " << j << " size id_cds " << datiEsame[i].id_cds.size() << endl;
 //                cout << datiEsame[i].id_cds[1] << endl;
+//
+//
+//            }
+                prof[i].insert(prof[i].end(), datiEsame[i].id_professori.begin(), datiEsame[i].id_professori.end());
+//            for (int j = 0; j < datiEsame[i].id_professori.size(); j++) {
+//
+//            }
+            }
 
-//                cds[i].push_back(datiEsame[i].id_cds[j]);
-            }
-            for (int j = 0; j < datiEsame[i].id_professori.size(); j++) {
-//                prof[i].push_back(datiEsame[i].id_professori[j]);
-            }
+            _gen.set_id_esame_nel_calendario((int) datiEsame.size(), esami, cds, anni,
+                                             slot, prof, parall, sem, iscritti);
+
+
+            //TODO: la funzione genera esami penso che dovrebbe stare all'interno di questo ciclo
+        } else{
+            cout << "Errore: il vettore per il trasferimento dei dati esame e' vuoto\n";
+
         }
-
-        _gen.set_id_esame_nel_calendario((int) datiEsame.size(), esami, cds,
-                                         anni,
-                                         slot, prof, parall, sem, iscritti);
-
-
-        //TODO: la funzione genera esami penso che dovrebbe stare all'interno di questo ciclo
-
         datiEsame.clear();
     }
 
 
-//    _gen.print_calendar();
+    _gen.print_calendar();
 
 
 
@@ -818,16 +826,19 @@ void Calendario::setDatiEsame(Database::Corso::Anno_Accademico *dati_anno, const
         }
     }
 
-    //struttura che associa ogni id esame agli slot necessari
+    //funzione che associa ogni id esame agli slot necessari
     bool sufficiente;
     int n_slot_necessari;
     sufficiente = false;
     n_slot_necessari = 0;
+    cout << "Debug getter: " << id_esame << ':' << dati_anno->getEsame()->getDurataEsame() << ' '
+         << dati_anno->getEsame()->getTIngresso() << ' ' << dati_anno->getEsame()->getTUscita() << endl;
+    int minuti_necessari = dati_anno->getEsame()->getDurataEsame() + dati_anno->getEsame()->getTIngresso() +
+                           dati_anno->getEsame()->getTUscita();
+    cout << "Minuti necessari esame " << id_esame << ": " << minuti_necessari << endl;
     while (!sufficiente && n_slot_necessari < 7) {
         n_slot_necessari++;
-        if ((dati_anno->getEsame()->getDurataEsame() +
-             dati_anno->getEsame()->getTIngresso() +
-             dati_anno->getEsame()->getTUscita()) < (120 * n_slot_necessari)) {
+        if (minuti_necessari < (120 * n_slot_necessari)) {
             sufficiente = true;
         }
     }
@@ -837,6 +848,7 @@ void Calendario::setDatiEsame(Database::Corso::Anno_Accademico *dati_anno, const
         //return qualcosa
     }
     esame_temp.n_slot_necessari = n_slot_necessari;
+    cout << "Debug slot esame " << id_esame << " : " << esame_temp.n_slot_necessari << endl;
 
     //Per ogni corso di studio
     for (auto corsodistudio: _dbcal.getCdsDb()) {

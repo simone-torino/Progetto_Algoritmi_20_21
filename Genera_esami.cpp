@@ -49,9 +49,14 @@ void Genera_esami::setCapienzaEsame(const vector<int> &capienzaEsame) {
 
 Genera_esami::calendar::calendar() {
 
-//    _sessioni.emplace_back("s1");
-//    _sessioni.emplace_back("s2");
-//    _sessioni.emplace_back("s3");
+    sessione sessione_s1("s1");
+    sessione sessione_s2("s2");
+    sessione sessione_s3("s3");
+
+    _sessioni.push_back(sessione_s1);
+    _sessioni.push_back(sessione_s2);
+    _sessioni.push_back(sessione_s3);
+
 
 }
 
@@ -89,11 +94,13 @@ void Genera_esami::calendar::print_calendario() {
 Genera_esami::sessione::sessione(const string &quale_sessione) {
 
     _quale_sessione = quale_sessione;
+    appello appello_1(1);
+    appello appello_2(2);
     if (_quale_sessione != "s3") {
-        _appelli.emplace_back(1);
-        _appelli.emplace_back(2);
+        _appelli.push_back(appello_1);
+        _appelli.push_back(appello_2);
     } else {
-        _appelli.emplace_back(2);
+        _appelli.push_back(appello_2);
     }
 
 }
@@ -593,4 +600,10 @@ void slot::print_info_warnings() {
                    "Indisponibilità dei docenti non rispettata" << endl;
         }
     }
+}
+
+void Genera_esami::sessione::set_quale_sessione(const string &quale_sessione) {
+
+    _quale_sessione = quale_sessione;
+
 }
