@@ -62,15 +62,16 @@ namespace lettura {
         cds_in = 13,
         cds_semestri = 14,
         cds_id_corso = 15,
-        sessioni = 16,
-        anno_acc = 17,
-        id_prof = 18,
-        prof_singolo = 19,
-        profn_campi = 20,
-        esame_campi = 21,
-        esame_graffe = 22,
-        periodo = 23,
-        data = 24
+        corsi_inserimento = 16,
+        sessioni = 17,
+        anno_acc = 18,
+        id_prof = 19,
+        prof_singolo = 20,
+        profn_campi = 21,
+        esame_campi = 22,
+        esame_graffe = 23,
+        periodo = 24,
+        data = 25
 
     };
 
@@ -109,7 +110,7 @@ public:
         const string _rg_corso_db_base =
                 "c;" + _rg_id_corso + ';' + _rg_text + ';' + _rg_num + ';' + _rg_num + ';' + _rg_num + ';' + _rg_num +
                 ';';
-        const string _rg_n_versioni = "([0-9]);\\[";
+        const string _rg_n_versioni = "([0-9]*);\\[";
         const string _rg_anno_acc = "([0-9]{4})-([0-9]{4})";
         const string _rg_esame_campi = "\\{" + _rg_num + "," + _rg_num + "," + _rg_num + "," + "([SOP]*),([AL])\\}";
         const string _rg_esame_graffe = "\\{([0-9,SOPAL]+)\\}";
@@ -128,8 +129,11 @@ public:
         const string _rg_profn_graffe = "\\{([0-9,d]+)\\}";
         const string _rg_profn_campi = "([0-9d]+),([0-9]+),([0-9]+),([0-9]+)";
 
+        //LETTURA INSERIMENTO CORSI ABC124;2019-2020;non_attivo;3;
+        const string _rg_attivo = "((?:non_)?attivo)?"; //Prende entrambe le stringhe, ma non acquisisce "non_"
+        const string _rg_corso_ins = _rg_id_corso + ";" + _rg_anno_acc + ";" + _rg_attivo + ";" + _rg_num;
+
         //ESPRESSIONI PER DATE ESAMI
-//        const string _rg_dmy = "aa";
         const string _rg_data = "([0-9]{1,2})\\-([0-9]{1,2})\\-([0-9]{4})";
         const string _rg_periodo = _rg_data + "\\|" + _rg_data;
 
@@ -295,6 +299,8 @@ public:
 
                 void debug();
 
+                friend ostream &operator<<(ostream &os, const Esame &esame);
+
             };
 
             class Prof_per_versione {
@@ -323,6 +329,8 @@ public:
 
                 const vector<Profn *> &getAltriProfN() const;
 
+                friend ostream &operator<<(ostream &os, const Prof_per_versione &versione);
+
             private:
 
                 string _matricola_titolare;
@@ -344,6 +352,8 @@ public:
             const vector<Prof_per_versione *> &getVersioni() const;
 
             const vector<Corso_id *> &getIdCorsiRaggruppati() const;
+
+            friend ostream &operator<<(ostream &os, const Anno_Accademico &accademico);
 
         private:
             string _anno_accademico;

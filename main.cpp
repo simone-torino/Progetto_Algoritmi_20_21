@@ -59,9 +59,9 @@ int main(int argc, char *argv[]) {
         if (argc == 3) {
             o_var = static_cast<options::opzione>(argv[1][3]); //variabile opzione
         } else if (argc == 7) {
-            o_var = options::current_a;
+            o_var = options::current_a; //opzione per date sessioni
         } else if (argc == 5) {
-            o_var = options::set_av;
+            o_var = options::set_av; //opzione per indisponibilita
         }
         string file_argomento(argv[2]);
 

@@ -94,10 +94,15 @@ std::regex Database::Regex::target_expression(lettura::reg_expressions exp) {
         case lettura::cds_semestri:
             return std::regex(_rg_cds_semestri);
 
+            //corsi da inserire
+        case lettura::corsi_inserimento:
+            return std::regex(_rg_corso_ins);
+
             //id corso singoli
         case lettura::cds_id_corso:
             return std::regex(_rg_id_corso);
 
+            //TODO: da qui in poi quanti servono?
         case lettura::prof_singolo:
             return std::regex(_rg_profn_graffe);
 

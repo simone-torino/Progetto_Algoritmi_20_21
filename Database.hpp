@@ -135,38 +135,39 @@ void Database::leggi_db(const string &nome_file, vector<T *> &_classedati_xx) {
 template<typename T>
 void Database::t_aggiorna(vector<T *> &_classedati_db, vector<T *> &_classedati_agg, const string &file_db) {
 
+    //Leggo il database e il file con gli aggiornamenti
     leggi_db<T>(file_db, _classedati_db);
     leggi_db<T>(_file_argomento, _classedati_agg);
 
     bool matricola_trovata = false;
 
-    for (auto i: _classedati_agg) {
+    for (auto agg: _classedati_agg) {
         for (auto j: _classedati_agg) {
             //salto controlli su se stesso
-            if (i != j) {
-                if (i->getMatricola() == j->getMatricola()) {
-                    cout << "[Warning] _matricola " << i->getMatricola() << " duplicata nel file " << _file_argomento
+            if (agg != j) {
+                if (agg->getMatricola() == j->getMatricola()) {
+                    cout << "[Warning] _matricola " << agg->getMatricola() << " duplicata nel file " << _file_argomento
                          << endl;
                     cout << "L' aggiornamento verrà eseguito utilizzando l'ultima occorrenza" << endl;
                 }
             }
         }
-        for (auto k: _classedati_db) {
+        for (auto db: _classedati_db) {
             //se trovo la _matricola da aggiornare nel vettore
-            if (i->getMatricola() == k->getMatricola()) {
+            if (agg->getMatricola() == db->getMatricola()) {
                 //se il campo dal vettore aggiornamento non è vuoto, aggiorno
-                cout << "Matricola " << i->getMatricola() << " -> " << endl;
-                if (!i->getNome().empty()) {
-                    k->setNome(i->getNome());
-                    cout << "Aggiornato nome: " << k->getNome() << endl;
+                cout << "Matricola " << agg->getMatricola() << " -> " << endl;
+                if (!agg->getNome().empty()) {
+                    db->setNome(agg->getNome());
+                    cout << "Aggiornato nome: " << db->getNome() << endl;
                 }
-                if (!i->getCognome().empty()) {
-                    k->setCognome(i->getCognome());
-                    cout << "Aggiornato cognome: " << k->getCognome() << endl;
+                if (!agg->getCognome().empty()) {
+                    db->setCognome(agg->getCognome());
+                    cout << "Aggiornato cognome: " << db->getCognome() << endl;
                 }
-                if (!i->getEmail().empty()) {
-                    k->setEmail(i->getEmail());
-                    cout << "Aggiornato email: " << k->getEmail() << endl;
+                if (!agg->getEmail().empty()) {
+                    db->setEmail(agg->getEmail());
+                    cout << "Aggiornato email: " << db->getEmail() << endl;
                 }
                 matricola_trovata = true;
             }
