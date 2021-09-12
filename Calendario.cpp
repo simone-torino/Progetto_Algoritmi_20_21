@@ -646,9 +646,9 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
 //    subtract( myDate(1,1,anno),_autunno3.getInizio());
 
 
-    _gen.set_puntatore_inizio_sessioni(subtract( _inverno1.getInizio(), myDate(1,1,anno)),
-                                       subtract( _estate2.getInizio(), myDate(1,1,anno)),
-                                       subtract( _autunno3.getInizio(), myDate(1,1,anno)));
+//    _gen.set_puntatore_inizio_sessioni(subtract( _inverno1.getInizio(), myDate(1,1,anno)),
+//                                       subtract( _estate2.getInizio(), myDate(1,1,anno)),
+//                                       subtract( _autunno3.getInizio(), myDate(1,1,anno)));
     //Accedo al database
 
     //Leggo file db_corsi.txt
@@ -675,8 +675,8 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
         capienza_esame.push_back(aula->getCapEsame());
     }
 
-    _gen.setIdAule(id_aule);
-    _gen.setCapienzaEsame(capienza_esame);
+//    _gen.setIdAule(id_aule);
+//    _gen.setCapienzaEsame(capienza_esame);
 
     //Leggo file indisponibilità.txt
 
@@ -748,52 +748,54 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
                 parall.push_back(datiEsame[i].n_versioni);
                 sem = datiEsame[i].semestre;
                 iscritti[i].insert(iscritti[i].end(), datiEsame[i].n_iscritti.begin(), datiEsame[i].n_iscritti.end());
-            for (int j = 0; j < datiEsame[i].n_iscritti.size(); j++) {
+                for (int j = 0; j < datiEsame[i].n_iscritti.size(); j++) {
 
-            }
+                }
                 esami.push_back(datiEsame[i].id_corso);
                 cds[i].insert(cds[i].end(), datiEsame[i].id_cds.begin(), datiEsame[i].id_cds.end());
-            for (int j = 0; j < datiEsame[i].id_cds.size(); j++) {
-                cout << "size cds: " << cds.size() << " indice " << j << " size id_cds " << datiEsame[i].id_cds.size() << endl;
-                cout << datiEsame[i].id_cds[i] << endl;
+                for (int j = 0; j < datiEsame[i].id_cds.size(); j++) {
+                    cout << "size cds: " << cds.size() << " indice " << j << " size id_cds " << datiEsame[i].id_cds.size() << endl;
+                    cout << datiEsame[i].id_cds[i] << endl;
 
 
-            }
+                }
                 prof[i].insert(prof[i].end(), datiEsame[i].id_professori.begin(), datiEsame[i].id_professori.end());
-            for (int j = 0; j < datiEsame[i].id_professori.size(); j++) {
+                for (int j = 0; j < datiEsame[i].id_professori.size(); j++) {
 
-            }
+                }
             }
 
-//            esami.resize(1);
-//            esami[0] = "ABC123";
-//            cds.clear();
-//            cds.resize(1);
-//            cds[0].resize(1);
-//            cds[0][0] = "CDS01";
-//            anni.resize(1);
-//            anni[0] = "2";
-//            slot.resize(1);
-//            slot[0] = 3;
-//            prof.clear();
-//            prof.resize(1);
-//            prof[0].resize(1);
-//            prof[0][0] = "dprova";
-//            parall.resize(1);
-//            parall[0] = 1;
-//            sem = 1;
-//            iscritti.clear();
-//            iscritti.resize(1);
-//            iscritti[0].resize(1);
-//            iscritti[0][0] = 90;
+//            Informazioni fake
+
+            esami.resize(1);
+            esami[0] = "ABC123";
+            cds.clear();
+            cds.resize(1);
+            cds[0].resize(1);
+            cds[0][0] = "CDS01";
+            anni.resize(1);
+            anni[0] = "2";
+            slot.resize(1);
+            slot[0] = 3;
+            prof.clear();
+            prof.resize(1);
+            prof[0].resize(1);
+            prof[0][0] = "d_prova";
+            parall.resize(1);
+            parall[0] = 1;
+            sem = 1;
+            iscritti.clear();
+            iscritti.resize(1);
+            iscritti[0].resize(1);
+            iscritti[0][0] = 90;
 
 //            cds[0].push_back("C102");
 //            cds[0].push_back("C103");
 
 //            _gen.set_id_esame_nel_calendario(1, esami, cds, anni, slot, prof, parall, sem, iscritti);
 
-           _gen.set_id_esame_nel_calendario((int) datiEsame.size(), esami, cds, anni,
-                                             slot, prof, parall, sem, iscritti);
+            _gen.set_id_esame_nel_calendario((int) datiEsame.size(), esami, cds, anni,
+                                             slot, prof, parall, sem/*, iscritti*/);
 
 
             //TODO: la funzione genera esami penso che dovrebbe stare all'interno di questo ciclo
