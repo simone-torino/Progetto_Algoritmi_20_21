@@ -38,7 +38,7 @@ namespace options {
         aule = 'a',
         corsi = 'c',
         cds = 'f',
-        current_a = 'c', //conflitto ?
+        current_a = 'z',
         set_av = 's'
     };
 }

@@ -38,10 +38,10 @@ int main(int argc, char *argv[]) {
         cout << argvs << ' ';
     }
     cout << '\n';
-
+    cout << argc << endl;
     //controlli argc su ogni switch?
     try {
-        if (argc < 3) { //TODO controlla questo numero
+        if (argc < 3 || argc == 6 || argc > 7) { //TODO controlla questo numero
             throw err_parametri_linea_di_comando();
         }
     } catch (err_parametri_linea_di_comando &e) {
@@ -57,8 +57,13 @@ int main(int argc, char *argv[]) {
         options::procedura p_var;
         options::opzione o_var;
         p_var = static_cast<options::procedura>(argv[1][1]); //variabile procedura
-        o_var = static_cast<options::opzione>(argv[1][3]); //variabile opzione
-
+        if (argc == 3) {
+            o_var = static_cast<options::opzione>(argv[1][3]); //variabile opzione
+        } else if (argc == 7) {
+            o_var = options::current_a;
+        } else if (argc == 5) {
+            o_var = options::set_av;
+        }
         string file_argomento(argv[2]);
 
         //Dichiaro il database con il file da aprire come argomento, così tutti i metodi principali possono accederci direttamente

@@ -115,7 +115,7 @@ const char* err_date_nei_periodi::what() const noexcept {
     return messaggio;
 } */
 
-err_periodo::err_periodo():messaggio("La data di inizio e' precedente alla data di fine") {}
+err_periodo::err_periodo():messaggio("La data di inizio e' successiva alla data di fine") {}
 const char * err_periodo::what() const noexcept {
     return messaggio;
 }
