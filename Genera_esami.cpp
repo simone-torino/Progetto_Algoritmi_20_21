@@ -494,7 +494,7 @@ bool slot::set_id_esame_nello_slot(int n_esami_raggruppati, const vector<string>
         n_aule_necessarie = n_aule_necessarie + n_vers_paral[i];
     }
 
-    if ((n_aule_necessarie + _info_da_stampare.size()) > n_aule) {
+    if ((n_aule_necessarie + _info_da_stampare.size()) > id_aule.size()) {
 //        cout<<endl<<"Massima capienza dello slot raggiunta! (esame "<<id_esame<<")"<<endl;
         return false;
 
@@ -566,7 +566,7 @@ bool slot::set_id_esame_nello_slot(int n_esami_raggruppati, const vector<string>
             cont = 1;
             if (temp._n_studenti_iscritti > capienze[indice_aula]) {
                 do {
-                    if ((n_aule_necessarie + _info_da_stampare.size()) + cont > n_aule) {
+                    if ((n_aule_necessarie + _info_da_stampare.size()) + cont > id_aule.size()) {
 //                    Il gruppo di esami non ci sta in questo slot
                         return false;
                     }

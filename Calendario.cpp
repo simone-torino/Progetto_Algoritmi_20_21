@@ -785,7 +785,7 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
 //            }
             }
 
-            esami.resize(1);
+            /*esami.resize(1);
             esami[0] = "ABC123";
             cds.clear();
             cds.resize(1);
@@ -807,10 +807,10 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
             iscritti[0].resize(1);
             iscritti[0][0] = 90;
 
-            _gen.set_id_esame_nel_calendario(1, esami, cds, anni, slot, prof, parall, sem, iscritti);
+            _gen.set_id_esame_nel_calendario(1, esami, cds, anni, slot, prof, parall, sem, iscritti);*/
 
-//           _gen.set_id_esame_nel_calendario((int) datiEsame.size(), corsi_acquisiti, cds, anni,
-//                                             slot, prof, parall, sem, iscritti);
+           _gen.set_id_esame_nel_calendario((int) datiEsame.size(), corsi_acquisiti, cds, anni,
+                                             slot, prof, parall, sem, iscritti);
 
 
             //TODO: la funzione genera esami penso che dovrebbe stare all'interno di questo ciclo
