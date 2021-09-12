@@ -233,7 +233,7 @@ void Calendario::check_sessioni() const {
 //        to_string(_autunno3._secondo.getYear()) != _anno_accademico.second) {
 //        throw std::runtime_error("Almeno una data non corrisponde all'anno accademico di riferimento");
 //    }
-    cout << "ttappost" << endl;
+
 }
 
 void Calendario::fstampa_date_sessioni() {
@@ -725,7 +725,6 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
                             //TODO: throw exception?
 //                            exit(-2);
                         }
-
                     }
                 }
             }

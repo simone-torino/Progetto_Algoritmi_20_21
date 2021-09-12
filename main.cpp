@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
         cout << argvs << ' ';
     }
     cout << '\n';
-    cout << argc << endl;
+
     //controlli argc su ogni switch?
     try {
         if (argc < 3 || argc == 6 || argc > 7) { //TODO controlla questo numero
