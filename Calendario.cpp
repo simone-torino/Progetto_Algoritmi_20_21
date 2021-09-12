@@ -857,7 +857,7 @@ void Calendario::setDatiEsame(Database::Corso::Anno_Accademico *dati_anno, const
         //return qualcosa
     }
     esame_temp.n_slot_necessari = n_slot_necessari;
-    cout << "Debug slot esame " << id_esame << " : " << esame_temp.n_slot_necessari << endl;
+    cout << "Debug slot esame " << id_esame << " : " << esame_temp.n_slot_necessari << endl << endl;
 
     //Per ogni corso di studio
     for (auto corsodistudio: _dbcal.getCdsDb()) {
@@ -1032,7 +1032,7 @@ ostream &operator<<(ostream &os, const Calendario::Dati_esame &esame) {
     os << "anno_appartenenza: " << esame.anno_appartenenza << " id_cds: " << esame.id_cds.size() << " id_professori: "
        << esame.id_professori.size() << " n_versioni: " << esame.n_versioni << " n_iscritti: "
        << esame.n_iscritti.size()
-       << " semestre: " << esame.semestre << " id_corsi_raggruppati: " << esame.id_corsi_raggruppati.size()
+       << " semestre: " << esame.semestre << " id_corsi_raggruppati: " << esame.id_corso.size()
        << " n_slot_necessari: " << esame.n_slot_necessari;
     return os;
 }

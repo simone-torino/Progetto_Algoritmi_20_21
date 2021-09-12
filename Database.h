@@ -62,15 +62,16 @@ namespace lettura {
         cds_in = 13,
         cds_semestri = 14,
         cds_id_corso = 15,
-        sessioni = 16,
-        anno_acc = 17,
-        id_prof = 18,
-        prof_singolo = 19,
-        profn_campi = 20,
-        esame_campi = 21,
-        esame_graffe = 22,
-        periodo = 23,
-        data = 24
+        corsi_inserimento = 16,
+        sessioni = 17,
+        anno_acc = 18,
+        id_prof = 19,
+        prof_singolo = 20,
+        profn_campi = 21,
+        esame_campi = 22,
+        esame_graffe = 23,
+        periodo = 24,
+        data = 25
 
     };
 
@@ -127,6 +128,10 @@ public:
                 _rg_num;
         const string _rg_profn_graffe = "\\{([0-9,d]+)\\}";
         const string _rg_profn_campi = "([0-9d]+),([0-9]+),([0-9]+),([0-9]+)";
+
+        //LETTURA INSERIMENTO CORSI ABC124;2019-2020;non_attivo;3;
+        const string _rg_attivo = "";
+        const string _rg_corso_ins = _rg_id_corso + ";" + _rg_anno_acc + ";" + _rg_attivo + ";" + _rg_num;
 
         //ESPRESSIONI PER DATE ESAMI
 //        const string _rg_dmy = "aa";

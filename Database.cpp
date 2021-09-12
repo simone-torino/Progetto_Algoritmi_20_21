@@ -153,13 +153,13 @@ void Database::target_aggiungi(options::opzione o) {
             //leggo anche i corsi per confrontare gli id con quelli inseriti da cds
             try {
                 leggi_corso_db();
-            }catch (err_anno_senza_corso &e){
+            } catch (err_anno_senza_corso &e) {
                 cout << e.what() << endl;
-                exit (26);
-            } catch (errore_formattazione_id_corsi &e){
+                exit(26);
+            } catch (errore_formattazione_id_corsi &e) {
                 cout << e.what() << endl;
-                exit (26);
-            } catch (err_corso_senza_anno &e){
+                exit(26);
+            } catch (err_corso_senza_anno &e) {
                 cout << e.what() << endl;
                 exit(26);
             }
@@ -167,14 +167,14 @@ void Database::target_aggiungi(options::opzione o) {
 
             leggi_in(_file_db_cds, _cds_db);
 
-            try{
+            try {
                 this->checkIdCorso_in_Cds();
-            } catch (err_corso_non_trovato_nel_cds &e){
+            } catch (err_corso_non_trovato_nel_cds &e) {
                 cout << e.what() << endl;
-                exit (25);
-            } catch (err_corso_spento_non_trovato_nel_cds &e){
+                exit(25);
+            } catch (err_corso_spento_non_trovato_nel_cds &e) {
                 cout << e.what() << endl;
-                exit (25);
+                exit(25);
             }
             break;
         }
@@ -366,9 +366,9 @@ Database::Aula::Aula(const string &row) {
     aula_temp_int.resize(2);
     try {
         transform(aula_temp.begin() + 4, aula_temp.begin() + 6, aula_temp_int.begin(), strToInt);
-    } catch (errore_stringa_non_convert_in_int &e){
-        cout << e.what() <<endl;
-        exit (33);
+    } catch (errore_stringa_non_convert_in_int &e) {
+        cout << e.what() << endl;
+        exit(33);
     }
 
     //le stringhe vuote sono gestite dai metodi setter
@@ -379,62 +379,6 @@ Database::Aula::Aula(const string &row) {
     setCapEsame(aula_temp_int[1]);
 }
 
-//void Database::nuovo_professore(const string &row, bool source_db) {
-//    Professore *p{new(nothrow) Professore};
-//    vector<string> prof_temp;
-//
-////   [Aggiornamento] Legge dal file _dbcal, quindi c'è anche la _matricola, da confrontare più avanti
-//    try {
-//        _regdb.search_and_read(_regdb.target_expression(lettura::professori_db), row, prof_temp);
-//
-//    } catch (errore_formattazione &e) {
-//        cout << e.what() << endl;
-//        exit(15);
-//    }
-//
-//    //le stringhe vuote sono gestite dai metodi setter
-//    p->setMatricola(prof_temp[1]);
-//    p->setNome(prof_temp[2]);
-//    p->setCognome(prof_temp[3]);
-//    p->setEmail(prof_temp[4]);
-//
-//    if (source_db) {
-//        _professori_db.push_back(p);
-//    } else
-//        _professori_agg.push_back(p);
-//}
-
-//void Database::nuova_aula(const string &row, bool source_db) {
-//    Aula *a{new(nothrow) Aula};
-//    vector<string> aula_temp;
-//
-////   [Aggiornamento] Legge dal file _dbcal, quindi c'è anche la _matricola, da confrontare più avanti
-//    try {
-//        _regdb.search_and_read(_regdb.target_expression(lettura::aule_db), row, aula_temp);
-//
-//    } catch (errore_formattazione &e) {
-//        cout << e.what() << endl;
-//        exit(15);
-//    }
-//
-//    LOGV(aula_temp);
-//    vector<int> aula_temp_int;
-//    aula_temp_int.resize(2);
-//    transform(aula_temp.begin() + 4, aula_temp.begin() + 6, aula_temp_int.begin(), strToInt);
-//
-//    //le stringhe vuote sono gestite dai metodi setter
-//    a->setId(aula_temp[1]);
-//    a->setTipo(aula_temp[2][0]);
-//    a->setDenominazione(aula_temp[3]);
-//    a->setCapienza(aula_temp_int[0]);
-//    a->setCapEsame(aula_temp_int[1]);
-//
-//
-//    if (source_db) {
-//        _aule_db.push_back(a);
-//    } else
-//        _aule_agg.push_back(a);
-//}
 
 void Database::aggiorna_aule() {
 
@@ -643,18 +587,18 @@ void Database::leggi_corso_db() {
                     //<< " trovato anno accademico senza corso di riferimento";
                     throw err_anno_senza_corso();
                 }
-                try{
+                try {
                     auto *a = new Corso::Anno_Accademico(row_db);
                     _corsi_db.back()->setAnnoAccademico(a);
-                } catch (errore_anno_accademico &e){
+                } catch (errore_anno_accademico &e) {
                     cout << e.what() << endl;
                     exit(26);
-                } catch (err_formattazione_attivo_non_attivo &e){
+                } catch (err_formattazione_attivo_non_attivo &e) {
                     cout << e.what() << endl;
-                    exit (26);
-                } catch (err_numero_versioni_parallele &e){
+                    exit(26);
+                } catch (err_numero_versioni_parallele &e) {
                     cout << e.what() << endl;
-                    exit (26);
+                    exit(26);
                 }
 
                 letto_anno = true;
@@ -711,11 +655,7 @@ const string &Database::getFileDbCds() const {
     return _file_db_cds;
 }
 
-void Database::inserimento_corsi() {
 
-
-
-}
 
 void Database::Studente::fstampa(ofstream &fout) const {
     fout << _matricola << _sep << _nome << _sep << _cognome << _sep << _email << '\n';
@@ -950,7 +890,8 @@ const string &Database::Corso::Anno_Accademico::Prof_per_versione::getMatricolaT
     return _matricola_titolare;
 }
 
-const vector<Database::Corso::Anno_Accademico::Prof_per_versione::Profn *> &Database::Corso::Anno_Accademico::Prof_per_versione::getAltriProfN() const {
+const vector<Database::Corso::Anno_Accademico::Prof_per_versione::Profn *> &
+Database::Corso::Anno_Accademico::Prof_per_versione::getAltriProfN() const {
     return _altri_prof_n;
 }
 
@@ -970,9 +911,9 @@ Database::Corso::Anno_Accademico::Prof_per_versione::Profn::Profn(const string &
     profn_int.reserve(3);
     try {
         transform(out_profn.begin() + 2, out_profn.begin() + 4, profn_int.begin(), strToInt);
-    } catch (errore_stringa_non_convert_in_int &e){
-        cout << e.what() << endl ;
-        exit (33);
+    } catch (errore_stringa_non_convert_in_int &e) {
+        cout << e.what() << endl;
+        exit(33);
     }
 
     _matricola = out_profn[1];
@@ -991,7 +932,7 @@ void Database::Corso::Anno_Accademico::setEsame(Database::Corso::Anno_Accademico
 
 //2019-2020;Informatica;3;8;35;15;3;[{d000010,[{d000011,15,28,7},{d000012,15,28,7}]},{d000013,[{d000014,15,28,7},{d000015,15,28,7}]},{d000016,[{d000017,15,28,7},{d000018,15,28,7}]}];{90,30,30,S,A};{ABC129,ABC138,ABC143,ABC148}
 //a;2021-2022;attivo;1;[{d000110,[{d000111,25,8,0},{d000112,10,8,0}]}];{90,15,0,25,S};{ABC126,ABC131,ABC133,ABC135,ABC145,ABC150}
-Database::Corso::Anno_Accademico:: Anno_Accademico(const string &row) {
+Database::Corso::Anno_Accademico::Anno_Accademico(const string &row) {
 //TODO: i processi di lettura potrebbero essere dei template
 
     //LETTURA aaaa-aaaa 2020-2021
@@ -1033,9 +974,9 @@ Database::Corso::Anno_Accademico:: Anno_Accademico(const string &row) {
     }
     try {
         _n_versioni_in_parallelo = strToInt(out_n_versioni[1]);
-    } catch (errore_stringa_non_convert_in_int &e){
+    } catch (errore_stringa_non_convert_in_int &e) {
         cout << e.what() << endl;
-        exit (33);
+        exit(33);
     }
 
 
@@ -1105,7 +1046,8 @@ unsigned short Database::Corso::Anno_Accademico::getNVersioniInParallelo() const
     return _n_versioni_in_parallelo;
 }
 
-const vector<Database::Corso::Anno_Accademico::Prof_per_versione *> &Database::Corso::Anno_Accademico::getVersioni() const {
+const vector<Database::Corso::Anno_Accademico::Prof_per_versione *> &
+Database::Corso::Anno_Accademico::getVersioni() const {
     return _versioni;
 }
 
@@ -1134,9 +1076,9 @@ Database::Corso::Anno_Accademico::Esame::Esame(const string &str_esame) {
     esame_int.reserve(4);
     try {
         transform(out_esame_campi.begin() + 1, out_esame_campi.end() - 2, esame_int.begin(), strToInt);
-    } catch (errore_stringa_non_convert_in_int &e){
+    } catch (errore_stringa_non_convert_in_int &e) {
         cout << e.what() << endl;
-        exit (33);
+        exit(33);
     }
 
     _durata_esame = esame_int[0];
@@ -1189,9 +1131,9 @@ Database::Corso::Corso(const string &row, const string &ultimo_id) {
     corso_temp_int.reserve(5);
     try {
         transform(out_corso_base.begin() + 4, out_corso_base.end(), corso_temp_int.begin(), strToInt);
-    } catch (errore_stringa_non_convert_in_int &e){
+    } catch (errore_stringa_non_convert_in_int &e) {
         cout << e.what() << endl;
-        exit (33);
+        exit(33);
     }
 
     _id_corso = ultimo_id;
@@ -1207,12 +1149,12 @@ Database::Corso::Corso(const string &row, const string &ultimo_id) {
     } catch (errore_anno_accademico &e) {
         cout << e.what() << endl;
         exit(26);
-    } catch (err_formattazione_attivo_non_attivo &e){
+    } catch (err_formattazione_attivo_non_attivo &e) {
         cout << e.what() << endl;
-        exit (26);
-    } catch (err_numero_versioni_parallele &e){
+        exit(26);
+    } catch (err_numero_versioni_parallele &e) {
         cout << e.what() << endl;
-        exit (26);
+        exit(26);
     }
 
 
@@ -1221,34 +1163,67 @@ Database::Corso::Corso(const string &row, const string &ultimo_id) {
 //LEGGI DB
 //c;ABC124;Analisi1;10;50;10;20;
 //a;2019-2020;attivo;3;[{d000001,[{d000002,50,0,0},{d000003,20,10,0}]},{d000004,[{d000005,50,0,0},{d000006,20,10,0}]},{d000007,[{d000008,50,0,0},{d000009,20,10,0}]}];{90,30,0,30,S};{ABC128,ABC137,ABC142,ABC147}
+
+//LEGGI INSERIMENTO?
+//ABC124;2019-2020;non_attivo;3;[{d000010,[{d000011,15,28,7},{d000012,15,28,7}]},{d000013,[{d000014,15,28,7},{d000015,15,28,7}]},{d000016,[{d000017,15,28,7},{d000018,15,28,7}]}];{90,30,30,S,A};{ABC129,ABC138,ABC143,ABC148}
 Database::Corso::Corso(const string &row) {
 
     //LETTURA c;ABC124;Analisi1;10;50;10;20;
-    vector<string> out_corso_base;
-    try {
-        _regcorso.search_and_read(_regcorso.target_expression(lettura::corsi_db), row, out_corso_base);
-    } catch (errore_formattazione &e) {
-        cout << e.what() << endl;
-        READ_ERR("informazioni corso db");
-        exit(15);
+    if (row.front() == 'c') {
+        vector<string> out_corso_base;
+        try {
+            _regcorso.search_and_read(_regcorso.target_expression(lettura::corsi_db), row, out_corso_base);
+        } catch (errore_formattazione &e) {
+            cout << e.what() << endl;
+            READ_ERR("informazioni corso db");
+            exit(15);
+        }
+
+        vector<int> out_corso_int;
+        out_corso_int.reserve(5);
+        try {
+            std::transform(out_corso_base.begin() + 4, out_corso_base.end(), out_corso_int.begin(), strToInt);
+        } catch (errore_stringa_non_convert_in_int &e) {
+            cout << e.what() << endl;
+            exit(33);
+        }
+
+        _id_corso = out_corso_base[1];
+        _titolo = out_corso_base[2];
+        _cfu = out_corso_int[0];
+        _ore_lezione = out_corso_int[1];
+        _ore_esercitazione = out_corso_int[2];
+        _ore_laboratorio = out_corso_int[3];
+    } else {
+        //LETTURA INSERIMENTO
+        //ABC124;2019-2020;non_attivo;3;[{d000010,[{d000011,15,28,7},{d000012,15,28,7}]},{d000013,[{d000014,15,28,7},{d000015,15,28,7}]},{d000016,[{d000017,15,28,7},{d000018,15,28,7}]}];{90,30,30,S,A};{ABC129,ABC138,ABC143,ABC148}
+
+        vector<string> out_corso_ins;
+        try{
+            _regcorso.search_and_read(_regcorso.target_expression(lettura::corsi_inserimento), row, out_corso_ins);
+        }catch(errore_formattazione &e){
+            READ_ERR("corso inserito, informazioni base");
+            cout << e.what() << endl;
+            exit(15);
+        }
+        LOGV(out_corso_ins);
+        exit(1239);
+
     }
 
-    vector<int> out_corso_int;
-    out_corso_int.reserve(5);
-    try {
-        std::transform(out_corso_base.begin() + 4, out_corso_base.end(), out_corso_int.begin(), strToInt);
-    } catch (errore_stringa_non_convert_in_int &e){
-        cout << e.what() << endl;
-        exit (33);
-    }
 
+}
 
-    _id_corso = out_corso_base[1];
-    _titolo = out_corso_base[2];
-    _cfu = out_corso_int[0];
-    _ore_lezione = out_corso_int[1];
-    _ore_esercitazione = out_corso_int[2];
-    _ore_laboratorio = out_corso_int[3];
+void Database::inserimento_corsi() {
+
+    //Leggo i dati del database dei corsi e li salvo in _corsi_db
+    leggi_corso_db();
+
+    //Leggo i dati dal file inserimento e li salvo in _corsi_agg
+    leggi_db(_file_argomento, _corsi_agg);
+
+    //Serve leggere anche i corsi di studio?
+    leggi_db(_file_db_cds, _cds_db);
 
 }
 
@@ -1365,7 +1340,7 @@ void Database::checkIdCorso_in_Cds() {
             }
             if (!trovato) {
                 cout << "Errore corso spento " << id_spento->getIdCorso();// << " non trovato\n";
-               throw err_corso_spento_non_trovato_nel_cds();
+                throw err_corso_spento_non_trovato_nel_cds();
                 exit(43);
             }
             trovato = false;

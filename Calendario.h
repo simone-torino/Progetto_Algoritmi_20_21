@@ -180,12 +180,13 @@ public:
         friend ostream &operator<<(ostream &os, const Dati_esame &esame);
 
         //anni_accademici del corso
+        string id_corso;
         vector<string> id_cds; //id_cds che contengono il corso
         vector<string> id_professori;
         int n_versioni{};
         vector<int> n_iscritti;
         int semestre = 0; //1 primo semestre, 2 secondo semestre
-        vector<string> id_corsi_raggruppati;
+//        vector<string> id_corsi_raggruppati;
         int n_slot_necessari{}; //slot necessari a
 
         Dati_esame() = default;
