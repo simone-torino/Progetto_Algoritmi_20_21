@@ -356,7 +356,12 @@ Database::Aula::Aula(const string &row) {
 //    LOGV(aula_temp);
     vector<int> aula_temp_int;
     aula_temp_int.resize(2);
-    transform(aula_temp.begin() + 4, aula_temp.begin() + 6, aula_temp_int.begin(), strToInt);
+    try {
+        transform(aula_temp.begin() + 4, aula_temp.begin() + 6, aula_temp_int.begin(), strToInt);
+    } catch (errore_stringa_non_convert_in_int &e){
+        cout << e.what() <<endl;
+        exit (33);
+    }
 
     //le stringhe vuote sono gestite dai metodi setter
     setId(aula_temp[1]);
@@ -955,7 +960,12 @@ Database::Corso::Anno_Accademico::Prof_per_versione::Profn::Profn(const string &
     }
     vector<int> profn_int;
     profn_int.reserve(3);
-    transform(out_profn.begin() + 2, out_profn.begin() + 4, profn_int.begin(), strToInt);
+    try {
+        transform(out_profn.begin() + 2, out_profn.begin() + 4, profn_int.begin(), strToInt);
+    } catch (errore_stringa_non_convert_in_int &e){
+        cout << e.what() << endl ;
+        exit (33);
+    }
 
     _matricola = out_profn[1];
     _ore_lez = profn_int[0];
@@ -1013,7 +1023,12 @@ Database::Corso::Anno_Accademico:: Anno_Accademico(const string &row) {
         READ_ERR("numero versioni in parallelo");
         exit(15);
     }
-    _n_versioni_in_parallelo = strToInt(out_n_versioni[1]);
+    try {
+        _n_versioni_in_parallelo = strToInt(out_n_versioni[1]);
+    } catch (errore_stringa_non_convert_in_int &e){
+        cout << e.what() << endl;
+        exit (33);
+    }
 
 
 
@@ -1109,7 +1124,12 @@ Database::Corso::Anno_Accademico::Esame::Esame(const string &str_esame) {
 
     vector<int> esame_int;
     esame_int.reserve(4);
-    transform(out_esame_campi.begin() + 1, out_esame_campi.end() - 2, esame_int.begin(), strToInt);
+    try {
+        transform(out_esame_campi.begin() + 1, out_esame_campi.end() - 2, esame_int.begin(), strToInt);
+    } catch (errore_stringa_non_convert_in_int &e){
+        cout << e.what() << endl;
+        exit (33);
+    }
 
     _durata_esame = esame_int[0];
     _t_ingresso = esame_int[1];
@@ -1159,7 +1179,12 @@ Database::Corso::Corso(const string &row, const string &ultimo_id) {
     }
     vector<int> corso_temp_int;
     corso_temp_int.reserve(5);
-    transform(out_corso_base.begin() + 4, out_corso_base.end(), corso_temp_int.begin(), strToInt);
+    try {
+        transform(out_corso_base.begin() + 4, out_corso_base.end(), corso_temp_int.begin(), strToInt);
+    } catch (errore_stringa_non_convert_in_int &e){
+        cout << e.what() << endl;
+        exit (33);
+    }
 
     _id_corso = ultimo_id;
     _titolo = out_corso_base[3];
@@ -1202,7 +1227,12 @@ Database::Corso::Corso(const string &row) {
 
     vector<int> out_corso_int;
     out_corso_int.reserve(5);
-    std::transform(out_corso_base.begin() + 4, out_corso_base.end(), out_corso_int.begin(), strToInt);
+    try {
+        std::transform(out_corso_base.begin() + 4, out_corso_base.end(), out_corso_int.begin(), strToInt);
+    } catch (errore_stringa_non_convert_in_int &e){
+        cout << e.what() << endl;
+        exit (33);
+    }
 
 
     _id_corso = out_corso_base[1];
