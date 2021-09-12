@@ -62,7 +62,8 @@ void Database::Corso::Anno_Accademico::fstampa_anno_accademico(ofstream &fout) c
 
 void Database::Corso::fstampa(ofstream &fout) const {
 //    LOG(_rg_id_corso);
-//    this->debug();
+    this->debug();
+//    exit(123);
     fout << 'c' << ';' << _id_corso << ';' << _titolo << ';' << _cfu << ';' << _ore_lezione << ';' << _ore_esercitazione
          << ';' << _ore_laboratorio << ';' << '\n';
     for (const auto &i: _anni_accademici) {
@@ -592,13 +593,13 @@ void Database::leggi_corso_db() {
                     _corsi_db.back()->setAnnoAccademico(a);
                 } catch (errore_anno_accademico &e) {
                     cout << e.what() << endl;
-                    exit(26);
+                    exit(28);
                 } catch (err_formattazione_attivo_non_attivo &e) {
                     cout << e.what() << endl;
-                    exit(26);
+                    exit(28);
                 } catch (err_numero_versioni_parallele &e) {
                     cout << e.what() << endl;
-                    exit(26);
+                    exit(28);
                 }
 
                 letto_anno = true;
@@ -895,7 +896,8 @@ Database::Corso::Anno_Accademico::Prof_per_versione::getAltriProfN() const {
 }
 
 ostream &operator<<(ostream &os, const Database::Corso::Anno_Accademico::Prof_per_versione &versione) {
-    os << "_matricola_titolare: " << versione._matricola_titolare << " _altri_prof_n: " << versione._altri_prof_n.front();
+    os << "_matricola_titolare: " << versione._matricola_titolare << " _altri_prof_n: "
+       << versione._altri_prof_n.front();
     return os;
 }
 
@@ -940,13 +942,14 @@ void Database::Corso::Anno_Accademico::setEsame(Database::Corso::Anno_Accademico
 //INSERIMENTO: ABC124;2019-2020;non_attivo;3;[{d000010,[{d000011,15,28,7},{d000012,15,28,7}]},{d000013,[{d000014,15,28,7},{d000015,15,28,7}]},{d000016,[{d000017,15,28,7},{d000018,15,28,7}]}];{90,30,30,S,A};{ABC129,ABC138,ABC143,ABC148}
 Database::Corso::Anno_Accademico::Anno_Accademico(const string &row) {
 //TODO: i processi di lettura potrebbero essere dei template
+
 //    LOG(row)
 //Controllo se row è stata letta dal file inserimento
     bool inserimento = false;
-    if (regex_match(row.substr(0, 6), std::regex("([A-Z]{3}[0-9]{3});"))) {
-        cout << "Inserimento true\n";
+    if (regex_search(row, std::regex("([A-Z]{3}[0-9]{3});"))) {
+//        cout << "Inserimento true\n";
         inserimento = true;
-    }else{
+    } else {
 //        LOG("niente inserimento")
     }
 
@@ -966,40 +969,45 @@ Database::Corso::Anno_Accademico::Anno_Accademico(const string &row) {
 
     _anno_accademico = out_anno_acc[1] + '-' + out_anno_acc[2];
 
-    if (!inserimento) {
-        if (regex_match(row, std::regex("a;"))) {
-            if (regex_match(row, std::regex("attivo"))) {
+//    if (!inserimento) {
+        if (regex_match(row.substr(0,2), std::regex("a;"))) {
+            if (regex_search(row, std::regex("attivo"))) {
                 _attivo = true;
-            } else if (regex_match(row, std::regex("non_attivo"))) {
+            } else if (regex_search(row, std::regex("non_attivo"))) {
                 _attivo = false;
             } else {
+                cout << "Nella riga: " << row << endl;
                 throw err_formattazione_attivo_non_attivo();
             }
         } else {
             _attivo = true; //in questo caso sto leggendo file di input
         }
-    } else {
+//    } else {
         //prendi attivo non attivo da database
-    }
+//    }
+
 
     vector<string> out_n_versioni;
     try {
         _reg_anno.search_and_read(_reg_anno.target_expression(lettura::n_versioni), row, out_n_versioni);
     } catch (errore_formattazione &e) {
-        cout << e.what() << endl;
-        READ_ERR("numero versioni in parallelo");
-        exit(15);
-    }
-    if (!inserimento) {
-        try {
-            _n_versioni_in_parallelo = strToInt(out_n_versioni[1]);
-        } catch (errore_stringa_non_convert_in_int &e) {
+        if (!inserimento) {
             cout << e.what() << endl;
-            exit(33);
+            READ_ERR("numero versioni in parallelo");
+            exit(15);
         }
-    } else {
-        //prendi n versioni da database, metti a zero e setta da corso?
     }
+//    if (!inserimento) {
+    try {
+        _n_versioni_in_parallelo = strToInt(out_n_versioni[1]);
+    } catch (errore_stringa_non_convert_in_int &e) {
+        cout << e.what() << endl;
+        exit(33);
+    }
+//    } else {
+    //prendi n versioni da database, metti a zero e setta da corso?
+//        _n_versioni_in_parallelo = 0;
+//    }
 
 
     //LETTURA [{<matricola_titolare>,[{<matricolare_prof1>,n1,n2,n3},..,{<matricolare_profn>,<ore_lez>,<ore_es>,<ore_lab>}]},...]
@@ -1015,17 +1023,22 @@ Database::Corso::Anno_Accademico::Anno_Accademico(const string &row) {
 
 //    cout << "Stampo versioni del corso:\n";
     //Controllo che le versioni in parallelo lette siano della quantità indicata
+    //L'inserimento non supporta i dati ereditati dal file database
+//    if(!inserimento) {
     if (versioni.size() != _n_versioni_in_parallelo) {
-        throw err_numero_versioni_parallele();
         cout << "Errore numero versioni per il corso " << row << endl;
-        cout << "Versioni acquisite: " << versioni.size() << " Versioni attese: " << _n_versioni_in_parallelo << endl;
+        cout << "Versioni acquisite: " << versioni.size() << " Versioni attese: " << _n_versioni_in_parallelo
+             << endl;
+        throw err_numero_versioni_parallele();
     }
-
-    for (const string &stringa_versione: versioni) {
-        auto *pv = new Prof_per_versione(stringa_versione);
-        _versioni.push_back(pv);
+//    }
+    //Nella procedura di inserimento le versioni potrebbero essere vuote
+    if (!versioni.empty()) {
+        for (const string &stringa_versione: versioni) {
+            auto *pv = new Prof_per_versione(stringa_versione);
+            _versioni.push_back(pv);
+        }
     }
-
     //LETTURA {90,30,30,S,A};  {<durata_esame>,<t_ingresso>,<t_uscita>,<modalità>,<luogo(A/L)>}
     vector<string> out_esame;
 
@@ -1083,7 +1096,8 @@ Database::Corso::Anno_Accademico::Esame *Database::Corso::Anno_Accademico::getEs
 
 ostream &operator<<(ostream &os, const Database::Corso::Anno_Accademico &accademico) {
     os << "_anno_accademico: " << accademico._anno_accademico << " _attivo: " << accademico._attivo
-       << " _n_versioni_in_parallelo: " << accademico._n_versioni_in_parallelo << " _versioni: " << *accademico._versioni.front()
+       << " _n_versioni_in_parallelo: " << accademico._n_versioni_in_parallelo << " _versioni: "
+       << *accademico._versioni.front()
        << " _esame: " << *accademico._esame << " _id_corsi_raggruppati: " << accademico._id_corsi_raggruppati.front();
     return os;
 }
@@ -1212,11 +1226,11 @@ Database::Corso::Corso(const string &row) {
             READ_ERR("informazioni corso db");
             exit(15);
         }
-
+        LOGV(out_corso_base)
         vector<int> out_corso_int;
         out_corso_int.reserve(5);
         try {
-            std::transform(out_corso_base.begin() + 4, out_corso_base.end(), out_corso_int.begin(), strToInt);
+            std::transform(out_corso_base.begin() + 3, out_corso_base.end(), out_corso_int.begin(), strToInt);
         } catch (errore_stringa_non_convert_in_int &e) {
             cout << e.what() << endl;
             exit(33);
@@ -1228,6 +1242,7 @@ Database::Corso::Corso(const string &row) {
         _ore_lezione = out_corso_int[1];
         _ore_esercitazione = out_corso_int[2];
         _ore_laboratorio = out_corso_int[3];
+
     } else {
         //LETTURA INSERIMENTO
         //ABC124;2019-2020;non_attivo;3;[{d000010,[{d000011,15,28,7},{d000012,15,28,7}]},{d000013,[{d000014,15,28,7},{d000015,15,28,7}]},{d000016,[{d000017,15,28,7},{d000018,15,28,7}]}];{90,30,30,S,A};{ABC129,ABC138,ABC143,ABC148}
@@ -1240,10 +1255,11 @@ Database::Corso::Corso(const string &row) {
             cout << e.what() << endl;
             exit(15);
         }
-        LOGV(out_corso_ins);
+//        LOGV(out_corso_ins);
         _id_corso = out_corso_ins[1];
         auto *a = new Anno_Accademico(row);
-        cout << *a << endl;
+        setAnnoAccademico(a);
+//        cout << *a << endl;
 //        if (a->getNVersioniInParallelo() == 0) {
 //
 //        }
@@ -1260,27 +1276,45 @@ void Database::inserimento_corsi() {
 
     //Leggo i dati dal file inserimento e li salvo in _corsi_agg
     leggi_db(_file_argomento, _corsi_agg);
-
+    bool corso_trovato = false;
     //Confronto corsi nel database con i corsi inseriti
-    for (auto corso_db: _corsi_db) {
-        for (auto corso_da_ereditare: _corsi_agg) {
+    for (auto corso_da_ereditare: _corsi_agg) {
+        for (auto corso_db: _corsi_db) {
+
             //Se trovo nel database l'id di un corso che sto inserendo
             if (corso_da_ereditare->getIdCorso() == corso_db->getIdCorso()) {
+                corso_trovato = true;
+                //Mantengo invariate le informazioni di base
+                corso_da_ereditare->setCFU(corso_db->getCFU());
+                corso_da_ereditare->setOreEser(corso_db->getOreEser());
+                corso_da_ereditare->setOreLab(corso_db->getOreLab());
+                corso_da_ereditare->setOreLez(corso_db->getOreLez());
 
+                bool aa_trovato = false;
                 //Se nel database c'è già un anno accademico uguale a quello in inserimento
-                for(auto anno_agg : corso_da_ereditare->getAnniAccademici()){
-                    for(auto anno_db : corso_db->getAnniAccademici()){
-                        if(anno_agg->getAnnoAccademico() == anno_db->getAnnoAccademico()){
-
+                for (auto anno_agg: corso_da_ereditare->getAnniAccademici()) {
+                    for (auto anno_db: corso_db->getAnniAccademici()) {
+                        if (anno_agg->getAnnoAccademico() == anno_db->getAnnoAccademico()) {
+                            anno_db = anno_agg;
+                            cout << "Sostituito anno accademico " << anno_db->getAnnoAccademico() << " nel corso " << corso_db->getIdCorso() << endl;
+                            aa_trovato = true;
                         }
+                    }
+                    //Se non trovo l'anno accademico non è già presente in memoria lo aggiungo
+                    if (!aa_trovato) {
+                        corso_db->setAnnoAccademico(anno_agg);
+                        cout << "Aggiunto anno accademico " << anno_agg->getAnnoAccademico() << " nel corso " << corso_db->getIdCorso() << endl;
                     }
                 }
             }
         }
+        if(!corso_trovato){
+            cout << "Errore il corso " << corso_da_ereditare->getIdCorso() << " non è stato trovato nel database\n";
+            exit(30);
+        }
     }
 
-    //Serve leggere anche i corsi di studio?
-    leggi_db(_file_db_cds, _cds_db);
+
 
 }
 
@@ -1358,20 +1392,8 @@ void Database::Corso_di_studio::setIdCds(const string &id_cds) {
     }
 }
 
-//void Database::Corso_di_studio::setCorsiDiUnSemestre(vector<Corso_id> corsi_in_un_semestre) {
-//    for (int i = 0; i < corsi_in_un_semestre.size(); i++) {
-//        _corsi_in_un_semestre[i] = corsi_in_un_semestre[i];
-//    }
-//}
-//
-//void Database::Corso_di_studio::setCorsiPerSemestre(const vector<vector<Corso_id>> &corsi_per_semestre) {
-//    for (auto &i: corsi_per_semestre) {
-//        setCorsiDiUnSemestre(i);
-//    }
-//}
-
 void Database::checkIdCorso_in_Cds() {
-//TODO probabilmente esiste un algoritmo per fare questo in due righe
+
     bool trovato = false;
     for (auto cds: _cds_db) {
         for (const auto &semestre: cds->getCorsiSemestre()) {
@@ -1467,7 +1489,6 @@ void Database::Corso_di_studio::leggi_semestri(const string &semestri) {
 
     vector<string> cds_temp;
     try {
-        //TODO: catch delle eccezioni di multiple fields
         //ora leggo gli id dei corsi divisi per semestre
         _regcds.multiple_fields(_regcds.target_expression(lettura::cds_semestri), semestri, cds_temp);
 //        {ABC123,ABC124} ecc
