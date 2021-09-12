@@ -767,30 +767,30 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
 
 //            Informazioni fake
 
-            esami.resize(1);
-            esami[0] = "ABC123";
-            cds.clear();
-            cds.resize(1);
-            cds[0].resize(1);
-            cds[0][0] = "CDS01";
-            anni.resize(1);
-            anni[0] = "2";
-            slot.resize(1);
-            slot[0] = 3;
-            prof.clear();
-            prof.resize(1);
-            prof[0].resize(1);
-            prof[0][0] = "d_prova";
-            parall.resize(1);
-            parall[0] = 1;
-            sem = 1;
-            iscritti.clear();
-            iscritti.resize(1);
-            iscritti[0].resize(1);
-            iscritti[0][0] = 90;
+//            esami.resize(1);
+//            esami[0] = "ABC123";
+//            cds.clear();
+//            cds.resize(1);
+//            cds[0].resize(1);
+//            cds[0][0] = "CDS01";
+//            anni.resize(1);
+//            anni[0] = "2";
+//            slot.resize(1);
+//            slot[0] = 3;
+//            prof.clear();
+//            prof.resize(1);
+//            prof[0].resize(1);
+//            prof[0][0] = "d_prova";
+//            parall.resize(1);
+//            parall[0] = 1;
+//            sem = 1;
+//            iscritti.clear();
+//            iscritti.resize(1);
+//            iscritti[0].resize(1);
+//            iscritti[0][0] = 90;
 
-//            cds[0].push_back("C102");
-//            cds[0].push_back("C103");
+            cds[0].push_back("C102");
+            cds[0].push_back("C103");
 
 //            _gen.set_id_esame_nel_calendario(1, esami, cds, anni, slot, prof, parall, sem, iscritti);
 
