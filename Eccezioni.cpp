@@ -3,7 +3,6 @@
 
 
 
-
 file_non_aperto::file_non_aperto():messaggio("Apertura file fallita, forse non e' stato trovato") {}
 const char * file_non_aperto::what() const noexcept {return messaggio;}
 

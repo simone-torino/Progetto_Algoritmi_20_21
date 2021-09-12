@@ -5,7 +5,6 @@
 #include <cassert>
 
 
-
 class file_non_aperto: public std::exception {
 private:
     const char* messaggio;
