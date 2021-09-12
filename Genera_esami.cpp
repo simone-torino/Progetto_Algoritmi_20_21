@@ -61,13 +61,13 @@ vector<int> Genera_esami::get_capienza() {
 Genera_esami::calendar::calendar() {
 
     sessione sessione_s1("s1");
-    cout << "Ho generato l'oggetto sessione_s1" << endl;
+//    cout << "Ho generato l'oggetto sessione_s1" << endl;
     _sessioni.push_back(sessione_s1);
     sessione sessione_s2("s2");
-    cout << "Ho generato l'oggetto sessione_s2" << endl;
+//    cout << "Ho generato l'oggetto sessione_s2" << endl;
     _sessioni.push_back(sessione_s2);
     sessione sessione_s3("s3");
-    cout << "Ho generato l'oggetto sessione_s3" << endl;
+//    cout << "Ho generato l'oggetto sessione_s3" << endl;
     _sessioni.push_back(sessione_s3);
 
 }
@@ -108,9 +108,9 @@ Genera_esami::sessione::sessione(const string &quale_sessione) {
 
     _quale_sessione = quale_sessione;
     appello appello_1(1);
-    cout << "Ho generato l'oggetto appello_1" << endl;
+//    cout << "Ho generato l'oggetto appello_1" << endl;
     appello appello_2(2);
-    cout << "Ho generato l'oggetto appello_2" << endl;
+//    cout << "Ho generato l'oggetto appello_2" << endl;
     if (_quale_sessione != "s3") {
         _appelli.push_back(appello_1);
         _appelli.push_back(appello_2);

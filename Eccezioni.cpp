@@ -79,7 +79,7 @@ err_formattazione_attivo_non_attivo::err_formattazione_attivo_non_attivo():messa
 const char * err_formattazione_attivo_non_attivo::what() const noexcept {return messaggio;}
 
 
-err_numero_versioni_parallele::err_numero_versioni_parallele():messaggio("Il numero di ID degli esami paralleli differisce dalla quantità atteso") {}
+err_numero_versioni_parallele::err_numero_versioni_parallele():messaggio("Il numero di ID degli esami paralleli differisce dalla quantità attesa") {}
 const char * err_numero_versioni_parallele::what() const noexcept {return messaggio;}
 
 

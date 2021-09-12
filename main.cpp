@@ -149,8 +149,10 @@ int main(int argc, char *argv[]) {
                 break;
             case (options::inserimento):
                 cout << "Hai scelto: " << "inserimento corsi\n";
-                //controlla inserimento corsi duplicati
+
+                //Si possono aggiungere anni accademici completi di tutte le informazioni ad un corso, o disattivarne uno
                 db.inserimento_corsi();
+                db.target_fstampa(options::corsi, false);
 
                 break;
             case (options::set_esami):
