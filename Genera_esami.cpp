@@ -49,13 +49,13 @@ void Genera_esami::setCapienzaEsame(const vector<int> &capienzaEsame) {
 
 Genera_esami::calendar::calendar() {
 
-    sessione sessione_s1("s1");
-    sessione sessione_s2("s2");
-    sessione sessione_s3("s3");
-
-    _sessioni.push_back(sessione_s1);
-    _sessioni.push_back(sessione_s2);
-    _sessioni.push_back(sessione_s3);
+//    sessione sessione_s1("s1");
+//    sessione sessione_s2("s2");
+//    sessione sessione_s3("s3");
+//
+//    _sessioni.push_back(sessione_s1);
+//    _sessioni.push_back(sessione_s2);
+//    _sessioni.push_back(sessione_s3);
 
 
 }
