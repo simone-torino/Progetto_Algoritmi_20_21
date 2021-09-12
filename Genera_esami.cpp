@@ -48,6 +48,14 @@ void Genera_esami::setCapienzaEsame(const vector<int> &capienzaEsame) {
     capienza_esame = capienzaEsame;
 }
 
+void Genera_esami::set_puntatore_inizio_sessioni(int punct1, int punct2, int punct3) {
+    
+    _cal1.set_puntatore_inizio_s1(punct1);
+    _cal1.set_puntatore_inizio_s2(punct2);
+    _cal1.set_puntatore_inizio_s3(punct3);
+
+}
+
 Genera_esami::calendar::calendar() {
 
     sessione sessione_s1("s1");
@@ -541,7 +549,9 @@ bool Genera_esami::slot::set_id_esame_nello_slot(int n_esami_raggruppati, const 
         n_aule_necessarie = n_aule_necessarie + n_vers_paral[i];
     }
 
-    if ((n_aule_necessarie + _info_da_stampare.size()) > id_aule.size()) {
+//    slot s;
+
+    if ((n_aule_necessarie + /*s.get_info_esami_size()*/_info_da_stampare.size()) > id_aule.size()) {
 //        cout<<endl<<"Massima capienza dello slot raggiunta! (esame "<<id_esame<<")"<<endl;
         return false;
 
@@ -689,4 +699,8 @@ void Genera_esami::slot::print_info_warnings() {
                  << endl;
         }
     }
+}
+
+int Genera_esami::slot::get_info_esami_size() {
+    return _info_da_stampare.size();
 }

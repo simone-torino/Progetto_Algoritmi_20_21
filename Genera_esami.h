@@ -14,8 +14,6 @@
 
 using namespace std;
 
-class slot;
-
 class Genera_esami {
 //    Calendario _cal;
 protected:
@@ -27,6 +25,8 @@ public:
     void setIdAule(const vector<string> &idAule);
 
     void setCapienzaEsame(const vector<int> &capienzaEsame);
+
+    void set_puntatore_inizio_sessioni(int punct1, int punct2, int punct3);
 
 
 //    explicit Genera_esami(const vector<string> &argomenti);
@@ -79,6 +79,8 @@ public:
 //        void set_id_aule(const vector<string> &id_aule);
 
 //        void set_capienza(const vector<int> &capienze);
+
+        int get_info_esami_size();
 
         void print_info();
 

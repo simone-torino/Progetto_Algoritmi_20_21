@@ -755,35 +755,35 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
             }
             }
 
-            esami.resize(1);
-            esami[0] = "ABC123";
-            cds.clear();
-            cds.resize(1);
-            cds[0].resize(1);
-            cds[0][0] = "CDS01";
-            anni.resize(1);
-            anni[0] = "2";
-            slot.resize(1);
-            slot[0] = 3;
-            prof.clear();
-            prof.resize(1);
-            prof[0].resize(1);
-            prof[0][0] = "dprova";
-            parall.resize(1);
-            parall[0] = 1;
-            sem = 1;
-            iscritti.clear();
-            iscritti.resize(1);
-            iscritti[0].resize(1);
-            iscritti[0][0] = 90;
+//            esami.resize(1);
+//            esami[0] = "ABC123";
+//            cds.clear();
+//            cds.resize(1);
+//            cds[0].resize(1);
+//            cds[0][0] = "CDS01";
+//            anni.resize(1);
+//            anni[0] = "2";
+//            slot.resize(1);
+//            slot[0] = 3;
+//            prof.clear();
+//            prof.resize(1);
+//            prof[0].resize(1);
+//            prof[0][0] = "dprova";
+//            parall.resize(1);
+//            parall[0] = 1;
+//            sem = 1;
+//            iscritti.clear();
+//            iscritti.resize(1);
+//            iscritti[0].resize(1);
+//            iscritti[0][0] = 90;
 
 //            cds[0].push_back("C102");
 //            cds[0].push_back("C103");
 
-            _gen.set_id_esame_nel_calendario(1, esami, cds, anni, slot, prof, parall, sem, iscritti);
+//            _gen.set_id_esame_nel_calendario(1, esami, cds, anni, slot, prof, parall, sem, iscritti);
 
-//           _gen.set_id_esame_nel_calendario((int) datiEsame.size(), corsi_acquisiti, cds, anni,
-//                                             slot, prof, parall, sem, iscritti);
+           _gen.set_id_esame_nel_calendario((int) datiEsame.size(), esami, cds, anni,
+                                             slot, prof, parall, sem, iscritti);
 
 
             //TODO: la funzione genera esami penso che dovrebbe stare all'interno di questo ciclo
