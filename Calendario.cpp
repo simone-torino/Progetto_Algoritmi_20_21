@@ -646,9 +646,9 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
 //    subtract( myDate(1,1,anno),_autunno3.getInizio());
 
 
-    _gen.set_puntatore_inizio_sessioni(subtract( myDate(1,1,anno),_inverno1.getInizio()),
-                                       subtract( myDate(1,1,anno),_estate2.getInizio()),
-                                       subtract( myDate(1,1,anno),_autunno3.getInizio()));
+    _gen.set_puntatore_inizio_sessioni(subtract( _inverno1.getInizio(), myDate(1,1,anno)),
+                                       subtract( _estate2.getInizio(), myDate(1,1,anno)),
+                                       subtract( _autunno3.getInizio(), myDate(1,1,anno)));
     //Accedo al database
 
     //Leggo file db_corsi.txt
