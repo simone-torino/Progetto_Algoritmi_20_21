@@ -451,11 +451,13 @@ void Genera_esami::set_anno_file(const string &anno_file) {
 void Genera_esami::calendar::fprint_calendario(const string & anno_file) const {
 
     string nome_file = anno_file;
-    anno_file.substr(0, 19);
+    if(nome_file.substr(nome_file.length()-4, nome_file.length()) == ".txt"){
+        nome_file = nome_file.substr(0, nome_file.length()-4);
+    }
     std::ofstream f1, f2, f3;
-    f1.open(nome_file + "_s1", ios::out);
-    f2.open(nome_file + "_s2", ios::out);
-    f3.open(nome_file + "_s3", ios::out);
+    f1.open(nome_file + "_s1" + ".txt", ios::out);
+    f2.open(nome_file + "_s2" + ".txt", ios::out);
+    f3.open(nome_file + "_s3" + ".txt", ios::out);
 
 //    cout << endl << "Calendario: " << endl << endl;
     _sessioni[0].fprint_sessione(f1);
