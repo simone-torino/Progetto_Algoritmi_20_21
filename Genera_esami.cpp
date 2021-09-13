@@ -323,7 +323,7 @@ bool Genera_esami::giorno::set_id_esame_nel_giorno(const int n_esami_raggruppati
 
     while ((inserisco_nello_slot + tot_n_slot_necessari - 1) < n_slot) {
         for (int i = 0; (i < tot_n_slot_necessari) && gruppo_di_esami_inserito; i++) {
-            if (!_fasce_orarie[i + inserisco_nello_slot].set_id_esame_nello_slot(n_esami_raggruppati, id_esame,
+            if (!_fasce_orarie[i + inserisco_nello_slot].set_id_esame_nello_slot(n_esami_raggruppati, id_esame, id_cds,
                                                                                  id_professori,
                                                                                  const_cast<vector<int> &>(n_vers_paral))) {
                 gruppo_di_esami_inserito = false;
@@ -376,6 +376,7 @@ vector<string> &Genera_esami::giorno::get_anni_inseriti() {
 
 
 bool Genera_esami::slot::set_id_esame_nello_slot(const int n_esami_raggruppati, const vector<string> &id_esame,
+                                                 const vector<vector<string>> &id_cds,
                                                  const vector<vector<string>> &id_professori,
                                                  vector<int> &n_vers_paral) {
 
@@ -413,7 +414,11 @@ bool Genera_esami::slot::set_id_esame_nello_slot(const int n_esami_raggruppati, 
                 _id_esami_inseriti.push_back(id_esame[j]);
             }
         }
-
+        for (int j = 0; j < id_cds.size(); j++) {
+            for (int k = 0; k < id_cds[j].size(); k++) {
+                _id_cds_inseriti.push_back(id_cds[j][k]);
+            }
+        }
     }
     return true;
 }
@@ -434,18 +439,25 @@ void Genera_esami::slot::print_id_esami() {
 }
 
 void Genera_esami::fprint_calendar() {
-    _cal1.fprint_calendario();
+    _cal1.fprint_calendario(_anno_file);
 }
 
-void Genera_esami::calendar::fprint_calendario() const {
+void Genera_esami::set_anno_file(const string &anno_file) {
 
-    string nome_file = "sessione";
+    _anno_file = anno_file;
+
+}
+
+void Genera_esami::calendar::fprint_calendario(const string & anno_file) const {
+
+    string nome_file = anno_file;
+    anno_file.substr(0, 19);
     std::ofstream f1, f2, f3;
     f1.open(nome_file + "_s1", ios::out);
     f2.open(nome_file + "_s2", ios::out);
     f3.open(nome_file + "_s3", ios::out);
 
-    cout << endl << "Calendario: " << endl << endl;
+//    cout << endl << "Calendario: " << endl << endl;
     _sessioni[0].fprint_sessione(f1);
     _sessioni[1].fprint_sessione(f2);
     _sessioni[2].fprint_sessione(f3);
@@ -473,25 +485,29 @@ void Genera_esami::appello::fprint_appello(ofstream &fout) const{
 
 void Genera_esami::giorno::fprint_giorno(ofstream &fout) const {
 
-    fout << endl << "------------------------------------------------------------------" << endl;
+//    fout << endl << "------------------------------------------------------------------" << endl;
 
+    int j = 0;
     for (int i = 0; i < n_slot; i++) {
-        fout << endl << "Slot " << i + 1 << ": " << endl;
-        fout << "\t";
+        fout << endl << j + 8 <<":00-" << j + 10 << ":00;";
+        //fout << "\t";
         _fasce_orarie[i].fprint_id_esami(fout);
-        fout << "\t";
-        _fasce_orarie[i].fprint_professori(fout);
-        fout << endl;
+//        fout << ";";
+//        _fasce_orarie[i].fprint_professori(fout);
+//        fout << "\t";
+//        _fasce_orarie[i].fprint_cds(fout);
+//        fout << endl;
+        j = j + 2;
     }
 
-    fout << endl << "------------------------------------------------------------------" << endl;
+//    fout << endl << "------------------------------------------------------------------" << endl;
 
 }
 
 void Genera_esami::slot::fprint_id_esami(ofstream &fout) const{
-    fout << endl << "ID esami: ";
-    for (auto &i: _id_esami_inseriti) {
-        fout << i << " ";
+//    fout << endl << "ID esami: ";
+    for (int i=0; i < _id_esami_inseriti.size(); i++) {
+        fout << _id_esami_inseriti[i] << "(" << _id_cds_inseriti[i] << ");";
     }
 }
 
@@ -501,3 +517,11 @@ void Genera_esami::slot::fprint_professori(ofstream &fout) const {
         fout << i << " ";
     }
 }
+
+void Genera_esami::slot::fprint_cds(ofstream &fout) const {
+    fout << endl << "Corsi di studio: ";
+    for (auto &i: _id_cds_inseriti) {
+        fout << i << " ";
+    }
+}
+ */

@@ -25,11 +25,14 @@ public:
     private:
 
         vector<string> _id_esami_inseriti;
+        vector<string> _id_cds_inseriti;
         vector<string> _id_professori_inseriti;
+
 
     public:
 
         bool set_id_esame_nello_slot(const int n_esami_raggruppati, const vector<string> &id_esame,
+                                     const vector<vector<string>> &id_cds,
                                      const vector<vector<string>> &id_professori, vector<int> &n_vers_paral);
 
         void print_professori();
@@ -39,6 +42,9 @@ public:
         void fprint_professori(ofstream &fout) const;
 
         void fprint_id_esami(ofstream &fout) const;
+
+        void fprint_cds(ofstream &fout) const;
+
     };
 
     class giorno {
@@ -143,7 +149,7 @@ public:
 
         void print_calendario();
 
-        void fprint_calendario() const;
+        void fprint_calendario(const string &anno_file) const;
     };
 
     bool set_id_esame_nel_calendario(const int n_esami_raggruppati, const vector<string> &id_esame,
@@ -157,6 +163,7 @@ public:
 private:
 
     calendar _cal1;
+    string _anno_file;
 };
 
 

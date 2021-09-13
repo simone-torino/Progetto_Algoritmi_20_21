@@ -808,7 +808,7 @@ void Calendario::genera_date_esami(const vector<string> &argomenti_es) {
     }
 
 
-    _gen.print_calendar();
+//    _gen.print_calendar();
     _gen.fprint_calendar();
 
 }
@@ -873,9 +873,9 @@ void Calendario::setDatiEsame(Database::Corso::Anno_Accademico *dati_anno, const
                         //indice da convertire per ricavare l'anno di appartenenza
                         esame_temp.anno_appartenenza = to_string((contasemestri + 1) / 2);
                         //Salva id cds, da ricontrollare se funziona
-                        esame_temp.id_cds.push_back(corsodistudio->getIdCds());
+//                        esame_temp.id_cds.push_back(corsodistudio->getIdCds());
                         trovato_semestre = true;
-                        cout << "Aggiunto cds " << corsodistudio->getIdCds() << " dell'esame " << id_esame << endl;
+//                        cout << "Aggiunto cds " << corsodistudio->getIdCds() << " dell'esame " << id_esame << endl;
                         for(auto altri_cds : _dbcal.getCdsDb()){
                             for(const auto& altri_semestri : altri_cds->getCorsiSemestre()){
                                 for(auto altri_id_corso : altri_semestri){
